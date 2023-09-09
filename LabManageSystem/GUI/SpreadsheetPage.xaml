@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:SS="clr-namespace:SS"
+             x:Class="SpreadsheetGUI.SpreadsheetPage">
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
+            <MenuFlyoutItem Text="Save As" Clicked="SaveAsClicked" />
+            <MenuFlyoutItem Text="New" Clicked="NewClicked" />
+            <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
+        </MenuBarItem>
+        <MenuBarItem Text="Text color">
+            <MenuFlyoutItem Text="Red" Clicked="ChangeTextColorRed"/>
+            <MenuFlyoutItem Text="White" Clicked="ChangeTextColorWhite"/>
+            <MenuFlyoutItem Text="Pink" Clicked="ChangeTextColorPink"/>
+            <MenuFlyoutItem Text="Blue" Clicked="ChangeTextColorBlue"/>
+            <MenuFlyoutItem Text="Black" Clicked="ChangeTextColorBlack"/>
+            <MenuFlyoutItem Text="Green" Clicked="ChangeTextColorGreen"/>
+         </MenuBarItem>
+        <MenuBarItem Text="Grid color">
+            <MenuFlyoutItem Text="Black" Clicked="ChangeCellColorBlack"/>
+            <MenuFlyoutItem Text="Pink" Clicked="ChangeCellColorPink"/>
+            <MenuFlyoutItem Text="White" Clicked="ChangeCellColorWhite"/>
+            <MenuFlyoutItem Text="Red" Clicked="ChangeCellColorRed"/>
+            <MenuFlyoutItem Text="Blue" Clicked="ChangeCellColorBlue"/>
+            <MenuFlyoutItem Text="Green" Clicked="ChangeCellColorGreen"/>
+        </MenuBarItem>
+        <MenuBarItem Text="Help">
+            <MenuFlyoutItem Text="Help" Clicked="HelpPopup"/>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    <Grid RowDefinitions="40, 40, *">
+        <VerticalStackLayout Padding="5" Grid.Row="0">
+            <HorizontalStackLayout Spacing="20" Padding="5" Grid.Row="1">
+                <Label x:Name = "cellName" Text="A1"></Label>
+                <Label x:Name = "cellValue" Text="Value :"></Label>
+            </HorizontalStackLayout>
+            <Entry x:Name ="cellContent" Text="" Placeholder="Enter Value Here" Completed="EnterPressed" ></Entry>
+        </VerticalStackLayout>
+        <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2" />
+    </Grid>
+</ContentPage>
+
