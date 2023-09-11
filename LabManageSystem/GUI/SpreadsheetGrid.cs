@@ -7,6 +7,7 @@ using SpreadsheetUtilities;
 using Microsoft.Maui.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Media.Devices;
+using System.Diagnostics;
 
 namespace SS;
 
@@ -34,7 +35,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
 
     // These constants control the layout of the spreadsheet grid.
     // The height and width measurements are in pixels.
-    private const int DATA_COL_WIDTH = 80;
+    private int DATA_COL_WIDTH = 80;
     private const int DATA_ROW_HEIGHT = 20;
     private const int LABEL_COL_WIDTH = 30;
     private const int LABEL_ROW_HEIGHT = 30;
@@ -461,6 +462,21 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         foreach (KeyValuePair<Address, String> address in _values)
         {
             String text = address.Value;
+            //If the data entered is bigger than the width of the data box, expand the size of the width to a certain point.
+            if (address.Value.Length >= 12)
+            {
+                if (address.Value.Length <= 15)
+                    DATA_COL_WIDTH = (int)(7.27 * address.Value.Length);
+                else
+                {
+                    DATA_COL_WIDTH = 110;
+                    text = address.Value.Substring(0, 10) + "..." + address.Value.Substring(address.Value.Length - 4);
+
+                }
+                Invalidate();
+            }
+            else
+                DATA_COL_WIDTH = 80;
             int col = address.Key.Col - _firstColumn;
             int row = address.Key.Row - _firstRow;
             SizeF size = canvas.GetStringSize(text, Font.Default, FONT_SIZE + FONT_SIZE * 1.75f);
