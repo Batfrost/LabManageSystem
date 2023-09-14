@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SpreadsheetUtilities;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic;
 using SS;
 
 namespace SS
@@ -66,7 +67,91 @@ namespace SS
             //Attempt to load the file and catch any expected exceptions while doing so, and instead throw a SpreadsheetReadWriteException.
             try
             {
-                sprdsht = JsonConvert.DeserializeObject<Spreadsheet>(File.ReadAllText(filePath));
+                //The software can accept two file types - the custom json made .sprd file, and then .csv file type (comma delimiter file)
+                if (filePath.Contains(".sprd"))
+                {
+                    sprdsht = JsonConvert.DeserializeObject<Spreadsheet>(File.ReadAllText(filePath));
+                    if (sprdsht is not null)
+                    {
+                        //Check if the version is the same
+                        if (this.version != sprdsht.Version)
+                            throw new SpreadsheetReadWriteException("The Versions of the Spreadsheet software are not the same.");
+                        //Check that for each cell, the name is valid and there are no circular exceptions.
+                        foreach (KeyValuePair<string, Cell> cell in sprdsht.cells)
+                        {
+                            try { this.SetContentsOfCell(cell.Key, cell.Value.stringForm); }
+                            catch (InvalidNameException) { throw new SpreadsheetReadWriteException("There are invalid variable names in the file."); }
+                            catch (CircularException) { throw new SpreadsheetReadWriteException("The loaded spreadsheet file's cells has a circular exception."); }
+                            catch (FormulaFormatException) { throw new SpreadsheetReadWriteException("Some of the given formulas are not valid formulas."); }
+                        }
+                    }
+                }
+                //The .csv file will have vars separated by a ',' and in normal csv format an actual ',' inside will have that var surrounded by "". 
+                //For actual vars surrounded by ", the " will have "" - double quotes.
+                else if (filePath.Contains(".csv"))
+                {
+                    //Start from a new sprdsht and add the read contents.
+                    sprdsht = new Spreadsheet();
+                    StreamReader csvReader = new StreamReader(filePath);
+                    //These vars will cycle through the cell's names
+                    char cellNameLetter = 'A';
+                    char cellNameNum = '1';
+                    string cellName = cellNameLetter + "" + cellNameNum;
+                    string line;
+                    bool commaExists = false;
+                    string temp = "";
+                    string cell;
+                    while (!csvReader.EndOfStream)
+                    {
+                        line = csvReader.ReadLine()!;
+                        //Go through the row
+                        foreach (string rawCell in line.Split(','))
+                        {
+                            cellName = cellNameLetter + "" + cellNameNum;
+                            //The double "" will actually be " in csv format, for now they will become ")~"
+                            cell = rawCell.Replace("\"\"", ")~");
+
+                            //Then if there is still a " inside this section of the cell, that means there is a ',' 
+                            //That is separating this cell and the next cell, will be checked with commaExists bool.
+                            if (cell.Contains("\"") && !commaExists)
+                            {
+                                commaExists = true;
+                                //Temp var will hold this first part of the cell without that formatted in extra "
+                                temp = cell.Replace("\"", "");
+                                continue;
+                            } else if (commaExists)
+                            {
+                                //First the " will be deleted - if there are multiple ", only the first will be removed.
+                                int t = cell.IndexOf("\"");
+                                cell = cell.Remove(t, 1);
+
+                                //Now temp will gain the ',' the cell was missing, and get the next part.
+                                temp +=  "," + cell;
+
+                                //If there is still a " in this cell part, that means there is more parts, continue to next iteration
+                                if (cell.Contains('"'))
+                                    continue;
+
+                                //This is the last part of the comma's separated cells that got split up 
+                                commaExists = false;
+                                cell = temp;
+                            }
+                            //Put back the quotes that were originally supposed to be in the cell
+                            cell = cell.Replace(")~", "\"");
+
+                            //Then add the cell to the spreadsheet
+                            this.SetContentsOfCell(cellName, cell);
+
+                            //For rows, the letter will increment. A -> B ->..., and the number will stay the same.
+                            cellNameLetter++;
+                        }
+                        //Reset the letter back to A, and increment to the next row.
+                        cellNameLetter = 'A'; 
+                        cellNameNum++;
+                        
+                    }
+                    
+                }
             }
             //IOException will catch FileNotFoundExceptions, DirectoryNotFoundExceptions, etc.
             catch (IOException)
@@ -82,35 +167,6 @@ namespace SS
                 throw new SpreadsheetReadWriteException("The given filepath is not a correct file path.");
             }
             
-
-            if (sprdsht is not null)
-            {
-                //Check if the version is the same
-                if (this.version != sprdsht.Version)
-                    throw new SpreadsheetReadWriteException("The Versions of the Spreadsheet software are not the same.");
-                //Check that for each cell, the name is valid and there are no circular exceptions.
-                foreach (KeyValuePair<string, Cell> cell in sprdsht.cells)
-                {
-                    try
-                    {
-                        this.SetContentsOfCell(cell.Key, cell.Value.stringForm);
-                    }
-                    catch (InvalidNameException)
-                    {
-                        throw new SpreadsheetReadWriteException("There are invalid variable names in the file.");
-                    }
-                    catch (CircularException)
-                    {
-                        throw new SpreadsheetReadWriteException("The loaded spreadsheet file's cells has a circular exception.");
-                    }
-                    catch (FormulaFormatException)
-                    {
-                        throw new SpreadsheetReadWriteException("Some of the given formulas are not valid formulas.");
-                    }
-
-
-                }
-            }
             //We have saved, so set Changed to false
             Changed = false;
 
@@ -364,7 +420,67 @@ namespace SS
         {
             try
             {
-                File.WriteAllText(filename, JsonConvert.SerializeObject(this));
+                if (filename.Contains(".csv"))
+                {
+                    string fileAsCSV = "";
+                    
+                    //This will hold the current cell in the coming loop.
+                    string currCell = "";
+                    //These will hold the distance between this cell and the next cell
+                    int numDist = 0;
+                    int lettDist = 0;
+
+                    //The cells dictionary can't be sorted, and the cell names should be sorted by col-row order 
+                    List<string> sortedKeys = cells.Keys.Reverse().ToList();
+                    //Reverse the keys to col-row order. A1 -> 1A
+                    for (int i = 0; i < sortedKeys.Count; i++)
+                        sortedKeys[i] = new string(sortedKeys[i].Reverse().ToArray());
+                    //Sort and then reverse back, now the keys used below will be grabbed by col-row order.
+                    sortedKeys.Sort();
+                    for (int i = 0; i < sortedKeys.Count; i++)
+                        sortedKeys[i] = new string(sortedKeys[i].Reverse().ToArray());
+
+                    //Go through all cells and add their contents as strings to fileAsCSV, separated by ','s
+                    //If any cells already contain a ",", then surround that cell with "", if a cell's contents 
+                    //already have a ", in it, put in a bonus " next to it to escape the char " in csv format.
+                    for (int i = 0; i < cells.Count; i++)
+                    {
+                        currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\"");
+                        if (currCell.Contains(',')) 
+                            currCell = "\"" + currCell + "\"";
+                        //Now that this cell's in the correct format, insert it into the file string
+                        fileAsCSV += currCell + ",";
+                        
+                        //Check if there is another cell, and if so get the distance between this cell and the next.
+                        if (i != cells.Count - 1)
+                        {
+                            numDist = int.Parse(sortedKeys[i + 1].Substring(1)) - int.Parse(sortedKeys[i].Substring(1));
+                            lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
+                        }
+                        //For this first row/the row the current cell is on, insert "," numDist-1 times
+                        for (int v = 0; v < lettDist - 1; v++)
+                            fileAsCSV += ",";
+                        
+                        //For the empty cells inbetween this cell and the next cell in the list, insert just ","
+                        for (int j = 0; j < numDist; j++)
+                        {
+                            for (int v = 0; v < lettDist - 1; v++)
+                            {
+                                fileAsCSV += ",";
+                            }
+                            //New row, new line
+                            fileAsCSV += "\n";
+                        }
+                        lettDist = 0;
+                        numDist = 0;
+                           
+                    }
+
+                    File.WriteAllText(filename, fileAsCSV);
+                }
+                   
+                else
+                    File.WriteAllText(filename, JsonConvert.SerializeObject(this));
             }
             catch (DirectoryNotFoundException)
             {
