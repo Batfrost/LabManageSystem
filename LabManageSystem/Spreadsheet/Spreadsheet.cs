@@ -283,10 +283,10 @@ namespace SS
 
                 }
                     
-                //Also check if the cell is changing from something that could be a double to something else.
+                //Also check if the cell is changing from something that could be a double to a string.
                 else if (!(data is double || data is Formula) && cellValues.ContainsKey(name))
                 {
-                    cellValues.Remove(name);
+                    cellValues[name] = data;
                     dg.ReplaceDependees(name, new List<string>(){""});
                 }
                     
@@ -297,14 +297,7 @@ namespace SS
             else if (data.ToString() != "")
             {
                 cells.Add(name, new Cell(name, data));
-                //Check if data can be evaluated down or is a double, and is not already in cellValues
-                if ((data is double || data is Formula) && !cellValues.ContainsKey(name))
-                {
-                    if (data is Formula f)
-                        cellValues.Add(name, f.Evaluate(lookup));
-                        
-                    else cellValues.Add(name, data);
-                }
+                cellValues.Add(name, data);
                     
                 
                 return;
@@ -406,11 +399,7 @@ namespace SS
             //Check if the cell is not empty
             if (cells.ContainsKey(name))
             {
-                //Then check to see if it has a value that has been evaluated
-                if (cellValues.ContainsKey(name))
-                    return cellValues[name];
-                //If not an evaluated value, then it is a string
-                return cells[name].contents;
+                return cellValues[name];
             }
             //Variable is empty - not in cells, so return "".
             return "";
@@ -503,40 +492,35 @@ namespace SS
         }
 
         /// <summary>
-        /// Will check if UID is already inside of a given spreadsheet save
-        /// </summary>
-        protected override bool CheckIfUserExists(int ID, Spreadsheet userLog)
-        {
-            if (userLog.cellValues.ContainsValue((double)ID))
-                return true;
-            return false;
-        }
-
-        /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
         /// will enter the time the user logged in and then save the file.
         /// </summary>
-        public override void LoginUser(int ID, string logFilePath)
+        public override void LoginUser(string ID, string logFilePath)
         {
+
             //Try to load the log sheet
             Spreadsheet userLog = new Spreadsheet(logFilePath, s => true, s => s.ToUpper(), "lab");
+
+            //The first char is a '0' and will become a u for their 'u'IDs
+            ID = "u" + ID.Substring(1);
 
             //Check whether user exists or not
             string cellName = "";
             bool foundEmptyCell = false;
-            if (CheckIfUserExists(ID, userLog))
+            if (userLog.cellValues.ContainsValue(ID)) 
             {
-                //Since the User already exists, find the next empty cell to the right of it (same number different letter) and log the current time.
+                //This won't throw if the User already exists, find the next empty cell to the right of it (same number different letter) and log the current time.
                 //Get the entry that has the value so we can find the key (cell name), and then get the number from the name ('1' from 'A1')
-                cellName = userLog.cellValues.First(logEntry => String.Equals(logEntry.Value, (double)ID)).Key;
+                cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
                 char cellLetter = cellName.First();
                 string cellNum = cellName.Substring(1);
                 //Then with the cell number, the next empty cell to the right can be found
-                while(cellLetter != 'Z')
+                while (cellLetter != 'Z')
                 {
                     //Increment the letter and then see if the log file at that cell is empty or not.
                     cellLetter = (char)(cellLetter + 1);
-                    if (!userLog.cells.ContainsKey(cellLetter + cellNum)) {
+                    if (!userLog.cells.ContainsKey(cellLetter + cellNum))
+                    {
                         cellName = cellLetter + cellNum;
                         foundEmptyCell = true;
                         break;
@@ -547,25 +531,33 @@ namespace SS
             }
             else
             {
+                //Since the ID isn't in the system yet, add them
                 //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
                 int cellNum = 1;
-                while (cellNum <= 100)
+                while (!foundEmptyCell)
                 {
                     if (!userLog.cells.ContainsKey("A" + cellNum))
                     {
                         cellName = "A" + cellNum;
-                        foundEmptyCell=true;
+                        foundEmptyCell = true;
                         break;
+
                     }
                     cellNum++;
                 }
-                if (!foundEmptyCell)
-                    throw new SpreadsheetReadWriteException("Log file has no more room for students. Talk to a Lab Associate for help.");
                 //Now with this cell, the User's ID will be put into this first row.
-                userLog.SetContentsOfCell(cellName, ID.ToString());
-                //Then the cell we need for the logging of the time will be the next cell to the right.
+                userLog.SetCellContents(cellName, ID);
+
+                //The user's name will be input in the next two columns to the right.
                 cellName = "B" + cellNum;
+                userLog.SetContentsOfCell(cellName, "firstName");
+                cellName = "C" + cellNum;
+                userLog.SetContentsOfCell(cellName, "lastName");
+
+                //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
+                cellName = "D" + cellNum;
             }
+            
             //Now that the cellName has been found for an empty cell, the time will be logged
             userLog.SetContentsOfCell(cellName, DateTime.Now.ToString());
 

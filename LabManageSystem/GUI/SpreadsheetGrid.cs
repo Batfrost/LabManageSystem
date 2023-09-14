@@ -1,5 +1,6 @@
 ﻿// Written by Joe Zachary and Travis Martin for CS 3500, September 2011, 2021
 // Edited by Trevor Williams and Jace Herrmann for CS 3500, October 2022.
+//Edited by Trevor Williams for use in the Senior Design Lab in MEK Bldg at the U, September 2023.
 using Font = Microsoft.Maui.Graphics.Font;
 using SizeF = Microsoft.Maui.Graphics.SizeF;
 using PointF = Microsoft.Maui.Graphics.PointF;
@@ -35,13 +36,13 @@ public class SpreadsheetGrid : ScrollView, IDrawable
 
     // These constants control the layout of the spreadsheet grid.
     // The height and width measurements are in pixels.
-    private int DATA_COL_WIDTH = 80;
+    private int dataColWidth = 80;
     private const int DATA_ROW_HEIGHT = 20;
     private const int LABEL_COL_WIDTH = 30;
     private const int LABEL_ROW_HEIGHT = 30;
     private const int PADDING = 4;
     private const int COL_COUNT = 26;
-    private const int ROW_COUNT = 99;
+    private int rowCount = 100;
     private const int FONT_SIZE = 12;
 
     // Columns and rows are numbered beginning with 0.  This is the coordinate
@@ -82,8 +83,8 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         ourFontColor = Colors.Black;
         BackgroundColor = Colors.LightGray;
         graphicsView.Drawable = this;
-        graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (ROW_COUNT + 1) * DATA_ROW_HEIGHT;
-        graphicsView.WidthRequest = LABEL_COL_WIDTH + (COL_COUNT + 1) * DATA_COL_WIDTH;
+        graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
+        graphicsView.WidthRequest = LABEL_COL_WIDTH + (COL_COUNT + 1) * dataColWidth;
         graphicsView.BackgroundColor = Colors.LightGrey;
         graphicsView.EndInteraction += OnEndInteraction;
         this.Content = graphicsView;
@@ -203,6 +204,14 @@ public class SpreadsheetGrid : ScrollView, IDrawable
                 _values[a] = sheet.GetCellValue(a.ToGridCell()).ToString();
              
         }
+        //When the last row has a data value inputted in, double the amount of rows shown.
+        if(a.Row == rowCount - 1)
+        {
+            rowCount += 100;
+            graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
+        }
+            
+        
         Invalidate();
         return true;
     }
@@ -274,7 +283,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     /// <returns>true or false depending on valid address</returns>
     private bool InvalidAddress(int col, int row)
     {
-        return col < 0 || row < 0 || col >= COL_COUNT || row >= ROW_COUNT;
+        return col < 0 || row < 0 || col >= COL_COUNT || row >= rowCount;
     }
 
     /// <summary>
@@ -293,7 +302,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     private void OnScrolled(object sender, ScrolledEventArgs e)
     {
         _scrollX = e.ScrollX;
-        _firstColumn = (int)e.ScrollX / DATA_COL_WIDTH;
+        _firstColumn = (int)e.ScrollX / dataColWidth;
         _scrollY = e.ScrollY;
         _firstRow = (int)e.ScrollY / DATA_ROW_HEIGHT;
         Invalidate();
@@ -307,10 +316,10 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     private void OnMouseClick(float eventX, float eventY)
     {
         //get x and y values of click location
-        int x = (int)(eventX - _scrollX - LABEL_COL_WIDTH) / DATA_COL_WIDTH + _firstColumn;
+        int x = (int)(eventX - _scrollX - LABEL_COL_WIDTH) / dataColWidth + _firstColumn;
         int y = (int)(eventY - _scrollY - LABEL_ROW_HEIGHT) / DATA_ROW_HEIGHT + _firstRow;
         //if mouse is clicked on a cell...
-        if (eventX > LABEL_COL_WIDTH && eventY > LABEL_ROW_HEIGHT && (x < COL_COUNT) && (y < ROW_COUNT))
+        if (eventX > LABEL_COL_WIDTH && eventY > LABEL_ROW_HEIGHT && (x < COL_COUNT) && (y < rowCount))
         {
             //set SelectedCol and SelectedRow to x and y
             _selectedCol = x;
@@ -411,17 +420,17 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         canvas.FillRectangle(
             LABEL_COL_WIDTH,
             LABEL_ROW_HEIGHT,
-            (COL_COUNT - _firstColumn) * DATA_COL_WIDTH,
-            (ROW_COUNT - _firstRow) * DATA_ROW_HEIGHT);
+            (COL_COUNT - _firstColumn) * dataColWidth,
+            (rowCount - _firstRow) * DATA_ROW_HEIGHT);
 
         // Draw the column lines
-        int bottom = LABEL_ROW_HEIGHT + (ROW_COUNT - _firstRow) * DATA_ROW_HEIGHT;
+        int bottom = LABEL_ROW_HEIGHT + (rowCount - _firstRow) * DATA_ROW_HEIGHT;
         canvas.DrawLine(0, 0, 0, bottom);
         for (int x = 0; x <= (COL_COUNT - _firstColumn); x++)
         {
             canvas.DrawLine(
-                LABEL_COL_WIDTH + x * DATA_COL_WIDTH, 0,
-                LABEL_COL_WIDTH + x * DATA_COL_WIDTH, bottom);
+                LABEL_COL_WIDTH + x * dataColWidth, 0,
+                LABEL_COL_WIDTH + x * dataColWidth, bottom);
         }
 
         // Draw the column labels
@@ -432,9 +441,9 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         }
 
         // Draw the row lines
-        int right = LABEL_COL_WIDTH + (COL_COUNT - _firstColumn) * DATA_COL_WIDTH;
+        int right = LABEL_COL_WIDTH + (COL_COUNT - _firstColumn) * dataColWidth;
         canvas.DrawLine(0, 0, right, 0);
-        for (int y = 0; y <= ROW_COUNT - _firstRow; y++)
+        for (int y = 0; y <= rowCount - _firstRow; y++)
         {
             canvas.DrawLine(
                 0, LABEL_ROW_HEIGHT + y * DATA_ROW_HEIGHT,
@@ -442,7 +451,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         }
 
         // Draw the row labels
-        for (int y = 0; y < (ROW_COUNT - _firstRow); y++)
+        for (int y = 0; y < (rowCount - _firstRow); y++)
         {
             DrawRowLabel(canvas, y,
                 (_selectedRow - _firstRow == y) ? Font.Default : Font.DefaultBold);
@@ -452,31 +461,37 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         if ((_selectedCol - _firstColumn >= 0) && (_selectedRow - _firstRow >= 0))
         {
             canvas.DrawRectangle(
-                LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1,
+                LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * dataColWidth + 1,
                               LABEL_ROW_HEIGHT + (_selectedRow - _firstRow) * DATA_ROW_HEIGHT + 1,
-                              DATA_COL_WIDTH - 2,
+                              dataColWidth - 2,
                               DATA_ROW_HEIGHT - 2);
         }
+        //Get the longest value's length, so that we can scale up the spreadsheet boxes.
+        int longestValLength = 0;
+        if (_values.Count > 0)
+        {
+            longestValLength = _values.Max(address => address.Value.Length);
+            //If the longest data is longer than 15 characters, then just put a limit at 110 for the boxes size.
+            if (longestValLength > 15)
+                dataColWidth = 110;
+            else { dataColWidth = (int)(7.27 * longestValLength); }
+        } else { dataColWidth = 80; }
+            
 
         // Draw the text
         foreach (KeyValuePair<Address, String> address in _values)
         {
             String text = address.Value;
-            //If the data entered is bigger than the width of the data box, expand the size of the width to a certain point.
-            if (address.Value.Length >= 12)
+            
+            //For data bigger than 15 characters, just shorten the data.
+            if (address.Value.Length > 15)
             {
-                if (address.Value.Length <= 15)
-                    DATA_COL_WIDTH = (int)(7.27 * address.Value.Length);
-                else
-                {
-                    DATA_COL_WIDTH = 110;
-                    text = address.Value.Substring(0, 10) + "..." + address.Value.Substring(address.Value.Length - 4);
+                dataColWidth = 110;
+                text = address.Value.Substring(0, 10) + "..." + address.Value.Substring(address.Value.Length - 4);
 
-                }
-                Invalidate();
             }
-            else
-                DATA_COL_WIDTH = 80;
+            Invalidate();
+            
             int col = address.Key.Col - _firstColumn;
             int row = address.Key.Row - _firstRow;
             SizeF size = canvas.GetStringSize(text, Font.Default, FONT_SIZE + FONT_SIZE * 1.75f);
@@ -485,7 +500,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             if (col >= 0 && row >= 0)
             {
                 canvas.DrawString(text,
-                    LABEL_COL_WIDTH + col * DATA_COL_WIDTH + PADDING,
+                    LABEL_COL_WIDTH + col * dataColWidth + PADDING,
                     LABEL_ROW_HEIGHT + row * DATA_ROW_HEIGHT + (DATA_ROW_HEIGHT - size.Height) / 2,
                     size.Width, size.Height, HorizontalAlignment.Left, VerticalAlignment.Center);
             }
@@ -506,7 +521,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         canvas.Font = f;
         canvas.FontSize = FONT_SIZE;
         canvas.DrawString(label,
-              LABEL_COL_WIDTH + x * DATA_COL_WIDTH + (DATA_COL_WIDTH - size.Width) / 2,
+              LABEL_COL_WIDTH + x * dataColWidth + (dataColWidth - size.Width) / 2,
               (LABEL_ROW_HEIGHT - size.Height) / 2, size.Width, size.Height,
               HorizontalAlignment.Center, VerticalAlignment.Center);
     }
@@ -590,9 +605,8 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         foreach(string cell in sheet.GetNamesOfAllNonemptyCells())
         {
             //Convert cellName to rows and cols
-            char[] list = cell.ToCharArray();
-            int col = ((int)char.ToUpper(list[0]) - 65);
-            int row = (int)list[1] - 49;
+            int col = cell.First() - 'A';
+            int row = int.Parse(cell.Substring(1)) - 1;
 
             //Add cells, if formulas then add "=" before content.
             object x = sheet.GetCellContents(cell);
@@ -610,7 +624,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     /// </summary>
     /// <param name="ID"></param>
     /// <param name="logFilePath"></param>
-    public void LoginUser(int ID, string logFilePath)
+    public void LoginUser(string ID, string logFilePath)
     {
         sheet.LoginUser(ID, logFilePath);
     }

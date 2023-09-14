@@ -30,7 +30,6 @@
 //                (Fall 2022)
 //
 //    Version 2.0 (Trevor Williams)   Added a new abstract method LoginUser.
-//                                    Added a new abstract method CheckIfUserExists.
 //                (September 2023)
 
 
@@ -376,15 +375,10 @@ namespace SS
         }
 
         /// <summary>
-        /// Will check if UID is already inside of a given spreadsheet save
-        /// </summary>
-        protected abstract bool CheckIfUserExists(int ID, Spreadsheet userLog);
-
-        /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
         /// will enter the time the user logged in and then save the file.
         /// </summary>
-        public abstract void LoginUser(int ID, string logFilePath);
+        public abstract void LoginUser(string ID, string logFilePath);
 
     }
 }

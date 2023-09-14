@@ -458,7 +458,7 @@ public partial class SpreadsheetPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public void LoginUser(int ID, string logFilePath)
+    public void LoginUser(string ID, string logFilePath)
     {
         spreadsheetGrid.LoginUser(ID, logFilePath);
     }
