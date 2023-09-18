@@ -464,13 +464,9 @@ public partial class SpreadsheetPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public async void LoginUser(string ID, string logFilePath)
+    public void LoginUser(string ID)
     {
-        if (saveFolder.Equals(""))
-            saveFolder = await DisplayPromptAsync("Set Save Folder", "Enter the file path to the folder you want to save in: ", "OK", "Cancel", "e.g. C:// ... /folder/", -1, null, "");
-        while (saveFolder.Equals(""))
-            { /*Wait till the save folder is given */ }
-
-        spreadsheetGrid.LoginUser(ID, saveFolder);
+        
+        spreadsheetGrid.LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv");
     }
 }

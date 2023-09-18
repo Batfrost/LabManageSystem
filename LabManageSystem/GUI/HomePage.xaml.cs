@@ -19,7 +19,7 @@ public partial class HomePage : ContentPage
 	{
 		if (UIDEntry.Text.Length == 8)
 		{
-			SprdSht.LoginUser(UIDEntry.Text, "C:\\Users\\batma\\source\\repos\\LabManageSystem\\LabManageSystem\\GUI\\LogDemo.sprd");
+			SprdSht.LoginUser(UIDEntry.Text);
             UIDEntry.Text = "";
         }
 		
