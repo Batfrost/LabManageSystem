@@ -9,6 +9,7 @@
             <MenuFlyoutItem Text="Save As" Clicked="SaveAsClicked" />
             <MenuFlyoutItem Text="New" Clicked="NewClicked" />
             <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
+            <MenuFlyoutItem Text="Save Folder" Clicked="SetSaveFolder" />
         </MenuBarItem>
         <MenuBarItem Text="Text color">
             <MenuFlyoutItem Text="Red" Clicked="ChangeTextColorRed"/>

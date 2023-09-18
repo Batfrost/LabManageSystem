@@ -99,6 +99,7 @@ namespace SS
                     string cellName = cellNameLetter + "" + cellNameNum;
                     string line;
                     bool commaExists = false;
+                    bool commaSectionDone = true;
                     string temp = "";
                     string cell;
                     while (!csvReader.EndOfStream)
@@ -118,23 +119,31 @@ namespace SS
                                 commaExists = true;
                                 //Temp var will hold this first part of the cell without that formatted in extra "
                                 temp = cell.Replace("\"", "");
+                                commaSectionDone = false;
                                 continue;
                             } else if (commaExists)
                             {
                                 //First the " will be deleted - if there are multiple ", only the first will be removed.
-                                int t = cell.IndexOf("\"");
-                                cell = cell.Remove(t, 1);
+                                if (cell.Contains("\""))
+                                {
+                                    int t = cell.IndexOf("\"");
+                                    cell = cell.Remove(t, 1);
+                                    commaSectionDone = true;
+                                }
 
                                 //Now temp will gain the ',' the cell was missing, and get the next part.
                                 temp +=  "," + cell;
 
                                 //If there is still a " in this cell part, that means there is more parts, continue to next iteration
-                                if (cell.Contains('"'))
+                                if (commaSectionDone)
+                                {
+                                    //This is the last part of the comma's separated cells that got split up 
+                                    commaExists = false;
+                                    cell = temp;
+                                } 
+                                else
                                     continue;
-
-                                //This is the last part of the comma's separated cells that got split up 
-                                commaExists = false;
-                                cell = temp;
+                                
                             }
                             //Put back the quotes that were originally supposed to be in the cell
                             cell = cell.Replace(")~", "\"");

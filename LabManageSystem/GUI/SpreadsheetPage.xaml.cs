@@ -12,6 +12,7 @@ namespace SpreadsheetGUI;
 /// </summary>
 public partial class SpreadsheetPage : ContentPage
 {
+    string saveFolder = "";
 
     /// <summary>
     /// Constructor for basic spreadsheet
@@ -278,6 +279,11 @@ public partial class SpreadsheetPage : ContentPage
         }
     }
 
+    private async void SetSaveFolder(Object sender, EventArgs e)
+    {
+        saveFolder = await DisplayPromptAsync("Set Save Folder", "Enter the file path to the folder you want to save in: ", "OK", "Cancel", "e.g. C:// ... /folder/", -1, null, "");
+    }
+
     /// <summary>
     /// when enter is pressed on the entry save the new content and update view, if invalid formula create popup and don't change
     /// </summary>
@@ -458,8 +464,13 @@ public partial class SpreadsheetPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public void LoginUser(string ID, string logFilePath)
+    public async void LoginUser(string ID, string logFilePath)
     {
-        spreadsheetGrid.LoginUser(ID, logFilePath);
+        if (saveFolder.Equals(""))
+            saveFolder = await DisplayPromptAsync("Set Save Folder", "Enter the file path to the folder you want to save in: ", "OK", "Cancel", "e.g. C:// ... /folder/", -1, null, "");
+        while (saveFolder.Equals(""))
+            { /*Wait till the save folder is given */ }
+
+        spreadsheetGrid.LoginUser(ID, saveFolder);
     }
 }
