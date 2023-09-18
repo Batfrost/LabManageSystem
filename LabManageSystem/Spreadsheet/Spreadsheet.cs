@@ -95,7 +95,7 @@ namespace SS
                     StreamReader csvReader = new StreamReader(filePath);
                     //These vars will cycle through the cell's names
                     char cellNameLetter = 'A';
-                    char cellNameNum = '1';
+                    int cellNameNum = 1;
                     string cellName = cellNameLetter + "" + cellNameNum;
                     string line;
                     bool commaExists = false;
@@ -108,7 +108,7 @@ namespace SS
                         //Go through the row
                         foreach (string rawCell in line.Split(','))
                         {
-                            cellName = cellNameLetter + "" + cellNameNum;
+                            cellName = cellNameLetter + "" + cellNameNum.ToString();
                             //The double "" will actually be " in csv format, for now they will become ")~"
                             cell = rawCell.Replace("\"\"", ")~");
 
@@ -632,6 +632,8 @@ namespace SS
             if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
                 logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
+            
+            //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
             try
             {
                 userLog = new Spreadsheet(logFilePath, s => true, s => s.ToUpper(), "lab");
@@ -650,7 +652,7 @@ namespace SS
                 bool foundEmptyCell = false;
                 if (userLog.cellValues.ContainsValue(ID))
                 {
-                    //This won't throw if the User already exists, find the next empty cell to the right of it (same number different letter) and log the current time.
+                    //Find the next empty cell to the right of it (same number different letter) and log the current time.
                     //Get the entry that has the value so we can find the key (cell name), and then get the number from the name ('1' from 'A1')
                     cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
                     char cellLetter = cellName.First();
@@ -672,7 +674,9 @@ namespace SS
                 }
                 else
                 {
-                    //Since the ID isn't in the system yet, add them
+                    //Since the ID isn't in today's log yet, search for them in a saved file full of all registered students using private helper method
+                    string[] studentInfo = GetStudentInfo(ID);
+
                     //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
                     int cellNum = 1;
                     while (!foundEmptyCell)
@@ -691,9 +695,9 @@ namespace SS
 
                     //The user's name will be input in the next two columns to the right.
                     cellName = "B" + cellNum;
-                    userLog.SetContentsOfCell(cellName, "firstName");
+                    userLog.SetContentsOfCell(cellName, studentInfo[0]);
                     cellName = "C" + cellNum;
-                    userLog.SetContentsOfCell(cellName, "lastName");
+                    userLog.SetContentsOfCell(cellName, studentInfo[1]);
 
                     //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
                     cellName = "D" + cellNum;
@@ -705,6 +709,50 @@ namespace SS
                 //Now that we've logged this user in, make sure the userLog is saved.
                 userLog.Save(logFilePath);
             }
+        }
+
+        //This private method will search through a specified file that is full of all student ID's 
+        //and if the student is registered into system, will return their first and last name
+        private string[] GetStudentInfo(string ID)
+        {
+            string[] studentInfo = new string[2];
+            studentInfo[0] = "NOT FOUND";
+            studentInfo[1] = "NOT FOUND";
+
+            Spreadsheet studentList = new();
+            try
+            {
+                studentList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+                
+                //If the student is inside the student file, then get their first and last name from the B cells.
+                if (studentList.cellValues.ContainsValue(ID))
+                {
+                    string cellName = studentList.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                    string cellNum = cellName.Substring(1);
+                    string[] temp = studentList.cellValues['B' + cellNum].ToString()!.Split(" ");
+                    //Check to see if the user entered their name in the format last, first, or first last
+                    if (temp[0].Contains(",")) {
+                        studentInfo[0] = temp[1];
+                        studentInfo[1] = temp[0].Replace(",", "");
+                    } else
+                    {
+                        studentInfo[0] = temp[0];
+                        studentInfo[1] = temp[1];
+                    }
+                    
+                }
+                
+            }
+            catch
+            { 
+                return studentInfo;
+            }
+
+
+
+            return studentInfo;
+
+            
         }
     }
 
