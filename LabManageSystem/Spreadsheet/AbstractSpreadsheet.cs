@@ -376,9 +376,9 @@ namespace SS
 
         /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
-        /// will enter the time the user logged in and then save the file.
+        /// will enter the time the user logged in and then save the file. Will return true if the student was found in the given student list file.
         /// </summary>
-        public abstract void LoginUser(string ID, string logFilePath);
+        public abstract bool LoginUser(string ID, string logFilePath);
 
     }
 }

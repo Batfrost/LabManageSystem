@@ -626,7 +626,7 @@ namespace SS
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
         /// will enter the time the user logged in and then save the file.
         /// </summary>
-        public override void LoginUser(string ID, string logFilePath)
+        public override bool LoginUser(string ID, string logFilePath)
         {
             //The log might not exist yet in this folder, so a new log will be created based off of the date
             if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
@@ -640,75 +640,83 @@ namespace SS
             }
             catch
             {
-                userLog.Save(logFilePath);
+            userLog.Save(logFilePath);
+                
             }
-            finally
+       
+            //The first char is a '0' and will become a u for their 'u'IDs
+            ID = "u" + ID.Substring(1);
+
+            //Check whether user exists or not
+            string cellName = "";
+            int cellNum = 1;
+            bool foundEmptyCell = false;
+            if (userLog.cellValues.ContainsValue(ID))
             {
-                //The first char is a '0' and will become a u for their 'u'IDs
-                ID = "u" + ID.Substring(1);
-
-                //Check whether user exists or not
-                string cellName = "";
-                bool foundEmptyCell = false;
-                if (userLog.cellValues.ContainsValue(ID))
+                //Find the next empty cell to the right of it (same number different letter) and log the current time.
+                //Get the entry that has the value so we can find the key (cell name), and then get the number from the name ('1' from 'A1')
+                cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                char cellLetter = cellName.First();
+                cellNum = int.Parse(cellName.Substring(1));
+                //Then with the cell number, the next empty cell to the right can be found
+                while (cellLetter != 'Z')
                 {
-                    //Find the next empty cell to the right of it (same number different letter) and log the current time.
-                    //Get the entry that has the value so we can find the key (cell name), and then get the number from the name ('1' from 'A1')
-                    cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
-                    char cellLetter = cellName.First();
-                    string cellNum = cellName.Substring(1);
-                    //Then with the cell number, the next empty cell to the right can be found
-                    while (cellLetter != 'Z')
+                    //Increment the letter and then see if the log file at that cell is empty or not.
+                    cellLetter = (char)(cellLetter + 1);
+                    if (!userLog.cells.ContainsKey(cellLetter + cellNum.ToString()))
                     {
-                        //Increment the letter and then see if the log file at that cell is empty or not.
-                        cellLetter = (char)(cellLetter + 1);
-                        if (!userLog.cells.ContainsKey(cellLetter + cellNum))
-                        {
-                            cellName = cellLetter + cellNum;
-                            foundEmptyCell = true;
-                            break;
-                        }
+                        cellName = cellLetter + cellNum.ToString();
+                        foundEmptyCell = true;
+                        break;
                     }
-                    if (!foundEmptyCell)
-                        throw new SpreadsheetReadWriteException("Log file full for current student, talk to a Lab Associate for help.");
                 }
-                else
-                {
-                    //Since the ID isn't in today's log yet, search for them in a saved file full of all registered students using private helper method
-                    string[] studentInfo = GetStudentInfo(ID);
-
-                    //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
-                    int cellNum = 1;
-                    while (!foundEmptyCell)
-                    {
-                        if (!userLog.cells.ContainsKey("A" + cellNum))
-                        {
-                            cellName = "A" + cellNum;
-                            foundEmptyCell = true;
-                            break;
-
-                        }
-                        cellNum++;
-                    }
-                    //Now with this cell, the User's ID will be put into this first row.
-                    userLog.SetCellContents(cellName, ID);
-
-                    //The user's name will be input in the next two columns to the right.
-                    cellName = "B" + cellNum;
-                    userLog.SetContentsOfCell(cellName, studentInfo[0]);
-                    cellName = "C" + cellNum;
-                    userLog.SetContentsOfCell(cellName, studentInfo[1]);
-
-                    //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
-                    cellName = "D" + cellNum;
-                }
-
-                //Now that the cellName has been found for an empty cell, the time will be logged
-                userLog.SetContentsOfCell(cellName, DateTime.Now.ToString());
-
-                //Now that we've logged this user in, make sure the userLog is saved.
-                userLog.Save(logFilePath);
+                if (!foundEmptyCell)
+                    throw new SpreadsheetReadWriteException("Log file full for current student, talk to a Lab Associate for help.");
             }
+            else
+            {
+                //Since the ID isn't in today's log yet, search for them in a saved file full of all registered students using private helper method
+                string[] studentInfo = GetStudentInfo(ID);
+
+                //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
+                cellNum = 1;
+                while (!foundEmptyCell)
+                {
+                    if (!userLog.cells.ContainsKey("A" + cellNum))
+                    {
+                        cellName = "A" + cellNum;
+                        foundEmptyCell = true;
+                        break;
+
+                    }
+                    cellNum++;
+                }
+                //Now with this cell, the User's ID will be put into this first row.
+                userLog.SetCellContents(cellName, ID);
+
+                //The user's name will be input in the next two columns to the right.
+                cellName = "B" + cellNum;
+                userLog.SetContentsOfCell(cellName, studentInfo[0]);
+                cellName = "C" + cellNum;
+                userLog.SetContentsOfCell(cellName, studentInfo[1]);
+
+                //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
+                cellName = "D" + cellNum;
+            }
+
+            //Now that the cellName has been found for an empty cell, the time will be logged
+            userLog.SetContentsOfCell(cellName, DateTime.Now.ToString());
+
+            //Now that we've logged this user in, make sure the userLog is saved.
+            userLog.Save(logFilePath);
+
+            cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+            cellNum = int.Parse(cellName.Substring(1));
+
+            if (!userLog.cellValues['B' + cellNum.ToString()].Equals("NOT FOUND"))
+                return true;
+            return false;
+            
         }
 
         //This private method will search through a specified file that is full of all student ID's 

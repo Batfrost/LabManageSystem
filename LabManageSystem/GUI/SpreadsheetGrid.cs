@@ -624,9 +624,9 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     /// </summary>
     /// <param name="ID"></param>
     /// <param name="logFilePath"></param>
-    public void LoginUser(string ID, string logFilePath)
+    public bool LoginUser(string ID, string logFilePath)
     {
-        sheet.LoginUser(ID, logFilePath);
+        return sheet.LoginUser(ID, logFilePath);
     }
 
 }

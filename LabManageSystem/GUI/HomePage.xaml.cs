@@ -17,10 +17,15 @@ public partial class HomePage : ContentPage
 
 	void LoginUser(object sender, EventArgs e)
 	{
+		bool studentFound = false;
 		if (UIDEntry.Text.Length == 8)
 		{
-			SprdSht.LoginUser(UIDEntry.Text);
+			studentFound = SprdSht.LoginUser(UIDEntry.Text);
             UIDEntry.Text = "";
+			if (studentFound)
+				StudentFindability.Text = "Student Found";
+			else
+				StudentFindability.Text = "Student Not Found, sign User Agreement.";
         }
 		
 	}

@@ -36,6 +36,8 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<MsPdbCmfExeFullpath>..\tools\MsPdbCmf.exe</MsPdbCmfExeFullpath>
+		<PackageCertificateThumbprint>8673E2DA9F0E7B3016CF09F35250500342249242</PackageCertificateThumbprint>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 	</PropertyGroup>
 	
 	
