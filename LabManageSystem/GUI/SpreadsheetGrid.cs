@@ -91,6 +91,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         this.Scrolled += OnScrolled;
         this.Orientation = ScrollOrientation.Both;
     }
+
     /// <summary>
     /// Changes the text color variable for drawing canvas
     /// </summary>
@@ -627,6 +628,13 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     public bool LoginUser(string ID, string logFilePath)
     {
         return sheet.LoginUser(ID, logFilePath);
+    }
+
+    //Will call sheet.GetIDList to save the list of ID's to try to prevent the issue of 
+    //multiple programs editing/checking the same file - in case someone opens up the ID list file while this program is running.
+    public bool GetIDList()
+    {
+        return sheet.GetIDList();
     }
 
 }

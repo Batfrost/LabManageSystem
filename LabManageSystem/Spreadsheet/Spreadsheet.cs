@@ -26,6 +26,7 @@ namespace SS
         private Func<string, string> normalize;
         private string version;
         private bool change;
+        private Spreadsheet? IDList;
         
 
         /// <summary>
@@ -47,6 +48,7 @@ namespace SS
             this.normalize = normalize;
             this.version = version;
             Changed = false;
+
         }
 
         /// <summary>
@@ -640,8 +642,7 @@ namespace SS
             }
             catch
             {
-            userLog.Save(logFilePath);
-                
+                userLog.Save(logFilePath);
             }
        
             //The first char is a '0' and will become a u for their 'u'IDs
@@ -726,41 +727,50 @@ namespace SS
             string[] studentInfo = new string[2];
             studentInfo[0] = "NOT FOUND";
             studentInfo[1] = "NOT FOUND";
-
-            Spreadsheet studentList = new();
-            try
+                
+            //If the student is inside the ID file, then get their first and last name from the B cells.
+            if (IDList != null && IDList.cellValues.ContainsValue(ID))
             {
-                studentList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
-                
-                //If the student is inside the student file, then get their first and last name from the B cells.
-                if (studentList.cellValues.ContainsValue(ID))
+                string cellName = IDList.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                string cellNum = cellName.Substring(1);
+                string[] temp = IDList.cellValues['B' + cellNum].ToString()!.Split(" ");
+                //Check to see if the user entered their name in the format last, first, or first last
+                if (temp[0].Contains(",")) {
+                    studentInfo[0] = temp[1];
+                    studentInfo[1] = temp[0].Replace(",", "");
+                } else
                 {
-                    string cellName = studentList.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
-                    string cellNum = cellName.Substring(1);
-                    string[] temp = studentList.cellValues['B' + cellNum].ToString()!.Split(" ");
-                    //Check to see if the user entered their name in the format last, first, or first last
-                    if (temp[0].Contains(",")) {
-                        studentInfo[0] = temp[1];
-                        studentInfo[1] = temp[0].Replace(",", "");
-                    } else
-                    {
-                        studentInfo[0] = temp[0];
-                        studentInfo[1] = temp[1];
-                    }
-                    
+                    studentInfo[0] = temp[0];
+                    studentInfo[1] = temp[1];
                 }
-                
+                    
             }
-            catch
-            { 
-                return studentInfo;
-            }
-
-
-
+          
             return studentInfo;
 
             
+        }
+
+        /// <summary>
+        /// Will attempt to save the spreadsheet filled with student ID information to the program to try to prevent the issue of 
+        /// multiple processes trying to edit/view the same file at once - such as someone looking at the ID file while this program
+        /// attempts to check it.
+        /// </summary>
+        /// <returns> 
+        /// A bool showing whether or not the ID list file was successfully saved to the program or not.
+        /// </returns>
+        public override bool GetIDList()
+        {
+            try
+            {
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+            } 
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 

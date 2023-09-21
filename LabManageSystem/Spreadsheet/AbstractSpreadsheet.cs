@@ -380,6 +380,14 @@ namespace SS
         /// </summary>
         public abstract bool LoginUser(string ID, string logFilePath);
 
+        /// <summary>
+        /// Will attempt to save the spreadsheet filled with student ID information to the program to try to prevent the issue of 
+        /// multiple processes trying to edit/view the same file at once - such as someone looking at the ID file while this program
+        /// attempts to check it.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool GetIDList();
+
     }
 }
 

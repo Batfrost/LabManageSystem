@@ -466,7 +466,16 @@ public partial class SpreadsheetPage : ContentPage
     /// <param name="e"></param>
     public bool LoginUser(string ID)
     {
-        
         return spreadsheetGrid.LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv");
+    }
+
+    /// <summary>
+    /// Attempts to save the user list of IDs to the program to try to prevent the issue when multiple processes
+    /// attempt to edit/view the same file - eg. someone has the file open when the program attempts to view it.
+    /// </summary>
+    /// <returns> a bool stating if the saving of the spreadsheet file was successful or not.</returns>
+    public bool GetIDList()
+    {
+        return spreadsheetGrid.GetIDList();
     }
 }
