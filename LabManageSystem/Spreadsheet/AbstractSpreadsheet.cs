@@ -388,6 +388,14 @@ namespace SS
         /// <returns></returns>
         public abstract bool GetIDList();
 
+        /// <summary>
+        /// Will save the user's given info they gave by signing the user agreement into the signed user file.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="name"></param>
+        /// <param name="theClass"></param>
+        public abstract void AddUsersInformation(string ID, string name, string theClass);
+
     }
 }
 

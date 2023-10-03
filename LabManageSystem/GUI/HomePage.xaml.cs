@@ -32,8 +32,14 @@ public partial class HomePage : ContentPage
 			if (studentFound)
 				StudentFindability.Text = "Student Found";
 			else
-				StudentFindability.Text = "Student Not Found, sign User Agreement.";
+				UserAgreementSigning(sender, e);
         }
 		
+	}
+
+	async void UserAgreementSigning(object sender, EventArgs e)
+	{
+		UserAgreementPage SigningPage = new UserAgreementPage();
+		await Navigation.PushAsync(SigningPage);
 	}
 }

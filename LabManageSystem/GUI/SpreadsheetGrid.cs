@@ -630,6 +630,18 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         return sheet.LoginUser(ID, logFilePath);
     }
 
+    /// <summary>
+    ///  Will add the user's given info to the signed users file by using spreadsheet's method.
+    /// </summary>
+    /// <param name="ID"></param>
+    /// <param name="name"></param>
+    /// <param name="theClass"></param>
+    /// <returns></returns>
+    public void AddUsersInformation(string ID, string name, string theClass)
+    {
+        sheet.AddUsersInformation(ID, name, theClass);
+    }
+
     //Will call sheet.GetIDList to save the list of ID's to try to prevent the issue of 
     //multiple programs editing/checking the same file - in case someone opens up the ID list file while this program is running.
     public bool GetIDList()

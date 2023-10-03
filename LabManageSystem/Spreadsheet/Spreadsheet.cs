@@ -503,9 +503,9 @@ namespace SS
             {
                 throw new SpreadsheetReadWriteException("The path the file was trying to save to does not exist.");
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                throw new SpreadsheetReadWriteException("The given filepath will not work.");
+                throw new SpreadsheetReadWriteException(e.Message);
             }
             catch (ArgumentException)
             {
@@ -679,6 +679,11 @@ namespace SS
                 //Since the ID isn't in today's log yet, search for them in a saved file full of all registered students using private helper method
                 string[] studentInfo = GetStudentInfo(ID);
 
+                //If the student doesn't exist in the user/student list, then return false, and then the user will go through
+                //the process of signing the user agreement and then after that they will have been added and this method will go again.
+                if (studentInfo[0].Equals("NOT FOUND"))
+                    return false;
+
                 //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
                 cellNum = 1;
                 while (!foundEmptyCell)
@@ -714,9 +719,8 @@ namespace SS
             cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
             cellNum = int.Parse(cellName.Substring(1));
 
-            if (!userLog.cellValues['B' + cellNum.ToString()].Equals("NOT FOUND"))
-                return true;
-            return false;
+            
+            return true;
             
         }
 
@@ -728,7 +732,7 @@ namespace SS
             studentInfo[0] = "NOT FOUND";
             studentInfo[1] = "NOT FOUND";
                 
-            //If the student is inside the ID file, then get their first and last name from the B cells.
+            //If the student is inside the ID file, then get their first and last name from the B and C cells.
             if (IDList != null && IDList.cellValues.ContainsValue(ID))
             {
                 string cellName = IDList.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
@@ -765,12 +769,62 @@ namespace SS
             {
                 IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
             } 
-            catch
+            catch (SpreadsheetReadWriteException e)
             {
-                return false;
+                if (e.Message.Equals("The file path was not able to be located."))
+                {
+                    //The File doesn't exist so lets create it.
+                    IDList = new();
+                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
+                    return true;
+                }
+                //The file exists, but other errors are still happening, this most likely means it is open by another process.
+                else
+                    return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Will save the user's given info they gave by signing the user agreement into the signed user file.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="name"></param>
+        /// <param name="theClass"></param>
+        public override void AddUsersInformation(string ID, string name, string theClass)
+        {
+            if (IDList == null)
+                GetIDList();
+
+            //The first char is a '0' and will become a u for their 'u'IDs
+            ID = "u" + ID.Substring(1);
+
+            //Check if the user has already been saved, if so just return, they've already signed agreement.
+            if (IDList!.cellValues.ContainsKey(ID))
+                return;
+
+            //User isn't in file, the next empty row will be found.
+            bool foundEmptyCell = false;
+            int cellNum = 1;
+            while (!foundEmptyCell)
+            {
+                if (!IDList.cells.ContainsKey("A" + cellNum))
+                    break;
+                
+                cellNum++;
+            }
+
+            //User will be added now. A col will be ID, B col will be the name of the user, C col will be class they are in
+            IDList.SetContentsOfCell("A" + cellNum, ID);
+            IDList.SetContentsOfCell("B" + cellNum, name);
+            IDList.SetContentsOfCell("C" + cellNum, theClass);
+
+            //Save the file
+            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
+
+            //Log the user in, since that's what they originally wanted
+            LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv");
         }
     }
 
@@ -798,7 +852,7 @@ namespace SS
             this.name = name;
             this.contents = value;
             if (value is Formula f)
-                this.stringForm = "=" + f.ToString();
+                this.stringForm = " = " + f.ToString();
             else if (value is double d)
                 this.stringForm = d.ToString();
             else  

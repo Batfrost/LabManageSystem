@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpreadsheetGUI.UserAgreementPage"
+             Title="UserAgreementPage">
+    <VerticalStackLayout>
+        <Label 
+            Text="User Agreement Needs to be signed (only once) for the user to be in the system."
+            />
+        <Label 
+            Text="A physical copy of the user agreement should be on the desk. "
+            />
+        <Label 
+            Text="This digital signing done here will count as though you've signed the physical copy."/>
+        <Entry
+            Placeholder="Enter your UID. The U will be a '0'"
+            x:Name="UIDBox"
+            />
+        <Label 
+            Text="Enter Full Name:" />
+        <Entry 
+            Placeholder="First Last"
+            x:Name="NameBox" />
+        <Label 
+            Text="What class are you in? (Or NA)"/>
+        <Picker
+            x:Name="ClassList"
+            Title="Choose Class or NA">
+            <Picker.ItemsSource>
+            <x:Array Type="{x:Type x:String}">
+                    <x:String>ME 4000</x:String>
+                    <x:String>ME 1000</x:String>
+                    <x:String>Not Available</x:String>
+            </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+        <HorizontalStackLayout>
+            <Button 
+                x:Name="CancelButton"
+                Text="Cancel"
+                Clicked="CancelSigning"/>
+            <Button 
+                x:Name="SubmitButton"
+                Text="Submit"
+                Clicked="SubmitSigning"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

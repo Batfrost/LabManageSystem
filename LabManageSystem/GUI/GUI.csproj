@@ -64,12 +64,18 @@
 	  <Compile Update="HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UserAgreementPage.xaml.cs">
+	    <DependentUpon>UserAgreementPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="SpreadsheetPage.xaml.cs">
 	    <DependentUpon>SpreadsheetPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
 	  <MauiXaml Update="HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UserAgreementPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
