@@ -3,47 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.UserAgreementPage"
              Title="UserAgreementPage">
-    <VerticalStackLayout>
+    <VerticalStackLayout
+        HorizontalOptions="CenterAndExpand"
+        Padding="25">
         <Label 
-            Text="User Agreement Needs to be signed (only once) for the user to be in the system."
-            />
+            Text="User Agreement Needs to be signed (only once) for the user to be in the system."/>
         <Label 
-            Text="A physical copy of the user agreement should be on the desk. "
-            />
+            Text="A physical copy of the user agreement should be on the desk. "/>
         <Label 
             Text="This digital signing done here will count as though you've signed the physical copy."/>
+        <Label/>
+        <Label/>
+        <Label 
+            Text="Enter your UID:"/>
         <Entry
-            Placeholder="Enter your UID. The U will be a '0'"
+            Placeholder="The U will be a '0'"
             x:Name="UIDBox"
-            />
+            WidthRequest="300"/>
+        <Label/>
         <Label 
             Text="Enter Full Name:" />
         <Entry 
             Placeholder="First Last"
-            x:Name="NameBox" />
+            x:Name="NameBox" 
+            WidthRequest="300"/>
+        <Label/>
         <Label 
             Text="What class are you in?"/>
         <Picker
             x:Name="ClassList"
-            Title="Choose Class or Other">
+            Title="Choose Class or Other"
+            HorizontalOptions="CenterAndExpand"
+            >
             <Picker.ItemsSource>
-            <x:Array Type="{x:Type x:String}">
+                <x:Array Type="{x:Type x:String}">
                     <x:String>ME 4010</x:String>
                     <x:String>ME 4000</x:String>
                     <x:String>MECH 3230</x:String>
                     <x:String>Other</x:String>
-            </x:Array>
+                </x:Array>
             </Picker.ItemsSource>
         </Picker>
-        <HorizontalStackLayout>
+        <Label/>
+        <Label/>
+        <HorizontalStackLayout
+            HorizontalOptions="CenterAndExpand">
             <Button 
                 x:Name="CancelButton"
                 Text="Cancel"
-                Clicked="CancelSigning"/>
+                Clicked="CancelSigning"
+                Margin="25"/>
+            
             <Button 
                 x:Name="SubmitButton"
                 Text="Submit"
-                Clicked="SubmitSigning"/>
+                Clicked="SubmitSigning"
+                Margin="25"/>
+
         </HorizontalStackLayout>
+        <Label/>
     </VerticalStackLayout>
 </ContentPage>
