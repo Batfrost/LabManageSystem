@@ -30,9 +30,16 @@ public partial class UserAgreementPage : ContentPage
 			await DisplayAlert("Error", "Make sure all boxes are filled out.", "Ok");
 			return;
 		}
-
-		grid.AddUsersInformation(UIDBox.Text, NameBox.Text, ClassList.SelectedItem.ToString());
-		await DisplayAlert("Success", "The user should be entered into the system now and logged, thanks.", "Ok");
-		await Navigation.PushAsync(new HomePage());
+		try
+		{
+            grid.AddUsersInformation(UIDBox.Text, NameBox.Text, ClassList.SelectedItem.ToString());
+            await DisplayAlert("Success", "The user should be entered into the system now and logged, thanks.", "Ok");
+            await Navigation.PushAsync(new HomePage());
+        } catch
+		{
+			//Most likely wasn't able to save to the file of users due to the file being currently open
+			await DisplayAlert("Failure", "There was a problem saving the user's information. \n Make sure the users file is closed and try again.", "Ok");
+		}
+		
 	}
 }

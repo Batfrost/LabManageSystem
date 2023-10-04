@@ -9,6 +9,8 @@ using SpreadsheetUtilities;
 using Newtonsoft.Json;
 using Microsoft.VisualBasic;
 using SS;
+using System.Formats.Asn1;
+using System.Xml.Linq;
 
 namespace SS
 {
@@ -775,6 +777,13 @@ namespace SS
                 {
                     //The File doesn't exist so lets create it.
                     IDList = new();
+
+                    //There will be headers for the columns in the first row:
+                    IDList.SetContentsOfCell("A1", "ID");
+                    IDList.SetContentsOfCell("B1", "Name");
+                    IDList.SetContentsOfCell("C1", "Class");
+                    IDList.SetContentsOfCell("D1", "Time Signed");
+
                     IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
                     return true;
                 }
@@ -815,10 +824,11 @@ namespace SS
                 cellNum++;
             }
 
-            //User will be added now. A col will be ID, B col will be the name of the user, C col will be class they are in
+            //User will be added now. A col will be ID, B col will be the name of the user, C col will be class they are in, D will be time of signature.
             IDList.SetContentsOfCell("A" + cellNum, ID);
             IDList.SetContentsOfCell("B" + cellNum, name);
             IDList.SetContentsOfCell("C" + cellNum, theClass);
+            IDList.SetContentsOfCell("D" + cellNum, DateTime.Now.ToString());
 
             //Save the file
             IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
