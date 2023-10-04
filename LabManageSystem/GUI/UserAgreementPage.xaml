@@ -22,15 +22,16 @@
             Placeholder="First Last"
             x:Name="NameBox" />
         <Label 
-            Text="What class are you in? (Or NA)"/>
+            Text="What class are you in?"/>
         <Picker
             x:Name="ClassList"
-            Title="Choose Class or NA">
+            Title="Choose Class or Other">
             <Picker.ItemsSource>
             <x:Array Type="{x:Type x:String}">
+                    <x:String>ME 4010</x:String>
                     <x:String>ME 4000</x:String>
-                    <x:String>ME 1000</x:String>
-                    <x:String>Not Available</x:String>
+                    <x:String>MECH 3230</x:String>
+                    <x:String>Other</x:String>
             </x:Array>
             </Picker.ItemsSource>
         </Picker>

@@ -12,7 +12,7 @@ public partial class UserAgreementPage : ContentPage
 	//When the cancel button is pressed, asks if the user is sure to cancel, and go back to homepage if they are sure.
 	async public void CancelSigning(object sender, EventArgs e)
 	{
-        string response = await DisplayActionSheet("Are you sure you wish to Cancel? Any student can sign.", "No", null, "Yes, Cancel");
+        string response = await DisplayActionSheet("Are you sure you wish to Cancel?" + "\n" +" Any student can sign.", "No", null, "Yes, Cancel");
         if (response == "Yes, Cancel")
 		{
 			await Navigation.PushAsync(new HomePage());
