@@ -652,7 +652,7 @@ namespace SS
             ID = "u" + ID.Substring(1);
 
             //Check whether user exists or not
-            string[] userInfo = new string[2];
+            string[] userInfo = new string[3];
             string cellName = "";
             int cellNum = 1;
             bool foundEmptyCell = false;
@@ -681,6 +681,7 @@ namespace SS
                 //Get this user's name from the log.
                 userInfo[0] = (string)userLog.GetCellContents("B" + cellNum.ToString());
                 userInfo[1] = (string)userLog.GetCellContents("C" + cellNum.ToString());
+                userInfo[2] = (string)userLog.GetCellContents("D" + cellNum.ToString());
             }
             else
             {
@@ -714,8 +715,11 @@ namespace SS
                 cellName = "C" + cellNum;
                 userLog.SetContentsOfCell(cellName, userInfo[1]);
 
+                //The user's class will be added in the D col
+                userLog.SetContentsOfCell("D" + cellNum, userInfo[2]);
+
                 //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
-                cellName = "D" + cellNum;
+                cellName = "E" + cellNum;
             }
 
             //Now that the cellName has been found for an empty cell, the time will be logged
@@ -736,9 +740,10 @@ namespace SS
         //and if the student is registered into system, will return their first and last name
         private string[] GetStudentInfo(string ID)
         {
-            string[] studentInfo = new string[2];
+            string[] studentInfo = new string[3];
             studentInfo[0] = "NOT FOUND";
             studentInfo[1] = "NOT FOUND";
+            studentInfo[2] = "NOT FOUND";
                 
             //If the student is inside the ID file, then get their first and last name from the B and C cells.
             if (IDList != null && IDList.cellValues.ContainsValue(ID))
@@ -755,6 +760,9 @@ namespace SS
                     studentInfo[0] = temp[0];
                     studentInfo[1] = temp[1];
                 }
+
+                //Get the class from the IDList too
+                studentInfo[2] = IDList.cellValues['C' + cellNum].ToString()!;
                     
             }
           
