@@ -34,7 +34,7 @@ public partial class UserAgreementPage : ContentPage
 		{
             grid.AddUsersInformation(UIDBox.Text, NameBox.Text, ClassList.SelectedItem.ToString());
             await DisplayAlert("Success", "The user should be entered into the system now and logged, thanks.", "Ok");
-            await Navigation.PushAsync(new HomePage());
+            await Navigation.PopAsync();
         } catch
 		{
 			//Most likely wasn't able to save to the file of users due to the file being currently open
