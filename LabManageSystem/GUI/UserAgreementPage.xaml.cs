@@ -33,7 +33,7 @@ public partial class UserAgreementPage : ContentPage
 		try
 		{
             grid.AddUsersInformation(UIDBox.Text, NameBox.Text, ClassList.SelectedItem.ToString());
-            await DisplayAlert("Success", "The user should be entered into the system now and logged, thanks.", "Ok");
+            await DisplayAlert("Success", "The user should be entered into the system now, thanks.", "Ok");
             await Navigation.PopAsync();
         } catch
 		{

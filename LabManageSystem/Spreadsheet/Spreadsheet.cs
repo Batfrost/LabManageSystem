@@ -630,7 +630,8 @@ namespace SS
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
         /// will enter the time the user logged in and then save the file.
         /// </summary>
-        public override bool LoginUser(string ID, string logFilePath)
+        /// <returns>The name of the user logging in, or NOT FOUND if user still needs to sign user agreement</returns>
+        public override string LoginUser(string ID, string logFilePath)
         {
             //The log might not exist yet in this folder, so a new log will be created based off of the date
             if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
@@ -651,6 +652,7 @@ namespace SS
             ID = "u" + ID.Substring(1);
 
             //Check whether user exists or not
+            string[] userInfo = new string[2];
             string cellName = "";
             int cellNum = 1;
             bool foundEmptyCell = false;
@@ -675,16 +677,20 @@ namespace SS
                 }
                 if (!foundEmptyCell)
                     throw new SpreadsheetReadWriteException("Log file full for current student, talk to a Lab Associate for help.");
+
+                //Get this user's name from the log.
+                userInfo[0] = (string)userLog.GetCellContents("B" + cellNum.ToString());
+                userInfo[1] = (string)userLog.GetCellContents("C" + cellNum.ToString());
             }
             else
             {
                 //Since the ID isn't in today's log yet, search for them in a saved file full of all registered students using private helper method
-                string[] studentInfo = GetStudentInfo(ID);
+                userInfo = GetStudentInfo(ID);
 
                 //If the student doesn't exist in the user/student list, then return false, and then the user will go through
                 //the process of signing the user agreement and then after that they will have been added and this method will go again.
-                if (studentInfo[0].Equals("NOT FOUND"))
-                    return false;
+                if (userInfo[0].Equals("NOT FOUND"))
+                    return "NOT FOUND";
 
                 //Since user ID wasn't found in the log file, search for the next empty cell in the A column to start populating the row.
                 cellNum = 1;
@@ -704,16 +710,16 @@ namespace SS
 
                 //The user's name will be input in the next two columns to the right.
                 cellName = "B" + cellNum;
-                userLog.SetContentsOfCell(cellName, studentInfo[0]);
+                userLog.SetContentsOfCell(cellName, userInfo[0]);
                 cellName = "C" + cellNum;
-                userLog.SetContentsOfCell(cellName, studentInfo[1]);
+                userLog.SetContentsOfCell(cellName, userInfo[1]);
 
                 //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
                 cellName = "D" + cellNum;
             }
 
             //Now that the cellName has been found for an empty cell, the time will be logged
-            userLog.SetContentsOfCell(cellName, DateTime.Now.ToString());
+            userLog.SetContentsOfCell(cellName, DateTime.Now.ToShortTimeString());
 
             //Now that we've logged this user in, make sure the userLog is saved.
             userLog.Save(logFilePath);
@@ -722,7 +728,7 @@ namespace SS
             cellNum = int.Parse(cellName.Substring(1));
 
             
-            return true;
+            return userInfo[0] + " " + userInfo[1];
             
         }
 
@@ -833,8 +839,6 @@ namespace SS
             //Save the file
             IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
 
-            //Log the user in, since that's what they originally wanted
-            LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv");
         }
     }
 

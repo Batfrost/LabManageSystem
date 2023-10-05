@@ -376,9 +376,9 @@ namespace SS
 
         /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
-        /// will enter the time the user logged in and then save the file. Will return true if the student was found in the given student list file.
+        /// will enter the time the user logged in and then save the file. Will return the name of the user.
         /// </summary>
-        public abstract bool LoginUser(string ID, string logFilePath);
+        public abstract string LoginUser(string ID, string logFilePath);
 
         /// <summary>
         /// Will attempt to save the spreadsheet filled with student ID information to the program to try to prevent the issue of 
@@ -394,6 +394,7 @@ namespace SS
         /// <param name="ID"></param>
         /// <param name="name"></param>
         /// <param name="theClass"></param>
+        /// <returns>The name of the student</returns>
         public abstract void AddUsersInformation(string ID, string name, string theClass);
 
     }

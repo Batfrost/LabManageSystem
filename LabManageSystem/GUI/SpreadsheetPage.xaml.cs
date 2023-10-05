@@ -464,7 +464,7 @@ public partial class SpreadsheetPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public bool LoginUser(string ID)
+    public string LoginUser(string ID)
     {
         return spreadsheetGrid.LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv");
     }

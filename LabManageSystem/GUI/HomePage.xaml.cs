@@ -24,12 +24,12 @@ public partial class HomePage : ContentPage
 
 	void LoginUser(object sender, EventArgs e)
 	{
-		bool studentFound = false;
+		string userName = "";
 		if (UIDEntry.Text.Length == 8)
 		{
 			try
 			{
-                studentFound = SprdSht.LoginUser(UIDEntry.Text);
+                userName = SprdSht.LoginUser(UIDEntry.Text);
             }
 			catch
 			{
@@ -39,8 +39,8 @@ public partial class HomePage : ContentPage
 			}
 			
             UIDEntry.Text = "";
-			if (studentFound)
-				StudentFindability.Text = "Student Logged in: " + DateTime.Now.ToShortTimeString();
+			if (!userName.Equals("NOT FOUND"))
+				StudentFindability.Text =  userName + " Logged in: " + DateTime.Now.ToShortTimeString();
 			else
 				UserAgreementSigning(sender, e);
         }
