@@ -27,10 +27,20 @@ public partial class HomePage : ContentPage
 		bool studentFound = false;
 		if (UIDEntry.Text.Length == 8)
 		{
-			studentFound = SprdSht.LoginUser(UIDEntry.Text);
+			try
+			{
+                studentFound = SprdSht.LoginUser(UIDEntry.Text);
+            }
+			catch
+			{
+				DisplayAlert("Failure", "There was a problem attempting to edit the log file. \n Make sure all spreadsheet files in the log folder are closed and try again.", "Ok");
+				UIDEntry.Text = "";
+				return;
+			}
+			
             UIDEntry.Text = "";
 			if (studentFound)
-				StudentFindability.Text = "Student Found";
+				StudentFindability.Text = "Student Logged in: " + DateTime.Now.ToShortTimeString();
 			else
 				UserAgreementSigning(sender, e);
         }
