@@ -450,13 +450,20 @@ namespace SS
 
                     //The cells dictionary can't be sorted, and the cell names should be sorted by col-row order 
                     List<string> sortedKeys = cells.Keys.Reverse().ToList();
-                    //Reverse the keys to col-row order. A1 -> 1A
+                    List<int> keysAsNums = new();
+                    //Move the letter to the other side: A1 -> 1A, A10 -> 10A, and convert to number format.
                     for (int i = 0; i < sortedKeys.Count; i++)
-                        sortedKeys[i] = new string(sortedKeys[i].Reverse().ToArray());
-                    //Sort and then reverse back, now the keys used below will be grabbed by col-row order.
-                    sortedKeys.Sort();
+                    {
+                        sortedKeys[i] = new string(sortedKeys[i].Substring(1) + (int)sortedKeys[i].First());
+                        keysAsNums.Add(int.Parse(sortedKeys[i]));
+                    }
+                    //Sort and then change back, now the keys used below will be grabbed by col-row order.
+                    keysAsNums.Sort();
                     for (int i = 0; i < sortedKeys.Count; i++)
-                        sortedKeys[i] = new string(sortedKeys[i].Reverse().ToArray());
+                    {
+                        char letter = (char)int.Parse(keysAsNums[i].ToString()[^2..]);
+                        sortedKeys[i] = new string(letter + keysAsNums[i].ToString()[..^2]);
+                    }
 
                     //Go through all cells and add their contents as strings to fileAsCSV, separated by ','s
                     //If any cells already contain a ",", then surround that cell with "", if a cell's contents 

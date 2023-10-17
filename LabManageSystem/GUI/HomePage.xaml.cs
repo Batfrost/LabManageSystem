@@ -8,8 +8,14 @@ public partial class HomePage : ContentPage
 		SprdSht = new SpreadsheetPage();
 		
 		InitializeComponent();
-		if (!SprdSht.GetIDList())
-			DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
+		try
+		{
+			if (!SprdSht.GetIDList())
+				DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
+		} catch (Exception ex)
+		{
+			DisplayAlert("Error", "Problem loading the file with all Users ID's. Error: \n" + ex.Message, "OK.");
+		}
 	}
 
 	async void GoToSpreadsheet(object sender, EventArgs e)
