@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.HomePage"
+             xmlns:SS="clr-namespace:SS"
              Title="Senior Design/Capstone Lab">
     <VerticalStackLayout>
         <HorizontalStackLayout>
@@ -20,7 +21,7 @@
             Text="Scan or Type in UID:"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-        
+
         <Entry 
             Placeholder="The u in the UID will be 0."
             x:Name="UIDEntry"
@@ -28,15 +29,14 @@
             WidthRequest="200"
             TextChanged="LoginUser"
             />
-        <Label />
-        <Label />
-        <Label />
         <Label 
             x:Name="StudentFindability"
             Text=""
             FontSize="23"
             VerticalOptions="CenterAndExpand"
             HorizontalOptions="CenterAndExpand"/>
+        <SS:CurrentOccupancyGrid x:Name="spreadsheetGrid" Grid.Row="2" />
         
+
     </VerticalStackLayout>
 </ContentPage>
