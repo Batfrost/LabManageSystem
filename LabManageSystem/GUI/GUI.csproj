@@ -64,6 +64,9 @@
 	  <Compile Update="HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="ManagerPage.xaml.cs">
+	    <DependentUpon>ManagerPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UserAgreementPage.xaml.cs">
 	    <DependentUpon>UserAgreementPage.xaml</DependentUpon>
 	  </Compile>
@@ -72,7 +75,16 @@
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
+	  <MauiXaml Update="CustomizationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ManagerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="StatisticsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UserAgreementPage.xaml">

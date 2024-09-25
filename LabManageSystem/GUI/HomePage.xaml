@@ -6,14 +6,14 @@
     <VerticalStackLayout>
         <HorizontalStackLayout>
             <Button 
-        Text="Spreadsheet Format"
-        x:Name="SpreadsheetButton"
+        Text="Manager Mode"
+        x:Name="ManagerMode"
         BackgroundColor="Snow"
         TextColor="Black"
         BorderColor="Black"
         HeightRequest="50"
         WidthRequest="200"
-        Clicked="GoToSpreadsheet"/>
+        Clicked="GoToManagerMode"/>
         </HorizontalStackLayout>
         
         <Label 

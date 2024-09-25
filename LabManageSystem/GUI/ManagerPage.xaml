@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpreadsheetGUI.ManagerPage"
+             Title="ManagerPage">
+    <VerticalStackLayout>
+        <Label 
+            Text="Manager View"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label/>
+        <Label/>
+        <Button 
+            Text="Get Traffic Statistics"
+            x:Name="StatsButton"
+            BackgroundColor="Snow"
+            TextColor="Black"
+            BorderColor="Black"
+            HeightRequest="50"
+            WidthRequest="200"
+            Clicked="GoToStatsPage"/>
+        <Label/>
+        <Button 
+    Text="Customization Settings"
+    x:Name="CustomizationButton"
+    BackgroundColor="Snow"
+    TextColor="Black"
+    BorderColor="Black"
+    HeightRequest="50"
+    WidthRequest="200"
+    Clicked="GoToCustomizationPage"/>
+        <Label/>
+        <Button 
+    Text="Spreadsheet Mode"
+    x:Name="SpreadsheetButton"
+    BackgroundColor="Snow"
+    TextColor="Black"
+    BorderColor="Black"
+    HeightRequest="50"
+    WidthRequest="200"
+    Clicked="GoToSpreadsheetPage"/>
+        <Label/>
+        <Button 
+    Text="Change Save Location"
+    x:Name="SaveLocationButton"
+    BackgroundColor="Snow"
+    TextColor="Black"
+    BorderColor="Black"
+    HeightRequest="50"
+    WidthRequest="200"
+    Clicked="ChangeSaveLocation"/>
+        <Label/>
+        <Button 
+    Text="Return To Home"
+    x:Name="ReturnButton"
+    BackgroundColor="Snow"
+    TextColor="Black"
+    BorderColor="Black"
+    HeightRequest="50"
+    WidthRequest="200"
+    Clicked="GoToHomePage"/>
+    </VerticalStackLayout>
+</ContentPage>

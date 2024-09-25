@@ -3,6 +3,7 @@ namespace SpreadsheetGUI;
 public partial class HomePage : ContentPage
 {
 	public SpreadsheetPage SprdSht;
+	public ManagerPage ManagerPg;
 	public HomePage()
 	{
 		SprdSht = new SpreadsheetPage();
@@ -18,13 +19,12 @@ public partial class HomePage : ContentPage
 		}
 	}
 
-	async void GoToSpreadsheet(object sender, EventArgs e)
+	async void GoToManagerMode(object sender, EventArgs e)
 	{
-		SprdSht = new SpreadsheetPage();
         if (!SprdSht.GetIDList())
             await DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
 		else
-			await Navigation.PushAsync(SprdSht);
+			await Navigation.PushAsync(new ManagerPage());
 	}
 
 

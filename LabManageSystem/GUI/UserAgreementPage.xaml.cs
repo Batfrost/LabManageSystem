@@ -15,8 +15,7 @@ public partial class UserAgreementPage : ContentPage
         string response = await DisplayActionSheet("Are you sure you wish to Cancel?" + "\n" +" Any student can sign.", "No", null, "Yes, Cancel");
         if (response == "Yes, Cancel")
 		{
-			await Navigation.PushAsync(new HomePage());
-			return;
+			await Navigation.PopAsync();
 		}
 
     }
