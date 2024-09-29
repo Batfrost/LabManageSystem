@@ -31,11 +31,14 @@
 //
 //    Version 2.0 (Trevor Williams)   Added a new abstract method LoginUser.
 //                (September 2023)
-
+//    Version 2.1 (Trevor Williams)   Added a new abstract method GatherStatistics.
+//                (September 2024)
 
 using SpreadsheetUtilities;
 using System.Text.Json;
 using Newtonsoft.Json;
+using Microcharts.Maui;
+using Microcharts;
 
 namespace SS
 {
@@ -397,6 +400,15 @@ namespace SS
         /// <returns>The name of the student</returns>
         public abstract void AddUsersInformation(string ID, string name, string theClass);
 
+        /// <summary>
+        /// Will gather statistics of lab traffic between the time duration of from and to, creating a ChartEntry list 
+        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 or 1.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public abstract ChartEntry[] GatherStatistics(String from,  String to, int mode);
     }
 }
 

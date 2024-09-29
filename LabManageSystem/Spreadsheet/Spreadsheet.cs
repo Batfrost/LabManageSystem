@@ -11,6 +11,7 @@ using Microsoft.VisualBasic;
 using SS;
 using System.Formats.Asn1;
 using System.Xml.Linq;
+using Microcharts;
 
 namespace SS
 {
@@ -854,6 +855,21 @@ namespace SS
             //Save the file
             IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
 
+        }
+
+        /// <summary>
+        /// Will gather statistics of lab traffic between the time duration of from and to, creating a ChartEntry list 
+        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 or 1.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public override ChartEntry[] GatherStatistics(String from, String to, int mode)
+        {
+            ChartEntry[] entries = null;
+
+            return entries;
         }
     }
 
