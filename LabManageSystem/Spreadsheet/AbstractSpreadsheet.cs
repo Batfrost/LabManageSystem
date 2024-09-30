@@ -408,7 +408,7 @@ namespace SS
         /// <param name="to"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public abstract ChartEntry[] GatherStatistics(String from,  String to, int mode);
+        public abstract List<ChartEntry> GatherStatistics(String from,  String to, int mode);
     }
 }
 

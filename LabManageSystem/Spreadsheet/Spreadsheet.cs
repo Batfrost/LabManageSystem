@@ -12,6 +12,9 @@ using SS;
 using System.Formats.Asn1;
 using System.Xml.Linq;
 using Microcharts;
+using System.Drawing;
+using System.Diagnostics;
+using SkiaSharp;
 
 namespace SS
 {
@@ -22,7 +25,7 @@ namespace SS
         private Dictionary<string, Cell> cells = new();
         
         private Dictionary<string, object> cellValues = new();
-        
+        private int numberOfRows = 0;
         
         private DependencyGraph dg = new ();
         private Func<string, bool> isValid;
@@ -162,6 +165,7 @@ namespace SS
                         //Reset the letter back to A, and increment to the next row.
                         cellNameLetter = 'A'; 
                         cellNameNum++;
+                        numberOfRows++;
                         
                     }
                     //Make sure to close the file after we have read all the data from it.
@@ -752,7 +756,7 @@ namespace SS
             studentInfo[0] = "NOT FOUND";
             studentInfo[1] = "NOT FOUND";
             studentInfo[2] = "NOT FOUND";
-                
+
             //If the student is inside the ID file, then get their first and last name from the B and C cells.
             if (IDList != null && IDList.cellValues.ContainsValue(ID))
             {
@@ -865,9 +869,59 @@ namespace SS
         /// <param name="to"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public override ChartEntry[] GatherStatistics(String from, String to, int mode)
+        public override List<ChartEntry> GatherStatistics(String from, String to, int mode)
         {
-            ChartEntry[] entries = null;
+            string currLogToCheck = "";
+            Spreadsheet dayToCheck;
+            List<ChartEntry> entries = new List<ChartEntry>();
+            DateTime fromDate = DateTime.Parse(from).Date;
+            DateTime toDate = DateTime.Parse(to).Date;
+            List<int> dayAvgs = new List<int>();
+            List<int> dayCounts = new List<int>(); //dayCounts[0] = 3 means 3 sundays were included, will be used for finding average.
+            DateTime dateGettingChecked = fromDate;
+            List<Color> colors = new List<Color>() { Color.Blue, Color.Plum, Color.Green, Color.Red, Color.Yellow, Color.Turquoise, Color.Orange, Color.AliceBlue, Color.BlanchedAlmond, Color.Crimson, Color.Gold, Color.Fuchsia };
+
+            if (mode == 1)
+            {
+                for(int i = 0; i < 7; i++)
+                {
+                    dayAvgs.Add(0);
+                    dayCounts.Add(0);
+                }
+            }
+            
+            int year = fromDate.Year;
+            int month = fromDate.Month;
+            int day = fromDate.Day;
+
+            for (; year <= toDate.Year; year++)
+            {
+                for (; month <= toDate.Month; month++)
+                {
+                    int tillDay = DateTime.DaysInMonth(year, month);
+                    if (month == toDate.Month)
+                        tillDay = toDate.Day;
+                    for (; day <= tillDay; day++)
+                    {
+                        dateGettingChecked = new DateTime(year, month, day);   
+                        //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
+                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
+                        try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
+                        catch { continue; }
+                        dayAvgs[(int)dateGettingChecked.DayOfWeek] += dayToCheck.numberOfRows;
+                        dayCounts[(int)dateGettingChecked.DayOfWeek]++;
+                    }
+                    day = 1;
+                }
+                month = 1;
+            }
+            
+            for (int i = 0; i < dayAvgs.Count; i++)
+            {
+                string colorsHex = "#" + colors[i].R.ToString("X2") + colors[i].G.ToString("X2") + colors[i].B.ToString("X2");
+                if (dayAvgs[i] != 0)
+                    entries.Add(new ChartEntry((float)dayAvgs[i] / (float)dayCounts[i]) { Label = Enum.GetName(typeof(DayOfWeek), i), ValueLabel = ((float)dayAvgs[i] / (float)dayCounts[i]).ToString(), Color = SKColor.Parse(colorsHex)});
+            }
 
             return entries;
         }

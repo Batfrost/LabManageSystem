@@ -2,12 +2,48 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.StatisticsPage"
-             Title="StatisticsPage">
+             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             Title="Statistics Page">
     <VerticalStackLayout>
-        <Label 
-            Text="Statistics Page"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        
+        <Label/>
+        <Label
+            Text="Get stats for duration: " HorizontalOptions="Center"/>
+        <Label/>
+        <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <Label Text="From: " Padding="25"/>
+            <DatePicker x:Name="FromDate"/>
+            <Label Text="To: " Padding="25"/>
+            <DatePicker x:Name="ToDate"/>
+        </HorizontalStackLayout>
+        <Label/>
+        <Picker
+            x:Name="ChartList"
+            Title="Choose Type of Chart For Stats"
+            HorizontalOptions="CenterAndExpand">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Pie Chart</x:String>
+                    <x:String>Bar Chart</x:String>
+                    <x:String>Line Chart</x:String>
+                    <x:String>Point Chart</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+        <Button 
+            x:Name="StatsButton"
+            Text="Get Statistics"
+            Clicked="GatherStatistics"
+            Margin="25"
+            HeightRequest="50"
+            WidthRequest="150"/>
+        <charts:ChartView x:Name="Chart" HeightRequest="300"/>
+        <Button 
+            x:Name="CancelButton"
+            Text="Cancel"
+            Clicked="ReturnToMenu"
+            Margin="25"
+            HeightRequest="50"
+            WidthRequest="150"/>
+
     </VerticalStackLayout>
 </ContentPage>

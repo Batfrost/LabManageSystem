@@ -29,12 +29,14 @@
             WidthRequest="200"
             TextChanged="LoginUser"
             />
+        <Label/>
         <Label 
             x:Name="StudentFindability"
             Text=""
             FontSize="23"
             VerticalOptions="CenterAndExpand"
             HorizontalOptions="CenterAndExpand"/>
+        <Label/>
         <SS:CurrentOccupancyGrid x:Name="spreadsheetGrid" Grid.Row="2" />
         
 

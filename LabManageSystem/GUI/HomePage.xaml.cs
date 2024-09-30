@@ -21,16 +21,14 @@ public partial class HomePage : ContentPage
 
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
-        if (!SprdSht.GetIDList())
-            await DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
-		else
-			await Navigation.PushAsync(new ManagerPage());
+		await Navigation.PushAsync(new ManagerPage());
 	}
 
 
 	void LoginUser(object sender, EventArgs e)
 	{
-		string userName = "";
+		SprdSht.GetIDList();
+        string userName = "";
 		if (UIDEntry.Text.Length == 8)
 		{
 			try
