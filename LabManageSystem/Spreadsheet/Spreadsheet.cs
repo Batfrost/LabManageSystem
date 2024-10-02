@@ -647,7 +647,7 @@ namespace SS
         {
             //The log might not exist yet in this folder, so a new log will be created based off of the date
             if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
-                logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+                logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
             
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
@@ -795,7 +795,7 @@ namespace SS
         {
             try
             {
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
             } 
             catch (SpreadsheetReadWriteException e)
             {
@@ -810,7 +810,7 @@ namespace SS
                     IDList.SetContentsOfCell("C1", "Class");
                     IDList.SetContentsOfCell("D1", "Time Signed");
 
-                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
+                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
                     return true;
                 }
                 //The file exists, but other errors are still happening, this most likely means it is open by another process.
@@ -857,8 +857,7 @@ namespace SS
             IDList.SetContentsOfCell("D" + cellNum, DateTime.Now.ToString());
 
             //Save the file
-            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\studentList.csv");
-
+            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
         }
 
         /// <summary>
@@ -905,7 +904,7 @@ namespace SS
                     {
                         dateGettingChecked = new DateTime(year, month, day);   
                         //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
-                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Log Files\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
+                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
                         try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
                         catch { continue; }
                         dayAvgs[(int)dateGettingChecked.DayOfWeek] += dayToCheck.numberOfRows;

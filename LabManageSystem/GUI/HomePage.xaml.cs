@@ -19,6 +19,8 @@ public partial class HomePage : ContentPage
 		}
 	}
 
+
+
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
 		await Navigation.PushAsync(new ManagerPage());

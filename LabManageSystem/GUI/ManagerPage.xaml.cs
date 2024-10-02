@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace SpreadsheetGUI;
 
 public partial class ManagerPage : ContentPage
@@ -28,9 +30,12 @@ public partial class ManagerPage : ContentPage
             await Navigation.PushAsync(SprdSht);
     }
 
-    async void ChangeSaveLocation(object sender, EventArgs e)
+    void OpenSaveLocation(object sender, EventArgs e)
     {
-
+        var psi = new ProcessStartInfo();
+        psi.FileName = @"c:\windows\explorer.exe";
+        psi.Arguments = @"C:\ProgramData\Log Files";
+        Process.Start(psi);
     }
 
     async void GoToHomePage(object sender, EventArgs e)

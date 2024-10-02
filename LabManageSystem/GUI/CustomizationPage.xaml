@@ -8,5 +8,12 @@
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+        <Button 
+            x:Name="CancelButton"
+            Text="Cancel"
+            Clicked="ReturnToMenu"
+            Margin="25"
+            HeightRequest="50"
+            WidthRequest="150"/>
     </VerticalStackLayout>
 </ContentPage>

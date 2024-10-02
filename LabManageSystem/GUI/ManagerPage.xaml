@@ -41,14 +41,14 @@
     Clicked="GoToSpreadsheetPage"/>
         <Label/>
         <Button 
-    Text="Change Save Location"
+    Text="Show Save Location"
     x:Name="SaveLocationButton"
     BackgroundColor="Snow"
     TextColor="Black"
     BorderColor="Black"
     HeightRequest="50"
     WidthRequest="200"
-    Clicked="ChangeSaveLocation"/>
+    Clicked="OpenSaveLocation"/>
         <Label/>
         <Button 
     Text="Return To Home"

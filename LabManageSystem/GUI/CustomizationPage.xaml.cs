@@ -6,4 +6,9 @@ public partial class CustomizationPage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    async public void ReturnToMenu(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 }
