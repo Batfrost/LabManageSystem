@@ -4,62 +4,63 @@
              x:Class="SpreadsheetGUI.StatisticsPage"
              xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Title="Statistics Page">
-    <VerticalStackLayout>
-        <Label/>
-        <Label
-            Text="Get stats for duration: " HorizontalOptions="Center"/>
-        <Label/>
-        <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="From: " Padding="25"/>
-            <DatePicker x:Name="FromDate"/>
-            <Label Text="To: " Padding="25"/>
-            <DatePicker x:Name="ToDate"/>
-        </HorizontalStackLayout>
-        <Label/>
-        <Picker
-            x:Name="ChartList"
-            Title="Choose Type of Chart For Stats"
-            HorizontalOptions="CenterAndExpand">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Pie Chart</x:String>
-                    <x:String>Bar Chart</x:String>
-                    <x:String>Line Chart</x:String>
-                    <x:String>Point Chart</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-        <Label/>
-        <Picker
-            x:Name="ModeList"
-            Title="Choose the Day of the Week for Stats: People Per Hour that day."
-            HorizontalOptions="CenterAndExpand">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Monday</x:String>
-                    <x:String>Tuesday</x:String>
-                    <x:String>Wednesday</x:String>
-                    <x:String>Thursday</x:String>
-                    <x:String>Friday</x:String>
-                    <x:String>All Weekdays - Compares Average of People Per Weekday Instead</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-        <Button 
-            x:Name="StatsButton"
-            Text="Get Statistics"
-            Clicked="GatherStatistics"
-            Margin="25"
-            HeightRequest="50"
-            WidthRequest="150"/>
-        <charts:ChartView x:Name="Chart" HeightRequest="300"/>
-        <Button 
-            x:Name="CancelButton"
-            Text="Cancel"
-            Clicked="ReturnToMenu"
-            Margin="25"
-            HeightRequest="50"
-            WidthRequest="150"/>
-
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label/>
+            <Label
+                Text="Get stats for duration: " HorizontalOptions="Center"/>
+            <Label/>
+            <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                <Label Text="From: " Padding="25"/>
+                <DatePicker x:Name="FromDate"/>
+                <Label Text="To: " Padding="25"/>
+                <DatePicker x:Name="ToDate"/>
+            </HorizontalStackLayout>
+            <Label/>
+            <Picker
+                x:Name="ChartList"
+                Title="Choose Type of Chart For Stats"
+                HorizontalOptions="CenterAndExpand">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Pie Chart</x:String>
+                        <x:String>Bar Chart</x:String>
+                        <x:String>Line Chart</x:String>
+                        <x:String>Point Chart</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            <Label/>
+            <Picker
+                x:Name="ModeList"
+                Title="Choose the Day of the Week for Stats: People Per Hour that day."
+                HorizontalOptions="CenterAndExpand">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Monday</x:String>
+                        <x:String>Tuesday</x:String>
+                        <x:String>Wednesday</x:String>
+                        <x:String>Thursday</x:String>
+                        <x:String>Friday</x:String>
+                        <x:String>All Weekdays - Compares Average of People Per Weekday Instead</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            <Button 
+                x:Name="StatsButton"
+                Text="Get Statistics"
+                Clicked="GatherStatistics"
+                Margin="25"
+                HeightRequest="50"
+                WidthRequest="150"/>
+            <charts:ChartView x:Name="Chart" HeightRequest="300"/>
+            <Button 
+                x:Name="CancelButton"
+                Text="Cancel"
+                Clicked="ReturnToMenu"
+                Margin="25"
+                HeightRequest="50"
+                WidthRequest="150"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

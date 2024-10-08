@@ -984,8 +984,12 @@ namespace SS
                 object d = dayToCheck.cellValues["E" + row++];
                 if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
                     continue;
-                avgs[time.Hour - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
-                
+                if (time.Hour - 8 >= 0 && time.Hour - 8 <= 11) //Check for people logging in before 8 AM or after 7 PM
+                    avgs[time.Hour - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
+                else if (time.Hour - 8 < 0)
+                    avgs[0]++; //Consider people that logged in at 7 to 8 AM to just have logged in at 8, since Lab technically opens at 8
+                else
+                    avgs[11]++; //People logging in after 7 will just always be considered to log in at 7. For weird cases of people logging in at 8 PM or later.
             }
             //Increment count list from 0 (8 AM) to 11 (7PM) each by one. These values will be used to find averages later, so we want to know the total number of 8 AM hours there are.
             //Example: Today and Yesterday someone logged in at 8AM ish so getting stats, total people found is 2, but this happened over two days, so on average, 2 people found / 2 8AMs = just 1 person is logged in from 8 to 9.
