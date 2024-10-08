@@ -402,7 +402,7 @@ namespace SS
 
         /// <summary>
         /// Will gather statistics of lab traffic between the time duration of from and to, creating a ChartEntry list 
-        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 or 1.
+        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 to 4 for Monday thru Friday or 5 for each week day.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>

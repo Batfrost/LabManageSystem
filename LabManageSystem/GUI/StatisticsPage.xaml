@@ -29,6 +29,22 @@
                 </x:Array>
             </Picker.ItemsSource>
         </Picker>
+        <Label/>
+        <Picker
+            x:Name="ModeList"
+            Title="Choose the Day of the Week for Stats: People Per Hour that day."
+            HorizontalOptions="CenterAndExpand">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Monday</x:String>
+                    <x:String>Tuesday</x:String>
+                    <x:String>Wednesday</x:String>
+                    <x:String>Thursday</x:String>
+                    <x:String>Friday</x:String>
+                    <x:String>All Weekdays - Compares Average of People Per Weekday Instead</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
         <Button 
             x:Name="StatsButton"
             Text="Get Statistics"

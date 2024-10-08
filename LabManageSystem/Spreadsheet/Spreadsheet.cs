@@ -15,6 +15,9 @@ using Microcharts;
 using System.Drawing;
 using System.Diagnostics;
 using SkiaSharp;
+using WinRT;
+using Windows.ApplicationModel.Email;
+using Windows.Devices.Printers;
 
 namespace SS
 {
@@ -862,7 +865,7 @@ namespace SS
 
         /// <summary>
         /// Will gather statistics of lab traffic between the time duration of from and to, creating a ChartEntry list 
-        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 or 1.
+        /// that will correspond to average amount of people on the different days of the week, or on the different hours of the day - corresponding to a mode of 0 to 4 for Monday thru Friday or 5 for each week day.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
@@ -872,20 +875,46 @@ namespace SS
         {
             string currLogToCheck = "";
             Spreadsheet dayToCheck;
+            DayOfWeek specificDay = DayOfWeek.Monday;
             List<ChartEntry> entries = new List<ChartEntry>();
             DateTime fromDate = DateTime.Parse(from).Date;
             DateTime toDate = DateTime.Parse(to).Date;
-            List<int> dayAvgs = new List<int>();
-            List<int> dayCounts = new List<int>(); //dayCounts[0] = 3 means 3 sundays were included, will be used for finding average.
+            List<int> avgs = new List<int>();
+            List<int> counts = new List<int>(); //counts[0] = 3 means 3 sundays were included in mode of 7 (all days) or 3 means 3 8:00 AMs for other modes, will be used for finding average.
             DateTime dateGettingChecked = fromDate;
             List<Color> colors = new List<Color>() { Color.Blue, Color.Plum, Color.Green, Color.Red, Color.Yellow, Color.Turquoise, Color.Orange, Color.AliceBlue, Color.BlanchedAlmond, Color.Crimson, Color.Gold, Color.Fuchsia };
-
-            if (mode == 1)
+            switch(mode)
             {
-                for(int i = 0; i < 7; i++)
+                case 0:
+                    specificDay = DayOfWeek.Monday;
+                    break;
+                case 1:
+                    specificDay = DayOfWeek.Tuesday;
+                    break;
+                case 2:
+                    specificDay = DayOfWeek.Wednesday;
+                    break;
+                case 3:
+                    specificDay = DayOfWeek.Thursday;
+                    break;
+                case 4:
+                    specificDay = DayOfWeek.Friday;
+                    break;
+                case 5:
+                    for (int i = 0; i < 7; i++)
+                    {
+                        avgs.Add(0);
+                        counts.Add(0);
+                    }
+                    break;
+            }
+
+            if (mode != 5)
+            {
+                for (int i = 0; i < 12; i++) //0 represents 8 AM, 11 represents 7 PM
                 {
-                    dayAvgs.Add(0);
-                    dayCounts.Add(0);
+                    avgs.Add(0);
+                    counts.Add(0);
                 }
             }
             
@@ -903,26 +932,66 @@ namespace SS
                     for (; day <= tillDay; day++)
                     {
                         dateGettingChecked = new DateTime(year, month, day);   
+                        if (mode == 5) { counts[(int)dateGettingChecked.DayOfWeek]++; } //Will want the total number of mondays, tuesdays, etc, even if no one logged in on those days for computing averages. Mode for all weekdays specifically
                         //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
                         currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
                         try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
                         catch { continue; }
-                        dayAvgs[(int)dateGettingChecked.DayOfWeek] += dayToCheck.numberOfRows;
-                        dayCounts[(int)dateGettingChecked.DayOfWeek]++;
+                        if (mode == 5) //Mode for all days of week
+                        { avgs[(int)dateGettingChecked.DayOfWeek] += dayToCheck.numberOfRows; }
+                        else //Mode for a specific day, (Mode != 5)
+                        {
+                            if (dateGettingChecked.DayOfWeek.Equals(specificDay))
+                                SpecificDayOfWeekStatsHelper(dayToCheck, ref avgs, ref counts); 
+                        } 
                     }
                     day = 1;
                 }
                 month = 1;
             }
             
-            for (int i = 0; i < dayAvgs.Count; i++)
+            for (int i = 0; i < avgs.Count; i++)
             {
                 string colorsHex = "#" + colors[i].R.ToString("X2") + colors[i].G.ToString("X2") + colors[i].B.ToString("X2");
-                if (dayAvgs[i] != 0)
-                    entries.Add(new ChartEntry((float)dayAvgs[i] / (float)dayCounts[i]) { Label = Enum.GetName(typeof(DayOfWeek), i), ValueLabel = ((float)dayAvgs[i] / (float)dayCounts[i]).ToString(), Color = SKColor.Parse(colorsHex)});
+                if (avgs[i] != 0)
+                    if (mode == 5)
+                        entries.Add(new ChartEntry((float)avgs[i] / (float)counts[i]) { Label = Enum.GetName(typeof(DayOfWeek), i), ValueLabel = ((float)avgs[i] / (float)counts[i]).ToString(), Color = SKColor.Parse(colorsHex)});
+                    else
+                    { 
+                        if (i + 8 < 12) //For labels of 8 AM to 11 AM
+                            entries.Add(new ChartEntry((float)avgs[i] / (float)counts[i]) { Label = (i + 8) + "AM", ValueLabel = ((float)avgs[i] / (float)counts[i]).ToString(), Color = SKColor.Parse(colorsHex) });
+                        else if (i + 8 == 12) //For label of 12 PM
+                            entries.Add(new ChartEntry((float)avgs[i] / (float)counts[i]) { Label = 12 + "PM", ValueLabel = ((float)avgs[i] / (float)counts[i]).ToString(), Color = SKColor.Parse(colorsHex) });
+                        else //For remaining labels of 1 PM to 7 PM, ex: i = 11 for 7 so i - 4 = 7
+                            entries.Add(new ChartEntry((float)avgs[i] / (float)counts[i]) { Label = (i - 4) + "PM", ValueLabel = ((float)avgs[i] / (float)counts[i]).ToString(), Color = SKColor.Parse(colorsHex) });
+                    }
             }
 
             return entries;
+        }
+
+        /// <summary>
+        /// Helper method to help figure out how many people logged in per hour from 8 AM to 7 PM
+        /// </summary>
+        /// <param name="dayToCheck"></param>
+        /// <param name="avgs"></param>
+        /// <param name="count"></param>
+        private void SpecificDayOfWeekStatsHelper(Spreadsheet dayToCheck, ref List<int> avgs, ref List<int> counts)
+        {
+            int row = 1;
+            while (dayToCheck.cells.ContainsKey("E" + row)) //Cells in E column are the ones getting set with the time.
+            {
+                object d = dayToCheck.cellValues["E" + row++];
+                if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
+                    continue;
+                avgs[time.Hour - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
+                
+            }
+            //Increment count list from 0 (8 AM) to 11 (7PM) each by one. These values will be used to find averages later, so we want to know the total number of 8 AM hours there are.
+            //Example: Today and Yesterday someone logged in at 8AM ish so getting stats, total people found is 2, but this happened over two days, so on average, 2 people found / 2 8AMs = just 1 person is logged in from 8 to 9.
+            for (int i = 0; i < 12; i++)
+                counts[i]++;
+            
         }
     }
 
