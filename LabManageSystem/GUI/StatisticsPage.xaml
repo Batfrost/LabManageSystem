@@ -23,9 +23,9 @@
                 HorizontalOptions="CenterAndExpand">
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
-                        <x:String>Pie Chart</x:String>
-                        <x:String>Bar Chart</x:String>
                         <x:String>Line Chart</x:String>
+                        <x:String>Bar Chart</x:String>
+                        <x:String>Pie Chart</x:String>
                         <x:String>Point Chart</x:String>
                     </x:Array>
                 </Picker.ItemsSource>

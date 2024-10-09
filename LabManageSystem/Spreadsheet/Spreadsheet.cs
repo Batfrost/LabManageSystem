@@ -1080,7 +1080,6 @@ namespace SS
                     if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
                         continue;
                     times.Add(time);
-                    Debug.WriteLine(time.ToString());
                     cellLetter = (char)(cellLetter + 1);
                 }
 
@@ -1091,7 +1090,6 @@ namespace SS
                 {
                     int logInTime = times[i].Hour;
                     int logOutTime = logInTime + 2; //If user forgot to log out manually, software will consider them as having logged out after staying 2 hours --> a guess at the average amount of time people usually stay in lab.
-                    Debug.WriteLine(logInTime + " " + logOutTime);
                     if (i + 1 < times.Count)
                         logOutTime = times[i + 1].Hour;
 
