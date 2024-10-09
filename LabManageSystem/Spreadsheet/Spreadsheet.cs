@@ -1058,20 +1058,53 @@ namespace SS
         /// <param name="dayToCheck"></param>
         /// <param name="avgs"></param>
         /// <param name="count"></param>
-        private void SpecificDayOfWeekStatsHelper(Spreadsheet dayToCheck, ref List<int> avgs, ref List<int> counts)
+        private static void SpecificDayOfWeekStatsHelper(Spreadsheet dayToCheck, ref List<int> avgs, ref List<int> counts)
         {
             int row = 1;
+            char cellLetter;
+            int cellNum;
+            List<DateTime> times = new List<DateTime>();
+
             while (dayToCheck.cells.ContainsKey("E" + row)) //Cells in E column are the ones getting set with the time.
             {
-                object d = dayToCheck.cellValues["E" + row++];
-                if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
+                
+
+                string cellName = "E" + row++;
+                cellLetter = cellName.First();
+                cellNum = int.Parse(cellName.Substring(1));
+                //For each hour within the time the user has logged in, update stats. This loop gets the time Users are logged in for.
+                while (dayToCheck.cells.ContainsKey(cellLetter + cellNum.ToString()))
+                {
+
+                    object d = dayToCheck.cellValues[cellLetter + cellNum.ToString()];
+                    if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
+                        continue;
+                    times.Add(time);
+
+                    cellLetter = (char)(cellLetter + 1);
+                }
+
+                if (times.Count == 0)
                     continue;
-                if (time.Hour - 8 >= 0 && time.Hour - 8 <= 11) //Check for people logging in before 8 AM or after 7 PM
-                    avgs[time.Hour - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
-                else if (time.Hour - 8 < 0)
-                    avgs[0]++; //Consider people that logged in at 7 to 8 AM to just have logged in at 8, since Lab technically opens at 8
-                else
-                    avgs[11]++; //People logging in after 7 will just always be considered to log in at 7. For weird cases of people logging in at 8 PM or later.
+                
+                for (int i = 0; i < times.Count; i+=2)
+                {
+                    int logInTime = times[i].Hour;
+                    int logOutTime = logInTime + 2; //If user forgot to log out manually, software will consider them as having logged out after staying 2 hours --> a guess at the average amount of time people usually stay in lab.
+                    if (i + 1 < times.Count)
+                        logOutTime = times[i + 1].Hour;
+
+                    while (logInTime != logOutTime + 1)
+                    {
+                        if (logInTime - 8 >= 0 && logInTime - 8 <= 11) //Check for people logging in before 8 AM or after 7 PM
+                            avgs[logInTime - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
+                        else if (logInTime - 8 < 0)
+                            avgs[0]++; //Consider people that logged in at 7 to 8 AM to just have logged in at 8, since Lab technically opens at 8
+                        else
+                            avgs[11]++; //People logging in after 7 will just always be considered to log in at 7. For weird cases of people logging in at 8 PM or later.
+                        logInTime++;
+                    }
+                }
             }
             //Increment count list from 0 (8 AM) to 11 (7PM) each by one. These values will be used to find averages later, so we want to know the total number of 8 AM hours there are.
             //Example: Today and Yesterday someone logged in at 8AM ish so getting stats, total people found is 2, but this happened over two days, so on average, 2 people found / 2 8AMs = just 1 person is logged in from 8 to 9.
