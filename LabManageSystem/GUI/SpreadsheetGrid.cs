@@ -649,4 +649,8 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         return sheet.GetIDList();
     }
 
+    public Spreadsheet GetCurrentlyLoggedIn()
+    {
+        return sheet.GetCurrentlyLoggedInSpreadsheet();
+    }
 }

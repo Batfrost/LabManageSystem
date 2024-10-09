@@ -380,6 +380,7 @@ namespace SS
         /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
         /// will enter the time the user logged in and then save the file. Will return the name of the user.
+        /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
         public abstract string LoginUser(string ID, string logFilePath);
 
@@ -409,6 +410,11 @@ namespace SS
         /// <param name="mode"></param>
         /// <returns></returns>
         public abstract List<ChartEntry> GatherStatistics(String from,  String to, int mode);
+
+        /// <summary>
+        /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
+        /// </summary>
+        public abstract Spreadsheet GetCurrentlyLoggedInSpreadsheet();
     }
 }
 

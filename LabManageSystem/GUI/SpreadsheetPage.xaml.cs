@@ -478,4 +478,9 @@ public partial class SpreadsheetPage : ContentPage
     {
         return spreadsheetGrid.GetIDList();
     }
+
+    public Spreadsheet GetCurrentlyLoggedIn()
+    {
+        return spreadsheetGrid.GetCurrentlyLoggedIn();
+    }
 }

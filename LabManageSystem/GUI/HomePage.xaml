@@ -4,41 +4,49 @@
              x:Class="SpreadsheetGUI.HomePage"
              xmlns:SS="clr-namespace:SS"
              Title="Senior Design/Capstone Lab">
-    <VerticalStackLayout>
-        <HorizontalStackLayout>
-            <Button 
-        Text="Manager Mode"
-        x:Name="ManagerMode"
-        BackgroundColor="Snow"
-        TextColor="Black"
-        BorderColor="Black"
-        HeightRequest="50"
-        WidthRequest="200"
-        Clicked="GoToManagerMode"/>
-        </HorizontalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout>
+            <HorizontalStackLayout>
+                <Button 
+                    Text="Manager Mode"
+                    x:Name="ManagerMode"
+                    BackgroundColor="Snow"
+                    TextColor="Black"
+                    BorderColor="Black"
+                    HeightRequest="50"
+                    WidthRequest="200"
+                    Clicked="GoToManagerMode"/>
+            </HorizontalStackLayout>
         
-        <Label 
-            Text="Scan or Type in UID:"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+            <Label 
+                Text="Scan or Type in UID to Check In:"
+                FontSize="20"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
 
-        <Entry 
-            Placeholder="The u in the UID will be 0."
-            x:Name="UIDEntry"
-            MaxLength="8"
-            WidthRequest="200"
-            TextChanged="LoginUser"
+            <Entry 
+                Placeholder="The u in the UID will be 0."
+                x:Name="UIDEntry"
+                MaxLength="8"
+                WidthRequest="200"
+                TextChanged="LoginUser"
             />
-        <Label/>
-        <Label 
-            x:Name="StudentFindability"
-            Text=""
-            FontSize="23"
-            VerticalOptions="CenterAndExpand"
-            HorizontalOptions="CenterAndExpand"/>
-        <Label/>
-        <SS:CurrentOccupancyGrid x:Name="spreadsheetGrid" Grid.Row="2" />
-        
-
-    </VerticalStackLayout>
+            <Label/>
+            <Label 
+                x:Name="StudentFindability"
+                Text=""
+                FontSize="23"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"/>
+            <Label/>
+            <Label/>
+            <Label 
+                Text="Currently Checked In: " 
+                FontSize="20"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"/>
+            <Label/>
+            <SS:CurrentOccupancyGrid x:Name="currentlyLoggedIn"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

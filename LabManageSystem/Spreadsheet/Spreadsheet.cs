@@ -36,6 +36,7 @@ namespace SS
         private string version;
         private bool change;
         private Spreadsheet? IDList;
+        public Spreadsheet? CurrentlyLoggedIn;
         
 
         /// <summary>
@@ -643,11 +644,13 @@ namespace SS
 
         /// <summary>
         /// Will take in UID, and check if user exists using helper method above, if user doesn't exist will add user to given save file, 
-        /// will enter the time the user logged in and then save the file.
+        /// will enter the time the user logged in and then save the file. Will return the name of the user.
+        /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
         /// <returns>The name of the user logging in, or NOT FOUND if user still needs to sign user agreement</returns>
         public override string LoginUser(string ID, string logFilePath)
         {
+            
             //The log might not exist yet in this folder, so a new log will be created based off of the date
             if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
                 logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
@@ -671,6 +674,11 @@ namespace SS
             string cellName = "";
             int cellNum = 1;
             bool foundEmptyCell = false;
+            //These next vals will be used for the CurrentlyLoggedIn Spreadsheet.
+            bool SomeoneIsLoggingOut = false;
+            string cName = "";
+            int cNum = 1;
+
             if (userLog.cellValues.ContainsValue(ID))
             {
                 //Find the next empty cell to the right of it (same number different letter) and log the current time.
@@ -678,6 +686,8 @@ namespace SS
                 cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
                 char cellLetter = cellName.First();
                 cellNum = int.Parse(cellName.Substring(1));
+                int logCount = 0; //Check how many times the user has used this method, if its even this is a new log in (they've already logged in and then logged out in a pair), odd means they are logging out.
+
                 //Then with the cell number, the next empty cell to the right can be found
                 while (cellLetter != 'Z')
                 {
@@ -685,11 +695,15 @@ namespace SS
                     cellLetter = (char)(cellLetter + 1);
                     if (!userLog.cells.ContainsKey(cellLetter + cellNum.ToString()))
                     {
+                        
                         cellName = cellLetter + cellNum.ToString();
                         foundEmptyCell = true;
                         break;
                     }
+                    if (DateTime.TryParse((string)userLog.cellValues[cellLetter + cellNum.ToString()], out DateTime res))
+                        logCount++;
                 }
+
                 if (!foundEmptyCell)
                     throw new SpreadsheetReadWriteException("Log file full for current student, talk to a Lab Associate for help.");
 
@@ -697,6 +711,9 @@ namespace SS
                 userInfo[0] = (string)userLog.GetCellContents("B" + cellNum.ToString());
                 userInfo[1] = (string)userLog.GetCellContents("C" + cellNum.ToString());
                 userInfo[2] = (string)userLog.GetCellContents("D" + cellNum.ToString());
+                if (logCount % 2 == 1)
+                    SomeoneIsLoggingOut = true;
+                else SomeoneIsLoggingOut = false;
             }
             else
             {
@@ -721,20 +738,23 @@ namespace SS
                     }
                     cellNum++;
                 }
+
                 //Now with this cell, the User's ID will be put into this first row.
                 userLog.SetCellContents(cellName, ID);
-
+                
                 //The user's name will be input in the next two columns to the right.
                 cellName = "B" + cellNum;
                 userLog.SetContentsOfCell(cellName, userInfo[0]);
+                
                 cellName = "C" + cellNum;
                 userLog.SetContentsOfCell(cellName, userInfo[1]);
-
+                
                 //The user's class will be added in the D col
                 userLog.SetContentsOfCell("D" + cellNum, userInfo[2]);
-
+                
                 //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
                 cellName = "E" + cellNum;
+                SomeoneIsLoggingOut = false;
             }
 
             //Now that the cellName has been found for an empty cell, the time will be logged
@@ -743,12 +763,46 @@ namespace SS
             //Now that we've logged this user in, make sure the userLog is saved.
             userLog.Save(logFilePath);
 
-            cellName = userLog.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
-            cellNum = int.Parse(cellName.Substring(1));
+            //Update CurrentlyLoggedIn depending on if this attempt was a log in or a log out.
+            if (SomeoneIsLoggingOut)
+            {
+                cName = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                char cLetter = cName.First();
+                cNum = int.Parse(cName.Substring(1));
 
-            
-            return userInfo[0] + " " + userInfo[1];
-            
+                while (cLetter != 'F') //Go from A to E, since that's all the currentlyLoggedIn spreadsheet holds.
+                {
+                    CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
+                    cLetter = (char)(cLetter + 1);
+                    cName = cLetter + cNum.ToString();
+                }
+            }
+            else
+            {
+                //Find next empty line in CurrentlyLoggedIn Spreadsheet.
+                cNum = 2;
+                while (true)
+                {
+                    if (!CurrentlyLoggedIn!.cells.ContainsKey("A" + cNum))
+                    {
+                        cName = "A" + cNum;
+                        break;
+                    }
+                    cNum++;
+                }
+
+                CurrentlyLoggedIn!.SetCellContents("A" + cNum, ID);
+                CurrentlyLoggedIn!.SetContentsOfCell("B" + cNum, userInfo[0]);
+                CurrentlyLoggedIn!.SetContentsOfCell("C" + cNum, userInfo[1]);
+                CurrentlyLoggedIn!.SetContentsOfCell("D" + cNum, userInfo[2]);
+                CurrentlyLoggedIn!.SetContentsOfCell("E" + cNum, DateTime.Now.ToShortTimeString());
+            }
+
+            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+
+            if (SomeoneIsLoggingOut) 
+                return userInfo[0] + " " + userInfo[1] + " Logged out: ";
+            return userInfo[0] + " " + userInfo[1] + " Logged in: ";
         }
 
         //This private method will search through a specified file that is full of all student ID's 
@@ -822,6 +876,34 @@ namespace SS
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
+        /// </summary>
+        public override Spreadsheet GetCurrentlyLoggedInSpreadsheet()
+        {
+            Spreadsheet todaysLog;
+            try 
+            {
+                //If a log for today exists, then a CurrentlyLoggedIn spreadsheet will also exist.
+                todaysLog = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv", s => true, s => s.ToUpper(), "lab");
+                CurrentlyLoggedIn = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv", s => true, s => s.ToUpper(), "lab");
+            }
+            catch
+            {
+                //Possible that CurrentlyLoggedIn already exists, but will be reset daily once software boots.
+                CurrentlyLoggedIn = new();
+
+                //There will be headers for the columns in the first row:
+                CurrentlyLoggedIn.SetContentsOfCell("A1", "ID:");
+                CurrentlyLoggedIn.SetContentsOfCell("B1", "First Name:");
+                CurrentlyLoggedIn.SetContentsOfCell("C1", "Last Name:");
+                CurrentlyLoggedIn.SetContentsOfCell("D1", "Class:");
+                CurrentlyLoggedIn.SetContentsOfCell("E1", "Time Logged In:");
+                CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+            }
+            return CurrentlyLoggedIn;
         }
 
         /// <summary>

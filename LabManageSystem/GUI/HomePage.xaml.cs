@@ -1,3 +1,5 @@
+using SS;
+
 namespace SpreadsheetGUI;
 
 public partial class HomePage : ContentPage
@@ -9,7 +11,10 @@ public partial class HomePage : ContentPage
 		SprdSht = new SpreadsheetPage();
 		
 		InitializeComponent();
-		try
+        SprdSht.GetCurrentlyLoggedIn();
+        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+
+        try
 		{
 			if (!SprdSht.GetIDList())
 				DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
@@ -30,6 +35,8 @@ public partial class HomePage : ContentPage
 	void LoginUser(object sender, EventArgs e)
 	{
 		SprdSht.GetIDList();
+        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+
         string userName = "";
 		if (UIDEntry.Text.Length == 8)
 		{
@@ -46,12 +53,15 @@ public partial class HomePage : ContentPage
 			
             UIDEntry.Text = "";
 			if (!userName.Equals("NOT FOUND"))
-				StudentFindability.Text =  userName + " Logged in: " + DateTime.Now.ToShortTimeString();
-			else
+				StudentFindability.Text = userName + DateTime.Now.ToShortTimeString();
+            else
 				UserAgreementSigning(sender, e);
         }
-		
-	}
+
+		//currentlyLoggedIn = new CurrentOccupancyGrid();
+
+
+    }
 
 	async void UserAgreementSigning(object sender, EventArgs e)
 	{
