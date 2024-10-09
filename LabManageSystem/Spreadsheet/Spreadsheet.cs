@@ -1063,12 +1063,12 @@ namespace SS
             int row = 1;
             char cellLetter;
             int cellNum;
-            List<DateTime> times = new List<DateTime>();
+            List<DateTime> times;
 
             while (dayToCheck.cells.ContainsKey("E" + row)) //Cells in E column are the ones getting set with the time.
             {
-                
 
+                times = new List<DateTime>();
                 string cellName = "E" + row++;
                 cellLetter = cellName.First();
                 cellNum = int.Parse(cellName.Substring(1));
@@ -1080,7 +1080,7 @@ namespace SS
                     if (DateTime.TryParse(d.ToString(), out DateTime time) == false)
                         continue;
                     times.Add(time);
-
+                    Debug.WriteLine(time.ToString());
                     cellLetter = (char)(cellLetter + 1);
                 }
 
@@ -1091,10 +1091,11 @@ namespace SS
                 {
                     int logInTime = times[i].Hour;
                     int logOutTime = logInTime + 2; //If user forgot to log out manually, software will consider them as having logged out after staying 2 hours --> a guess at the average amount of time people usually stay in lab.
+                    Debug.WriteLine(logInTime + " " + logOutTime);
                     if (i + 1 < times.Count)
                         logOutTime = times[i + 1].Hour;
 
-                    while (logInTime != logOutTime + 1)
+                    while (logInTime != logOutTime + 1 && logInTime != 8)
                     {
                         if (logInTime - 8 >= 0 && logInTime - 8 <= 11) //Check for people logging in before 8 AM or after 7 PM
                             avgs[logInTime - 8]++; //Minus 8 since time.Hour will give hour of day from 0 to 23, so 12 AM = 0, 8 AM = 8 - 8 = 0 --> avgs[0] will represent 8 AM.
