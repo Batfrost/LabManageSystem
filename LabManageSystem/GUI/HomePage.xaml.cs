@@ -1,4 +1,6 @@
 using SS;
+using System.ComponentModel;
+using Sett;
 
 namespace SpreadsheetGUI;
 
@@ -6,11 +8,21 @@ public partial class HomePage : ContentPage
 {
 	public SpreadsheetPage SprdSht;
 	public ManagerPage ManagerPg;
+	private Settings Settings;
+
 	public HomePage()
 	{
 		SprdSht = new SpreadsheetPage();
-		
 		InitializeComponent();
+		try
+		{
+			Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+		} 
+		catch //If an exception occurs, the Settings file is not detected or somethings wrong with the file, so User will be asked to create new settings.
+		{
+			Navigation.PushAsync(new EstablishSettingsPage(ref Settings));
+        }
+
         SprdSht.GetCurrentlyLoggedIn();
         currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
 
@@ -18,17 +30,16 @@ public partial class HomePage : ContentPage
 		{
 			if (!SprdSht.GetIDList())
 				DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
-		} catch (Exception ex)
-		{
-			DisplayAlert("Error", "Problem loading the file with all Users ID's. Error: \n" + ex.Message, "OK.");
-		}
+		} catch (Exception ex){ DisplayAlert("Error", "Problem loading the file with all Users ID's. Error: \n" + ex.Message, "OK."); }
 	}
 
 
 
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
-		await Navigation.PushAsync(new ManagerPage());
+        if (Settings.TestPassword(ManagerPasswordEntry.Text))
+			await Navigation.PushAsync(new ManagerPage());
+		else await DisplayAlert("Error", "Incorrect Password", "Ok");
 	}
 
 

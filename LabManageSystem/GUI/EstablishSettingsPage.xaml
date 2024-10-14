@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpreadsheetGUI.EstablishSettingsPage"
+             Title="EstablishSettingsPage">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Welcome to the Logging Software."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                FontSize="25"/>
+            <Label/>
+            <Label/>
+            <Label/>
+            <Label
+                Text="First, a password needs to be created."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="This Password will be used to enter a Manager Mode, a mode which"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="lets you view statistics, customize these settings, show log file save location, etc."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label/>
+            <Entry 
+                x:Name="PasswordEntry"
+                IsPassword="True"
+                Placeholder="Enter Password: "
+                HeightRequest="50"
+                WidthRequest="200"/>
+            <Label 
+                Text="Confirm Password: "
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Entry 
+                x:Name="ConfirmPasswordEntry"
+                IsPassword="True"
+                Placeholder="Enter Password: "
+                HeightRequest="50"
+                WidthRequest="200"/>
+            <Label/>
+            <Label 
+                Text=""
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text=""
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Button 
+                Text="Confirm Settings"
+                x:Name="ConfirmationButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="ConfirmSettingsAndGoHome"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

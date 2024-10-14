@@ -63,6 +63,7 @@
 	  <PackageReference Include="Microcharts.Maui" Version="1.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\Settings\Settings.csproj" />
 	  <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj" />
 	</ItemGroup>
 	<ItemGroup>
@@ -81,6 +82,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <MauiXaml Update="CustomizationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="EstablishSettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="HomePage.xaml">

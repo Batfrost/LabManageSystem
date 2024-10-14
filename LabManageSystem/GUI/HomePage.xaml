@@ -6,18 +6,28 @@
              Title="Senior Design/Capstone Lab">
     <ScrollView>
         <VerticalStackLayout>
-            <HorizontalStackLayout>
-                <Button 
-                    Text="Manager Mode"
-                    x:Name="ManagerMode"
-                    BackgroundColor="Snow"
-                    TextColor="Black"
-                    BorderColor="Black"
-                    HeightRequest="50"
-                    WidthRequest="200"
-                    Clicked="GoToManagerMode"/>
-            </HorizontalStackLayout>
-        
+            
+            <Label Text="Enter Password For Manager Mode: "/>
+            <Entry 
+                x:Name="ManagerPasswordEntry"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                HeightRequest="30"
+                WidthRequest="200"
+                Placeholder="Password"
+                IsPassword="True"
+                HorizontalOptions="StartAndExpand"/>
+            <Button 
+                Text="Manager Mode"
+                x:Name="ManagerMode"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToManagerMode"
+                HorizontalOptions="StartAndExpand"/>
+
             <Label 
                 Text="Scan or Type in UID to Check In:"
                 FontSize="20"
