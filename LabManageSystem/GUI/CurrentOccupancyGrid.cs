@@ -9,18 +9,10 @@ using Microsoft.Maui.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Media.Devices;
 using System.Diagnostics;
+using Sett;
 
 namespace SS;
 
-/// <summary>
-/// A grid that displays a spreadsheet with 26 columns (labeled A-Z) and 99 rows
-/// (labeled 1-99).  Each cell on the grid can display a non-editable string.  One 
-/// of the cells is always selected (and highlighted).  When the selection changes, a 
-/// SelectionChanged event is fired.  Clients can register to be notified of
-/// such events.
-/// 
-/// None of the cells are editable.  They are for display purposes only.
-/// </summary>
 public class CurrentOccupancyGrid : ScrollView, IDrawable
 {
 
@@ -29,9 +21,11 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
     private int dataColWidth = 150;
     private const int DATA_ROW_HEIGHT = 35;
     private const int PADDING = 4;
-    private const int COL_COUNT = 5;
+    private Settings Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+
+    private int COL_COUNT = 1;
     private int rowCount = 100;
-    private const int FONT_SIZE = 20;
+    private const int FONT_SIZE = 15;
 
 
     // Coordinate of cell in upper-left corner of display
@@ -52,13 +46,15 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
     //backing spreadsheet for the grid
     private AbstractSpreadsheet sheet = new Spreadsheet(s => true, s => s.ToUpper(), "lab");
 
-    //File path for saving spreadsheet.
-    public string FilePath = null;
     /// <summary>
-    /// create basic spreadsheet grid with 99 rows and 26 columns and having a vertical and horizontal scroll bar
+    /// Creates a grid that will display info from who is currently logged into the software.
+    /// Will show specific special info fields as well.
     /// </summary>
     public CurrentOccupancyGrid()
     {
+        Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
+        List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
+        COL_COUNT = 4 + SpecialFieldsList.Count; //ID, First Name, Last Name, time logged in, plus special visible fields User wants.
         graphicsView.Drawable = this;
         graphicsView.HeightRequest = (rowCount) * DATA_ROW_HEIGHT;
         graphicsView.WidthRequest = (COL_COUNT) * dataColWidth;
@@ -66,7 +62,6 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
         this.Content = graphicsView;
         this.Scrolled += OnScrolled;
         this.Orientation = ScrollOrientation.Both;
-        sheet = sheet.GetCurrentlyLoggedInSpreadsheet();
     }
 
     /// <summary>
@@ -188,7 +183,7 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
     /// <summary>
     /// inform the graphics view it needs to be redrawn
     /// </summary>
-    private void Invalidate()
+    public void Invalidate()
     {
         graphicsView.Invalidate();
     }
@@ -286,13 +281,25 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
         foreach (KeyValuePair<Address, String> address in _values)
         {
             String text = address.Value;
-
-            //For data bigger than 15 characters, just shorten the data.
-            if (address.Value.Length > 15)
+            //Get the longest value's length, so that we can scale up the spreadsheet boxes.
+            int longestValLength = 0;
+            if (_values.Count > 0)
             {
-                text = address.Value.Substring(0, 10) + "..." + address.Value.Substring(address.Value.Length - 4);
+                longestValLength = _values.Max(address => address.Value.Length);
+                //If the longest data is longer than 20 characters, then just put a limit at 200 for the boxes size.
+                if (longestValLength > 20)
+                    dataColWidth = 200;
+                else { dataColWidth = (int)(8 * longestValLength); }
+            }
+            else { dataColWidth = 150; }
+            //For data bigger than 20 characters, just shorten the data.
+            if (address.Value.Length > 20)
+            {
+                text = address.Value.Substring(0, 15) + "..." + address.Value.Substring(address.Value.Length - 4);
             }
             Invalidate();
+            graphicsView.HeightRequest = (rowCount) * DATA_ROW_HEIGHT;
+            graphicsView.WidthRequest = (COL_COUNT) * dataColWidth;
 
             int col = address.Key.Col - _firstColumn;
             int row = address.Key.Row - _firstRow;
@@ -360,7 +367,5 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
             else
                 this.SetValue(col, row, sheet.GetCellContents(cell).ToString());
         }
-
-        FilePath = filePath;
     }
 }

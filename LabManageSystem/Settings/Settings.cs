@@ -58,6 +58,8 @@ namespace Sett
             if (!System.IO.Directory.Exists(filePath))
                 System.IO.Directory.CreateDirectory(filePath.Substring(0, filePath.LastIndexOf('\\')));
             string fileContents = EncryptText(JsonConvert.SerializeObject(this));
+            //fileContents += "&$&";
+            //fileContents += EncryptText(JsonConvert.SerializeObject())
             System.IO.File.WriteAllText(filePath, fileContents);
             System.IO.File.Encrypt(filePath);
         }
@@ -83,7 +85,7 @@ namespace Sett
             foreach(String infoField in settingsInfo)
             {
                 String fieldText = infoField.Substring(0, infoField.LastIndexOf("&&"));
-                bool showFieldOnHomePage = bool.Parse(infoField.Substring(infoField.LastIndexOf("&&")));
+                bool showFieldOnHomePage = bool.Parse(infoField.Substring(infoField.IndexOf("&&") + 2));
                 agreementPageFields.Add(fieldText, showFieldOnHomePage);
             }
 
@@ -94,9 +96,22 @@ namespace Sett
         /// Gets all the information saved within the settings file needed for the user agreement page.
         /// </summary>
         /// <returns></returns>
-        public String GetAgreementPageInfo()
+        public Dictionary<String, Object> GetAgreementPageInfo()
         {
-            return agreementPageText;
+            Dictionary<String, Object> UAPInfo = new Dictionary<String, Object>();
+            UAPInfo.Add("AgreementPageText", agreementPageText);
+            List<String> specialVisibleFields = new List<String>();
+            foreach (KeyValuePair<String, bool> field in agreementPageFields) 
+            {
+                if (field.Value)
+                {
+                    if (field.Key.Contains(":"))
+                        specialVisibleFields.Add(field.Key);
+                    else specialVisibleFields.Add(field.Key + ": ");
+                }
+            }
+            UAPInfo.Add("SpecialFieldsList", specialVisibleFields);
+            return UAPInfo;
         }
 
         public bool TestPassword(String enteredPassword)

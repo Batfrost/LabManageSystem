@@ -18,6 +18,7 @@ using SkiaSharp;
 using WinRT;
 using Windows.ApplicationModel.Email;
 using Windows.Devices.Printers;
+using Microsoft.UI.Xaml;
 
 namespace SS
 {
@@ -881,7 +882,7 @@ namespace SS
         /// <summary>
         /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
         /// </summary>
-        public override Spreadsheet GetCurrentlyLoggedInSpreadsheet()
+        public override Spreadsheet GetCurrentlyLoggedInSpreadsheet(List<String> VisibleFieldsList)
         {
             Spreadsheet todaysLog;
             try 
@@ -899,8 +900,14 @@ namespace SS
                 CurrentlyLoggedIn.SetContentsOfCell("A1", "ID:");
                 CurrentlyLoggedIn.SetContentsOfCell("B1", "First Name:");
                 CurrentlyLoggedIn.SetContentsOfCell("C1", "Last Name:");
-                CurrentlyLoggedIn.SetContentsOfCell("D1", "Class:");
-                CurrentlyLoggedIn.SetContentsOfCell("E1", "Time Logged In:");
+                char cellLetter = 'C';
+                for (int i = 0; i < VisibleFieldsList.Count; i++)
+                {
+                    cellLetter = (char)(cellLetter + 1);
+                    CurrentlyLoggedIn.SetContentsOfCell(cellLetter + "1", VisibleFieldsList[i]);
+                }
+                cellLetter = (char)(cellLetter + 1);
+                CurrentlyLoggedIn.SetContentsOfCell(cellLetter + "1", "Time Logged In:");
                 CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
             }
             return CurrentlyLoggedIn;

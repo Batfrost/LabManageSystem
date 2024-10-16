@@ -479,8 +479,8 @@ public partial class SpreadsheetPage : ContentPage
         return spreadsheetGrid.GetIDList();
     }
 
-    public Spreadsheet GetCurrentlyLoggedIn()
+    public Spreadsheet GetCurrentlyLoggedIn(List<String> SpecialFieldsList)
     {
-        return spreadsheetGrid.GetCurrentlyLoggedIn();
+        return spreadsheetGrid.GetCurrentlyLoggedIn(SpecialFieldsList);
     }
 }

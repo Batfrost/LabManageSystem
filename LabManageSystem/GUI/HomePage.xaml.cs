@@ -12,13 +12,14 @@ public partial class HomePage : ContentPage
 
 	public HomePage(Settings sett)
 	{
-		SprdSht = new SpreadsheetPage();
-		InitializeComponent();
+        InitializeComponent();
+        SprdSht = new SpreadsheetPage();
+		
 		this.Settings = sett;
-
-        SprdSht.GetCurrentlyLoggedIn();
+		Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
+		List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
+        SprdSht.GetCurrentlyLoggedIn(SpecialFieldsList);
         currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
-
         try
 		{
 			if (!SprdSht.GetIDList())

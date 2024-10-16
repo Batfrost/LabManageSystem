@@ -414,7 +414,7 @@ namespace SS
         /// <summary>
         /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
         /// </summary>
-        public abstract Spreadsheet GetCurrentlyLoggedInSpreadsheet();
+        public abstract Spreadsheet GetCurrentlyLoggedInSpreadsheet(List<String> VisibleFieldsList);
     }
 }
 
