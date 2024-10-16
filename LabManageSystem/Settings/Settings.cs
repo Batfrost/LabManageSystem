@@ -9,15 +9,15 @@ namespace Sett
         [JsonProperty]
         String password;
         [JsonProperty]
-        List<String> agreementPageText;
+        String agreementPageText;
         [JsonProperty]
-        List<String> agreementPageFields;
+        Dictionary<String, bool> agreementPageFields;
         Settings settings;
 
         /// <summary>
         /// This constructor will be used for a first time setup or change of settings.
         /// </summary>
-        public Settings(string password, List<string> agreementPageText, List<string> agreementPageFields)
+        public Settings(string password, String agreementPageText, Dictionary<String, bool> agreementPageFields)
         {
             this.password = password;
             this.agreementPageText = agreementPageText;
@@ -47,8 +47,7 @@ namespace Sett
         //Default Constructor
         public Settings()
         {
-            agreementPageFields = new List<String>();
-            agreementPageText = new List<String>();
+            agreementPageFields = new Dictionary<String, bool>();
         }
 
         /// <summary>
@@ -73,11 +72,29 @@ namespace Sett
             SaveSettingsFile(filePath);
         }
 
+        public void AddUserAgreementText(String text, string filePath)
+        {
+            agreementPageText = text;
+            SaveSettingsFile(filePath);
+        }
+
+        public void AddNewUserAgreementField(List<String> settingsInfo, string filePath)
+        {
+            foreach(String infoField in settingsInfo)
+            {
+                String fieldText = infoField.Substring(0, infoField.LastIndexOf("&&"));
+                bool showFieldOnHomePage = bool.Parse(infoField.Substring(infoField.LastIndexOf("&&")));
+                agreementPageFields.Add(fieldText, showFieldOnHomePage);
+            }
+
+            SaveSettingsFile(filePath);
+        }
+
         /// <summary>
         /// Gets all the information saved within the settings file needed for the user agreement page.
         /// </summary>
         /// <returns></returns>
-        public List<String> GetAgreementPageInfo()
+        public String GetAgreementPageInfo()
         {
             return agreementPageText;
         }

@@ -44,6 +44,44 @@
                 WidthRequest="200"/>
             <Label/>
             <Label 
+                Text="Next, when a User signs in for the first time, they will fill out a sort of User Agreement you can customize. "
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="Please write what you want Users to know about when they sign the user agreement page. E.g. Rules, Safety concerns, etc."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="You can also print out a user agreement page in paper, and just relay that the users can view the paper and sign here electronically."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Editor 
+                x:Name="UserAgreementText"
+                Placeholder="Anything you want the User to know: "
+                HeightRequest="200"
+                WidthRequest="200"/>
+            <Label 
+                Text="As well as that above explanation, is there any information you want to store about the User? The User Agreement Page will already ask for UID and Name."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="The User Agreement Page will already ask for UID and Name."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="E.g. Class/Advisor/Department/Role In this place (Like a Student President), Tool Permissions, etc."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Button
+                x:Name="AddNewFieldButton"
+                Text="Add New Field"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="AddNewFieldButton_Clicked"/>
+            <Label 
                 Text=""
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
@@ -51,6 +89,10 @@
                 Text=""
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
+            <Label 
+Text=""
+VerticalOptions="Center" 
+HorizontalOptions="Center"/>
             <Button 
                 Text="Confirm Settings"
                 x:Name="ConfirmationButton"

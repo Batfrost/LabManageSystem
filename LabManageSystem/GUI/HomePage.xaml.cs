@@ -40,6 +40,7 @@ public partial class HomePage : ContentPage
         if (Settings.TestPassword(ManagerPasswordEntry.Text))
 			await Navigation.PushAsync(new ManagerPage());
 		else await DisplayAlert("Error", "Incorrect Password", "Ok");
+		ManagerPasswordEntry.Text = "";
 	}
 
 
