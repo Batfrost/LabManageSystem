@@ -55,11 +55,13 @@
                 Text="You can also print out a user agreement page in paper, and just relay that the users can view the paper and sign here electronically."
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
+            <Label/>
             <Editor 
                 x:Name="UserAgreementText"
                 Placeholder="Anything you want the User to know: "
                 HeightRequest="200"
-                WidthRequest="200"/>
+                WidthRequest="700"/>
+            <Label/>
             <Label 
                 Text="As well as that above explanation, is there any information you want to store about the User? The User Agreement Page will already ask for UID and Name."
                 VerticalOptions="Center" 

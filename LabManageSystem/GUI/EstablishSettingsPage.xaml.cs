@@ -24,7 +24,7 @@ public partial class EstablishSettingsPage : ContentPage
 
 		settings = new Settings(PasswordEntry.Text, "", new Dictionary<string, bool>());
 		settings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
-		await Navigation.PopAsync();
+		App.Current.MainPage = new NavigationPage(new HomePage(settings));
 	}
 
 	/// <summary>

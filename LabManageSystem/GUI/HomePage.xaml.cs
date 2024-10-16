@@ -10,18 +10,11 @@ public partial class HomePage : ContentPage
 	public ManagerPage ManagerPg;
 	private Settings Settings;
 
-	public HomePage()
+	public HomePage(Settings sett)
 	{
 		SprdSht = new SpreadsheetPage();
 		InitializeComponent();
-		try
-		{
-			Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
-		} 
-		catch //If an exception occurs, the Settings file is not detected or somethings wrong with the file, so User will be asked to create new settings.
-		{
-			Navigation.PushAsync(new EstablishSettingsPage(ref Settings));
-        }
+		this.Settings = sett;
 
         SprdSht.GetCurrentlyLoggedIn();
         currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
