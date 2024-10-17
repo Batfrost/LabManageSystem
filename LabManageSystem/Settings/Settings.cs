@@ -11,7 +11,7 @@ namespace Sett
         [JsonProperty]
         String agreementPageText;
         [JsonProperty]
-        Dictionary<String, bool> agreementPageFields;
+        public Dictionary<String, bool> agreementPageFields;
         Settings settings;
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Sett
         public Dictionary<String, Object> GetAgreementPageInfo()
         {
             Dictionary<String, Object> UAPInfo = new Dictionary<String, Object>();
-            UAPInfo.Add("AgreementPageText", agreementPageText);
+            
             List<String> specialVisibleFields = new List<String>();
             foreach (KeyValuePair<String, bool> field in agreementPageFields) 
             {
@@ -110,6 +110,7 @@ namespace Sett
                     else specialVisibleFields.Add(field.Key + ": ");
                 }
             }
+            UAPInfo.Add("UAText", agreementPageText);
             UAPInfo.Add("SpecialFieldsList", specialVisibleFields);
             return UAPInfo;
         }

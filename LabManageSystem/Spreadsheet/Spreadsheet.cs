@@ -849,7 +849,7 @@ namespace SS
         /// <returns> 
         /// A bool showing whether or not the ID list file was successfully saved to the program or not.
         /// </returns>
-        public override bool GetIDList()
+        public override bool GetIDList(List<string> infoFields)
         {
             try
             {
@@ -865,8 +865,16 @@ namespace SS
                     //There will be headers for the columns in the first row:
                     IDList.SetContentsOfCell("A1", "ID");
                     IDList.SetContentsOfCell("B1", "Name");
-                    IDList.SetContentsOfCell("C1", "Class");
-                    IDList.SetContentsOfCell("D1", "Time Signed");
+
+                    //There will be headers for the columns in the first row:
+                    char cellLetter = 'B';
+                    for (int i = 0; i < infoFields.Count; i++)
+                    {
+                        cellLetter = (char)(cellLetter + 1);
+                        IDList.SetContentsOfCell(cellLetter + "1", infoFields[i]);
+                    }
+                    cellLetter = (char)(cellLetter + 1);
+                    IDList.SetContentsOfCell(cellLetter + "1", "Time Signed:");
 
                     IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
                     return true;
@@ -916,16 +924,13 @@ namespace SS
         /// <summary>
         /// Will save the user's given info they gave by signing the user agreement into the signed user file.
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param name="name"></param>
-        /// <param name="theClass"></param>
-        public override void AddUsersInformation(string ID, string name, string theClass)
+        public override void AddUsersInformation(List<string> userInfo)
         {
-            if (IDList == null)
-                GetIDList();
+            if (IDList is null) //If someone is logging in, settings are already established, and the ID list should have been created
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
 
-            //The first char is a '0' and will become a u for their 'u'IDs
-            ID = "u" + ID.Substring(1);
+            //First item in userInfo will be ID. The first char is a '0' and will become a u for their 'u'IDs
+            string ID = "u" + userInfo[0].Substring(1);
 
             //Check if the user has already been saved, if so just return, they've already signed agreement.
             if (IDList!.cellValues.ContainsKey(ID))
@@ -942,11 +947,17 @@ namespace SS
                 cellNum++;
             }
 
-            //User will be added now. A col will be ID, B col will be the name of the user, C col will be class they are in, D will be time of signature.
+            //User will be added now. A col will be ID, B col will be the name of the user, Then next cols will hold user specified fields, Last col will be time of signature.
             IDList.SetContentsOfCell("A" + cellNum, ID);
-            IDList.SetContentsOfCell("B" + cellNum, name);
-            IDList.SetContentsOfCell("C" + cellNum, theClass);
-            IDList.SetContentsOfCell("D" + cellNum, DateTime.Now.ToString());
+            IDList.SetContentsOfCell("B" + cellNum, userInfo[1]);
+            char cellLetter = 'B';
+            for (int i = 2; i < userInfo.Count; i++)
+            {
+                cellLetter = (char)(cellLetter + 1);
+                IDList.SetContentsOfCell(cellLetter + cellNum.ToString(), userInfo[i]);
+            }
+            cellLetter = (char)(cellLetter + 1);
+            IDList.SetContentsOfCell(cellLetter + cellNum.ToString(), DateTime.Now.ToString());
 
             //Save the file
             IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");

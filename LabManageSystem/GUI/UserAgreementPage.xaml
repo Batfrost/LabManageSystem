@@ -3,65 +3,88 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.UserAgreementPage"
              Title="UserAgreementPage">
-    <VerticalStackLayout
-        HorizontalOptions="CenterAndExpand"
-        Padding="25">
-        <Label 
-            Text="User Agreement Needs to be signed (only once) for the user to be in the system."/>
-        <Label 
-            Text="A physical copy of the user agreement should be on the desk. "/>
-        <Label 
-            Text="This digital signing done here will count as though you've signed the physical copy."/>
-        <Label/>
-        <Label/>
-        <Label 
-            Text="Enter your UID:"/>
-        <Entry
-            Placeholder="The U will be a '0'"
-            x:Name="UIDBox"
-            WidthRequest="300"
-            MaxLength="8"/>
-        <Label/>
-        <Label 
-            Text="Enter Full Name:" />
-        <Entry 
-            Placeholder="First Last"
-            x:Name="NameBox" 
-            WidthRequest="300"/>
-        <Label/>
-        <Label 
-            Text="What class are you in?"/>
-        <Picker
-            x:Name="ClassList"
-            Title="Choose Class or Other"
+    <ScrollView>
+        <VerticalStackLayout
             HorizontalOptions="CenterAndExpand"
-            >
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>ME 4010</x:String>
-                    <x:String>ME 4000</x:String>
-                    <x:String>MECH 3230</x:String>
-                    <x:String>Other</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-        <Label/>
-        <Label/>
-        <HorizontalStackLayout
-            HorizontalOptions="CenterAndExpand">
-            <Button 
-                x:Name="CancelButton"
-                Text="Cancel"
-                Clicked="CancelSigning"
-                Margin="25"/>
-            
-            <Button 
-                x:Name="SubmitButton"
-                Text="Submit"
-                Clicked="SubmitSigning"
-                Margin="25"/>
+            Padding="25">
+            <Label 
+                x:Name="UAText"
+                Text=""
+                LineBreakMode="WordWrap"/>
+            <Label/>
+            <Label/>
+            <Label Text="Please fill out the below Information: "/>
+            <Label/>
+            <Label/>
 
-        </HorizontalStackLayout>
-        <Label/>
-    </VerticalStackLayout>
+            <Label Text="UID: "/>
+            <Entry x:Name="IDEntry"
+                Placeholder="E.g. u1234567 or 01234567"/>
+            <Label/>
+            <Label Text="Name: "/>
+            <Entry x:Name="NameEntry"
+               Placeholder="Firstname Lastname"/>
+            <Label/>
+            <Label 
+                x:Name="Field1L"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Entry 
+                x:Name="Field1E"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Label/>
+            <Label 
+                x:Name="Field2L"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Entry 
+                x:Name="Field2E"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Label/>
+            <Label 
+                x:Name="Field3L"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Entry 
+                x:Name="Field3E"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Label/>
+            <Label 
+                x:Name="Field4L"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Entry 
+                x:Name="Field4E"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Label/>
+            <Label 
+                x:Name="Field5L"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Entry 
+                x:Name="Field5E"
+                IsEnabled="False"
+                IsVisible="False"/>
+            <Label/>
+            <HorizontalStackLayout
+                HorizontalOptions="CenterAndExpand">
+                <Button 
+                    x:Name="CancelButton"
+                    Text="Cancel"
+                    Clicked="CancelSigning"
+                    Margin="25"/>
+
+                <Button 
+                    x:Name="SubmitButton"
+                    Text="Submit"
+                    Clicked="SubmitSigning"
+                    Margin="25"/>
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

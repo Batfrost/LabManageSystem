@@ -474,9 +474,9 @@ public partial class SpreadsheetPage : ContentPage
     /// attempt to edit/view the same file - eg. someone has the file open when the program attempts to view it.
     /// </summary>
     /// <returns> a bool stating if the saving of the spreadsheet file was successful or not.</returns>
-    public bool GetIDList()
+    public bool GetIDList(List<String> infoFields)
     {
-        return spreadsheetGrid.GetIDList();
+        return spreadsheetGrid.GetIDList(infoFields);
     }
 
     public Spreadsheet GetCurrentlyLoggedIn(List<String> SpecialFieldsList)

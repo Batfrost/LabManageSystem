@@ -390,16 +390,13 @@ namespace SS
         /// attempts to check it.
         /// </summary>
         /// <returns></returns>
-        public abstract bool GetIDList();
+        public abstract bool GetIDList(List<string> infoFields);
 
         /// <summary>
         /// Will save the user's given info they gave by signing the user agreement into the signed user file.
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param name="name"></param>
-        /// <param name="theClass"></param>
         /// <returns>The name of the student</returns>
-        public abstract void AddUsersInformation(string ID, string name, string theClass);
+        public abstract void AddUsersInformation(List<string> userInfo);
 
         /// <summary>
         /// Will gather statistics of lab traffic between the time duration of from and to, creating a ChartEntry list 

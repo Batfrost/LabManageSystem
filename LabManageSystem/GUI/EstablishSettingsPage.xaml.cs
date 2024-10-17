@@ -22,6 +22,12 @@ public partial class EstablishSettingsPage : ContentPage
 			return;
 		}
 
+		if (PasswordEntry.Text == "" || SecurityQuestionEntry.Text == "" || SecQuestAnswer.Text == "" || UserAgreementText.Text == "")
+		{
+            await DisplayAlert("Error", "Please fill out everything.", "Alright");
+            return;
+        }
+
 		settings = new Settings(PasswordEntry.Text, "", new Dictionary<string, bool>());
 		settings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
 		settings.AddNewUserAgreementField(infoFields, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
@@ -36,18 +42,42 @@ public partial class EstablishSettingsPage : ContentPage
     {
 		try
 		{
-            String newInfoField = await DisplayPromptAsync("Adding A New Information Field", "Please type the name of the field you want the User to answer. ", "Accept", "Cancel", "E.g. 'Advisor:'");
-            String showInfoResponse = await DisplayActionSheet("Do you want to Show this Information on the Home Page for whoever is currently logged in?", "Cancel", null, "Yes", "No");
+			if (infoFields.Count > 4)
+			{
+				await DisplayAlert("Whoops", "Only 5 special fields (in addition\n to ID and Name fields) Can be added.", "Alrighty");
+				return;
+			}
+
+            String newInfoField = await DisplayPromptAsync("Adding A New Information Field", "Please type the name of the field you want the User to answer. \n", "Accept", "Cancel", "E.g. 'Advisor:'");
+            String showInfoResponse = await DisplayActionSheet("Do you want to Show this Information on\n the Home Page for whoever is currently logged in?", "Cancel", null, "Yes", "No");
             bool showInfo = false;
             if (showInfoResponse.Equals("Yes"))
                 showInfo = true;
             newInfoField += "&&" + showInfo.ToString();
             infoFields.Add(newInfoField);
+			AddedFields.Text = "";
+			for (int i = 0; i < infoFields.Count; i++) //Displaying the info fields the user has currently added.
+			{
+				AddedFields.Text += infoFields[i].ToString().Substring(0, infoFields[i].LastIndexOf("&&"));
+				AddedFields.Text += " --> Field will show on Home Page: " + infoFields[i].ToString().Substring(infoFields[i].LastIndexOf("&&") + 2) + "\n";
+			}
         }
 		catch
 		{
 			await DisplayAlert("Cancel Alert", "Cancelling adding a new Info Field.", "Ok");
 		}
 		
+    }
+
+	/// <summary>
+	/// Handler for resetting all custom info fields.
+	/// </summary>
+    private async void ResetFieldsButton_Clicked(object sender, EventArgs e)
+    {
+		string response = await DisplayActionSheet("Are you sure you want to reset\n all created fields?", "No", null, "Yes");
+		if (response.Equals("No"))
+			return;
+		infoFields.Clear();
+        AddedFields.Text = "";
     }
 }

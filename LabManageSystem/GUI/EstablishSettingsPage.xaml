@@ -11,20 +11,12 @@
                 HorizontalOptions="Center"
                 FontSize="25"/>
             <Label/>
-            <Label/>
-            <Label/>
             <Label
-                Text="First, a password needs to be created."
+                Text="First, a password needs to be created. This Password will be used to enter a Manager Mode, a mode which lets you view statistics, customize these settings, show log file save location, etc."
                 VerticalOptions="Center" 
-                HorizontalOptions="Center"/>
-            <Label 
-                Text="This Password will be used to enter a Manager Mode, a mode which"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"/>
-            <Label 
-                Text="lets you view statistics, customize these settings, show log file save location, etc."
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"
+                WidthRequest="700"
+                LineBreakMode="WordWrap"/>
             <Label/>
             <Entry 
                 x:Name="PasswordEntry"
@@ -32,6 +24,7 @@
                 Placeholder="Enter Password: "
                 HeightRequest="50"
                 WidthRequest="200"/>
+            <Label/>
             <Label 
                 Text="Confirm Password: "
                 VerticalOptions="Center" 
@@ -42,6 +35,17 @@
                 Placeholder="Enter Password: "
                 HeightRequest="50"
                 WidthRequest="200"/>
+            <Label/>
+            <Label
+                Text="In case this password is forgotten, please type in a security question and it's answer."/>
+            <Label/>
+            <Entry
+                x:Name="SecurityQuestionEntry"
+                Placeholder="E.g. What is your mother's maiden name?"/>
+            <Label/>
+            <Entry
+                x:Name="SecQuestAnswer"
+                Placeholder="Answer: "/>
             <Label/>
             <Label 
                 Text="Next, when a User signs in for the first time, they will fill out a sort of User Agreement you can customize. "
@@ -63,7 +67,7 @@
                 WidthRequest="700"/>
             <Label/>
             <Label 
-                Text="As well as that above explanation, is there any information you want to store about the User? The User Agreement Page will already ask for UID and Name."
+                Text="As well as that above explanation, is there any information you want to store about the User?"
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
             <Label 
@@ -74,6 +78,7 @@
                 Text="E.g. Class/Advisor/Department/Role In this place (Like a Student President), Tool Permissions, etc."
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
+            <Label/>
             <Button
                 x:Name="AddNewFieldButton"
                 Text="Add New Field"
@@ -84,10 +89,11 @@
                 WidthRequest="200"
                 Clicked="AddNewFieldButton_Clicked"/>
             <Label 
-                Text=""
+                Text="Currently Added Info Fields: "
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
             <Label 
+                x:Name="AddedFields"
                 Text=""
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
@@ -95,6 +101,13 @@
 Text=""
 VerticalOptions="Center" 
 HorizontalOptions="Center"/>
+            <Button 
+                x:Name="ResetFieldsButton"
+                Text="Click To Reset Fields"
+                HeightRequest="35"
+                WidthRequest="160"
+                Clicked="ResetFieldsButton_Clicked"/>
+            <Label/>
             <Button 
                 Text="Confirm Settings"
                 x:Name="ConfirmationButton"
