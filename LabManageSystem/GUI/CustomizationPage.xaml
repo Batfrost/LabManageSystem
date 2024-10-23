@@ -5,9 +5,35 @@
              Title="CustomizationPage">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Settings"
             VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center" 
+            FontSize="20"/>
+        <Label/>
+        <Label/>
+        <Button 
+            Text="Change Manager Password"
+            x:Name="PasswordChangeButton"
+            BackgroundColor="Snow"
+            TextColor="Black"
+            BorderColor="Black"
+            HeightRequest="50"
+            WidthRequest="200"
+            Clicked="PasswordChangeButton_Clicked"/>
+        <Label/>
+        <Button 
+            Text="Edit User Agreement Page"
+            x:Name="EditUAPButton"
+            BackgroundColor="Snow"
+            TextColor="Black"
+            BorderColor="Black"
+            HeightRequest="50"
+            WidthRequest="200"
+            Clicked="EditUAPButton_Clicked"/>
+        <Label/>
+
+        <Label/>
+        <Label/>
         <Button 
             x:Name="CancelButton"
             Text="Cancel"

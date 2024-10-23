@@ -28,7 +28,7 @@ public partial class EstablishSettingsPage : ContentPage
             return;
         }
 
-		settings = new Settings(PasswordEntry.Text, "", new Dictionary<string, bool>());
+		settings = new Settings(PasswordEntry.Text, "", new Dictionary<string, bool>(), (SecurityQuestionEntry.Text, SecQuestAnswer.Text.ToLower().Trim()));
 		settings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
 		settings.AddNewUserAgreementField(infoFields, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
         settings.AddUserAgreementText(UserAgreementText.Text, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");

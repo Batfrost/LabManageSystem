@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpreadsheetGUI.CustomizationPage1"
+             Title="CustomizationPage1">
+    <VerticalStackLayout>
+        <Label 
+            Text="Change Password"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" 
+            FontSize="20"/>
+        <Label/>
+        <Label/>
+        <Label 
+            Text="Please type old password: "
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label/>
+        <Entry
+            x:Name="OldPasswordEntry"
+            HeightRequest="50"
+            WidthRequest="200"
+            Placeholder="Old Password: "
+            IsPassword="True"/>
+        <Label/>
+        <Label 
+            Text="Please type new password: "
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label/>
+        <Entry
+            x:Name="NewPasswordEntry"
+            HeightRequest="50"
+            WidthRequest="200"
+            Placeholder="New Password: "
+            IsPassword="True"/>
+        <Label/>
+        <Label
+            Text="Confirm New Password"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"/>
+        <Label/>
+        <Entry
+            x:Name="PasswordConfirmEntry"
+            HeightRequest="50"
+            WidthRequest="200"
+            Placeholder="New Password: "
+            IsPassword="True"/>
+        <Label/>
+
+        <HorizontalStackLayout
+            HorizontalOptions="CenterAndExpand">
+            <Button 
+                x:Name="CancelButton"
+                Text="Cancel"
+                Clicked="CancelButton_Clicked"
+                Margin="25"/>
+
+            <Button 
+                x:Name="SubmitButton"
+                Text="Apply"
+                Clicked="SubmitButton_Clicked"
+                Margin="25"/>
+
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

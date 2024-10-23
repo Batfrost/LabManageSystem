@@ -21,7 +21,7 @@
             Clicked="GoToStatsPage"/>
         <Label/>
         <Button 
-    Text="Customization Settings"
+    Text="Customize Settings"
     x:Name="CustomizationButton"
     BackgroundColor="Snow"
     TextColor="Black"

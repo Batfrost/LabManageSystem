@@ -31,10 +31,16 @@ public partial class HomePage : ContentPage
 
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
-        if (Settings.TestPassword(ManagerPasswordEntry.Text))
+		if (Settings.TestPassword(ManagerPasswordEntry.Text))
 			await Navigation.PushAsync(new ManagerPage());
-		else await DisplayAlert("Error", "Incorrect Password", "Ok");
-		ManagerPasswordEntry.Text = "";
+		else
+		{
+			string response = await DisplayActionSheet("Error: Incorrect Password", "Ok", null, "Forgot Password?");
+			if (response.Equals("Forgot Password?"))
+				await Navigation.PushAsync(new ManagerPasswordPage());
+			
+			ManagerPasswordEntry.Text = "";
+		}
 	}
 
 

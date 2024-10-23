@@ -7,19 +7,25 @@ namespace Sett
     public class Settings
     {
         [JsonProperty]
-        String password;
+        public String password;
         [JsonProperty]
-        String agreementPageText;
+        (String, String) securityQuestion;
+
+        [JsonProperty]
+        public String agreementPageText;
         [JsonProperty]
         public Dictionary<String, bool> agreementPageFields;
         Settings settings;
+        
+
 
         /// <summary>
         /// This constructor will be used for a first time setup or change of settings.
         /// </summary>
-        public Settings(string password, String agreementPageText, Dictionary<String, bool> agreementPageFields)
+        public Settings(string password, String agreementPageText, Dictionary<String, bool> agreementPageFields, (String, String) securityQuestion)
         {
             this.password = password;
+            this.securityQuestion = securityQuestion;
             this.agreementPageText = agreementPageText;
             this.agreementPageFields = agreementPageFields;
 
@@ -120,6 +126,11 @@ namespace Sett
             return password.Equals(enteredPassword);
         }
 
+        public bool TestSecurityQuestionAnswer(String enteredAnswer)
+        {
+            return securityQuestion.Item2.Equals(enteredAnswer.ToLower().Trim());
+        }
+
         /// <summary>
         /// Encrypts given text to be unreadable to anyone who doesn't know how to decrypt.
         /// Adds just a little bit of security to the system, so that the settings files aren't messed with.
@@ -144,14 +155,15 @@ namespace Sett
         /// </summary>
         private string DecryptText(String text)
         {
-            string decryptedText = "{";
+            string decryptedText = "";
             while(text.Length > 0)
             {
                 decryptedText += text[text.Length - 3];
                 decryptedText += text[text.Length - 2];
                 text = text.Substring(0, text.Length - 3);
             }
-
+            if (decryptedText[0] != '{')
+                decryptedText = "{" + decryptedText;
             return decryptedText;
         }
     }

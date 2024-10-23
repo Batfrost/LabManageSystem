@@ -37,15 +37,21 @@
                 WidthRequest="200"/>
             <Label/>
             <Label
-                Text="In case this password is forgotten, please type in a security question and it's answer."/>
+                Text="In case this password is forgotten, please type in a security question and it's answer."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
             <Label/>
             <Entry
                 x:Name="SecurityQuestionEntry"
-                Placeholder="E.g. What is your mother's maiden name?"/>
+                Placeholder="E.g. What is your mother's maiden name?"
+                HeightRequest="50"
+                WidthRequest="300"/>
             <Label/>
             <Entry
                 x:Name="SecQuestAnswer"
-                Placeholder="Answer: "/>
+                Placeholder="Answer: "
+                HeightRequest="50"
+                WidthRequest="200"/>
             <Label/>
             <Label 
                 Text="Next, when a User signs in for the first time, they will fill out a sort of User Agreement you can customize. "
