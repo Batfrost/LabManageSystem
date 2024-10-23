@@ -18,6 +18,7 @@ public partial class HomePage : ContentPage
 		this.Settings = sett;
 		Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
 		List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
+        SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
         SprdSht.GetCurrentlyLoggedIn(SpecialFieldsList);
         currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
         try
@@ -38,10 +39,9 @@ public partial class HomePage : ContentPage
 			string response = await DisplayActionSheet("Error: Incorrect Password", "Ok", null, "Forgot Password?");
 			if (response.Equals("Forgot Password?"))
 				await Navigation.PushAsync(new ManagerPasswordPage());
-			
-			ManagerPasswordEntry.Text = "";
 		}
-	}
+        ManagerPasswordEntry.Text = "";
+    }
 
 
 	void LoginUser(object sender, EventArgs e)

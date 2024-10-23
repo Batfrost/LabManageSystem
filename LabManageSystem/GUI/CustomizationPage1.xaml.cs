@@ -34,8 +34,8 @@ public partial class CustomizationPage1 : ContentPage
 
         s.password = NewPasswordEntry.Text;
         s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
-        
+        await Navigation.PopToRootAsync();
+        App.Current.MainPage = new NavigationPage(new HomePage(s));
 
-        await Navigation.PopAsync();
     }
 }

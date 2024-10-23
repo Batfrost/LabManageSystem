@@ -11,7 +11,7 @@ public partial class UserAgreementPage : ContentPage
         InitializeComponent();
         Dictionary<String, Object> agreementPageInfo = S.GetAgreementPageInfo();
         List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
-		UAText.Text = (string)agreementPageInfo["UAText"]; ;
+		UAText.Text = (string)agreementPageInfo["UAText"];
 		for (int i = 0; i < SpecialFieldsList.Count; i++)
 		{
 			switch(i)

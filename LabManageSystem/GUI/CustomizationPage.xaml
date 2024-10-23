@@ -18,7 +18,7 @@
             TextColor="Black"
             BorderColor="Black"
             HeightRequest="50"
-            WidthRequest="200"
+            WidthRequest="215"
             Clicked="PasswordChangeButton_Clicked"/>
         <Label/>
         <Button 
@@ -28,7 +28,7 @@
             TextColor="Black"
             BorderColor="Black"
             HeightRequest="50"
-            WidthRequest="200"
+            WidthRequest="215"
             Clicked="EditUAPButton_Clicked"/>
         <Label/>
 

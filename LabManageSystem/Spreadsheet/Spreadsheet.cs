@@ -752,6 +752,16 @@ namespace SS
                 
                 //The user's class will be added in the D col
                 userLog.SetContentsOfCell("D" + cellNum, userInfo[2]);
+                char cellLetter = 'C';
+                for (int i = 2; i < userInfo.Length; i++)
+                {
+                    cellLetter = (char)(cellLetter + 1);
+                    while(true)
+                    {
+                        
+                    }
+                }
+
                 
                 //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
                 cellName = "E" + cellNum;
@@ -888,36 +898,74 @@ namespace SS
         }
 
         /// <summary>
+        /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
+        /// </summary>
+        public override void EditIDListField(String old, String newName)
+        {
+            if (IDList is null) 
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+            if (!IDList!.cellValues.ContainsValue(old)) //Somehow the field they are trying to change isn't detected inside the ID list.
+                return;
+            char cellLetter = 'C';
+            while(true)
+            {
+                if (IDList.cellValues[cellLetter + "1"].Equals(old))
+                {
+                    IDList.SetContentsOfCell(cellLetter + "1", newName); break; //Since we already checked that the spreadsheet holds the field, the loop will break.
+                }
+                cellLetter = (char)(cellLetter + 1);
+            }
+            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
+        }
+
+        /// <summary>
         /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
         /// </summary>
         public override Spreadsheet GetCurrentlyLoggedInSpreadsheet(List<String> VisibleFieldsList)
         {
-            Spreadsheet todaysLog;
-            try 
-            {
-                //If a log for today exists, then a CurrentlyLoggedIn spreadsheet will also exist.
-                todaysLog = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv", s => true, s => s.ToUpper(), "lab");
-                CurrentlyLoggedIn = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv", s => true, s => s.ToUpper(), "lab");
-            }
-            catch
-            {
-                //Possible that CurrentlyLoggedIn already exists, but will be reset daily once software boots.
-                CurrentlyLoggedIn = new();
+            //Possible that CurrentlyLoggedIn already exists, but will be reset daily once software boots.
+            CurrentlyLoggedIn = new();
 
-                //There will be headers for the columns in the first row:
-                CurrentlyLoggedIn.SetContentsOfCell("A1", "ID:");
-                CurrentlyLoggedIn.SetContentsOfCell("B1", "First Name:");
-                CurrentlyLoggedIn.SetContentsOfCell("C1", "Last Name:");
-                char cellLetter = 'C';
-                for (int i = 0; i < VisibleFieldsList.Count; i++)
+            //There will be headers for the columns in the first row:
+            CurrentlyLoggedIn.SetContentsOfCell("A1", "ID:");
+            CurrentlyLoggedIn.SetContentsOfCell("B1", "First Name:");
+            CurrentlyLoggedIn.SetContentsOfCell("C1", "Last Name:");
+            bool endReached = false;
+            char cellLetter = 'C';
+            char CurrLogInCellLetter = 'C';
+            while (true)
+            {
+                if (endReached || VisibleFieldsList.Count == 0)
+                    break;
+                for (int i = 0; i <  VisibleFieldsList.Count; i++)
                 {
+                    string val = (string)IDList!.cellValues[cellLetter + "1"];
+                    val = val.Trim();
+                    val = val.Trim(':');
+                    string field = VisibleFieldsList[i].ToString();
+                    field = field.Trim();
+                    field = field.Trim(':');
+                    if (IDList!.cells.ContainsKey(cellLetter + "1") && field.Equals(val))
+                    {
+                        CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
+                        CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", VisibleFieldsList[i]);
+                        if (i == VisibleFieldsList.Count - 1)
+                        {
+                            endReached = true; break;
+                        }
+                    } 
+                    else if (!IDList!.cells.ContainsKey(cellLetter + "1"))
+                    {
+                        endReached = true;
+                        break;
+                    }
+                    
                     cellLetter = (char)(cellLetter + 1);
-                    CurrentlyLoggedIn.SetContentsOfCell(cellLetter + "1", VisibleFieldsList[i]);
                 }
-                cellLetter = (char)(cellLetter + 1);
-                CurrentlyLoggedIn.SetContentsOfCell(cellLetter + "1", "Time Logged In:");
-                CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
             }
+            CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
+            CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", "Time Logged In:");
+            CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
             return CurrentlyLoggedIn;
         }
 

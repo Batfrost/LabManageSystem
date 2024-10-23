@@ -412,6 +412,11 @@ namespace SS
         /// Loads a spreadsheet (or creates a new spreadsheet if not yet made) for the purpose of keeping track of who is currently logged in.
         /// </summary>
         public abstract Spreadsheet GetCurrentlyLoggedInSpreadsheet(List<String> VisibleFieldsList);
+
+        /// <summary>
+        /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
+        /// </summary>
+        public abstract void EditIDListField(String old, String newName);
     }
 }
 

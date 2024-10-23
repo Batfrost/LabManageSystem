@@ -2,11 +2,97 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.CustomizationPage2"
-             Title="CustomizationPage2">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Customize Settings">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Edit User Agreement Page"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" 
+                FontSize="20"/>
+            <Label/>
+            <Label/>
+            <Label 
+                Text="Please write what you want Users to know about when they sign the user agreement page. E.g. Rules, Safety concerns, etc."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label 
+                Text="You can also print out a user agreement page in paper, and just relay that the users can view the paper and sign here electronically."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"/>
+            <Label/>
+            <Editor 
+                x:Name="UserAgreementText"
+                Text=""
+                HeightRequest="200"
+                WidthRequest="700"
+                TextChanged="UserAgreementText_TextChanged"/>
+            <Label/>
+            <Label
+                Text="WARNING: If editing the information fields, know that any information on users who have already filled out the previous User Agreement Page will not contain any newly added fields. For example: if John Snow signed the page before, and you add a new field of 'Class: ', then the info saved for John Snow will not contain that new field. If you want to completely reset the saved user catalogue so that every user has to sign/re-sign the new agreement, in manager mode, open file location, and delete the 'studentList.csv' file."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                MaximumWidthRequest="700"
+                LineBreakMode="WordWrap"/>
+            <Label/>
+
+            <Label/>
+            <Picker
+                x:Name="InfoFieldsPicker"
+                Title="Current Specified Information Fields: "
+                HorizontalOptions="CenterAndExpand"
+                SelectedIndexChanged="InfoFieldsPicker_SelectedIndexChanged"/>
+
+            <Label/>
+            <Entry
+                x:Name="SelectedInfoFieldEntry"
+                Text=""
+                HorizontalOptions="CenterAndExpand"
+                
+                Completed="SelectedInfoFieldEntry_Completed"
+                HeightRequest="50"
+                WidthRequest="200"/>
+            <Label/>
+            
+            <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
+                <Label
+                    Text="This Info Field will display on the Home Page's Currently Logged In: "
+                    VerticalOptions="Center"/>
+                <CheckBox
+                    x:Name="InfoFieldOnHomeCheckBox"
+                    IsChecked="False"
+                    CheckedChanged="InfoFieldOnHomeCheckBox_CheckedChanged"/>
+            </HorizontalStackLayout>
+            <Label/>
+
+            <Button 
+                x:Name="RemoveSelectedInfoFieldButton"
+                BackgroundColor="Snow"
+                BorderColor="Black"
+                TextColor="Black"
+                Text="Remove Selected Info Field"
+                Clicked="RemoveSelectedInfoFieldButton_Clicked"
+                Margin="25"
+                HeightRequest="50"
+                WidthRequest="220"
+                HorizontalOptions="Center"/>
+            <Label/>
+            <Label/>
+            <HorizontalStackLayout
+                HorizontalOptions="CenterAndExpand">
+                <Button 
+                    x:Name="CancelButton"
+                    Text="Cancel"
+                    Clicked="CancelButton_Clicked"
+                    Margin="25"/>
+
+                <Button 
+                    x:Name="SubmitButton"
+                    Text="Apply"
+                    Clicked="SubmitButton_Clicked"
+                    Margin="25"/>
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

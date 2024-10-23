@@ -293,9 +293,9 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
             }
             else { dataColWidth = 150; }
             //For data bigger than 20 characters, just shorten the data.
-            if (address.Value.Length > 20)
+            if (address.Value.Length > 30)
             {
-                text = address.Value.Substring(0, 15) + "..." + address.Value.Substring(address.Value.Length - 4);
+                text = address.Value.Substring(0, 25) + "..." + address.Value.Substring(address.Value.Length - 4);
             }
             Invalidate();
             graphicsView.HeightRequest = (rowCount) * DATA_ROW_HEIGHT;

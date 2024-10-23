@@ -9,7 +9,7 @@ namespace Sett
         [JsonProperty]
         public String password;
         [JsonProperty]
-        (String, String) securityQuestion;
+        public (String, String) securityQuestion;
 
         [JsonProperty]
         public String agreementPageText;
@@ -46,6 +46,7 @@ namespace Sett
             password = settings.password;
             agreementPageText = settings.agreementPageText;
             agreementPageFields = settings.agreementPageFields;
+            securityQuestion = settings.securityQuestion;
             SaveSettingsFile(filePath);
             System.IO.File.Encrypt(filePath);
         }
