@@ -29,7 +29,7 @@
                 TextChanged="UserAgreementText_TextChanged"/>
             <Label/>
             <Label
-                Text="WARNING: If editing the information fields, know that any information on users who have already filled out the previous User Agreement Page will not contain any newly added fields. For example: if John Snow signed the page before, and you add a new field of 'Class: ', then the info saved for John Snow will not contain that new field. If you want to completely reset the saved user catalogue so that every user has to sign/re-sign the new agreement, in manager mode, open file location, and delete the 'studentList.csv' file."
+                Text="WARNING: If editing the information fields, know that any information on users who have already filled out the previous User Agreement Page will not contain any newly added fields. For example: if John Snow signed the page before, and you add a new field of 'Class: ', then the info saved for John Snow will not contain that new field. If you want to completely reset the saved user catalogue so that every user has to sign/re-sign the new agreement, in manager mode, open file location, and delete the 'studentList.csv' file. If the software keeps asking for new settings, deleting that file and the settings can help."
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"
                 MaximumWidthRequest="700"

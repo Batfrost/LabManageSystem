@@ -671,7 +671,7 @@ namespace SS
             ID = "u" + ID.Substring(1);
 
             //Check whether user exists or not
-            string[] userInfo = new string[3];
+            List<string> userInfo = new List<string>();
             string cellName = "";
             int cellNum = 1;
             bool foundEmptyCell = false;
@@ -708,10 +708,9 @@ namespace SS
                 if (!foundEmptyCell)
                     throw new SpreadsheetReadWriteException("Log file full for current student, talk to a Lab Associate for help.");
 
-                //Get this user's name from the log.
-                userInfo[0] = (string)userLog.GetCellContents("B" + cellNum.ToString());
-                userInfo[1] = (string)userLog.GetCellContents("C" + cellNum.ToString());
-                userInfo[2] = (string)userLog.GetCellContents("D" + cellNum.ToString());
+                //Get this user's information 
+                userInfo = GetStudentInfo(ID);
+
                 if (logCount % 2 == 1)
                     SomeoneIsLoggingOut = true;
                 else SomeoneIsLoggingOut = false;
@@ -749,22 +748,18 @@ namespace SS
                 
                 cellName = "C" + cellNum;
                 userLog.SetContentsOfCell(cellName, userInfo[1]);
-                
-                //The user's class will be added in the D col
-                userLog.SetContentsOfCell("D" + cellNum, userInfo[2]);
-                char cellLetter = 'C';
-                for (int i = 2; i < userInfo.Length; i++)
+
+                //Then custom info fields will be placed after.
+                char cL = 'C';
+                for (int i = 2; i < userInfo.Count; i++)
                 {
-                    cellLetter = (char)(cellLetter + 1);
-                    while(true)
-                    {
-                        
-                    }
+                    cL = (char)(cL + 1);
+                    userLog.SetContentsOfCell(cL + cellNum.ToString(), userInfo[i]);
                 }
 
-                
-                //Then the cell we need for the logging of the time will be the next cell to the right of the firstName and lastName boxes.
-                cellName = "E" + cellNum;
+                cL = (char)(cL + 1);
+                //Then the cell we need for the logging of the time will be the next cell to the right of the last info field.
+                cellName = cL + cellNum.ToString();
                 SomeoneIsLoggingOut = false;
             }
 
@@ -805,8 +800,32 @@ namespace SS
                 CurrentlyLoggedIn!.SetCellContents("A" + cNum, ID);
                 CurrentlyLoggedIn!.SetContentsOfCell("B" + cNum, userInfo[0]);
                 CurrentlyLoggedIn!.SetContentsOfCell("C" + cNum, userInfo[1]);
-                CurrentlyLoggedIn!.SetContentsOfCell("D" + cNum, userInfo[2]);
-                CurrentlyLoggedIn!.SetContentsOfCell("E" + cNum, DateTime.Now.ToShortTimeString());
+
+                //With custom info fields, the column headers of the currently logged in sheet matter, so we can tell what to display here or not.
+                char CurrLoggedInCellLetter = 'C';
+                for (int i = 2; i < userInfo.Count; i++)
+                {
+                    string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i])).Key;
+                    IDLogColHeader = IDList!.cellValues[IDLogColHeader.First() + "1"].ToString()!;
+                    while (true) //Checking for what column in CurrentlyLoggedIn corresponds to a column with the same info field header inside the User Log, and then can figure out what part of userInfo to put in CurrLogged'scells.
+                    {
+                        CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter + 1);
+                        if (CurrentlyLoggedIn!.cellValues.ContainsKey(CurrLoggedInCellLetter + "1"))
+                        {
+                            string field = CurrentlyLoggedIn!.cellValues[CurrLoggedInCellLetter + "1"].ToString()!.Trim().Trim(':');
+                            //First figure out if this cell header this current column has in currentlyLoggedIn is equal to the column getting tracked in IDList
+                            if (IDLogColHeader.Equals(field))
+                            {
+                                //If equal, then this userInfo[i] field will be placed on currentlyLoggedIn here
+                                CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), userInfo[i]);
+                            }
+                        }
+                        else break; //Reached end of Currently LoggedIn
+                    }
+                }
+
+                CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter - 1);
+                CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), DateTime.Now.ToShortTimeString());
             }
 
             CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
@@ -818,14 +837,11 @@ namespace SS
 
         //This private method will search through a specified file that is full of all student ID's 
         //and if the student is registered into system, will return their first and last name
-        private string[] GetStudentInfo(string ID)
+        private List<string> GetStudentInfo(string ID)
         {
-            string[] studentInfo = new string[3];
-            studentInfo[0] = "NOT FOUND";
-            studentInfo[1] = "NOT FOUND";
-            studentInfo[2] = "NOT FOUND";
+            List<string> studentInfo = new List<string> { "NOT FOUND", "NOT FOUND" };
 
-            //If the student is inside the ID file, then get their first and last name from the B and C cells.
+            //If the student is inside the ID file, then get their info fields
             if (IDList != null && IDList.cellValues.ContainsValue(ID))
             {
                 string cellName = IDList.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
@@ -841,9 +857,15 @@ namespace SS
                     studentInfo[1] = temp[1];
                 }
 
-                //Get the class from the IDList too
-                studentInfo[2] = IDList.cellValues['C' + cellNum].ToString()!;
-                    
+                //Get remaining fields (besides for time signed)
+                char cellLetter = 'B';
+                while(true)
+                {
+                    cellLetter = (char)(cellLetter + 1);
+                    if (!IDList.cellValues.ContainsKey(cellLetter + cellNum) || DateTime.TryParse(IDList.cellValues[cellLetter + cellNum].ToString(), out DateTime r))
+                        break;
+                    studentInfo.Add(IDList.cellValues[cellLetter + cellNum].ToString()!);
+                }
             }
           
             return studentInfo;

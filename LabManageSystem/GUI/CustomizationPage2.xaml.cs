@@ -100,6 +100,11 @@ public partial class CustomizationPage2 : ContentPage
                 SelectedInfoFieldEntry.Text = "";
             }
             String newInfoField = SelectedInfoFieldEntry.Text;
+            if (newInfoField.Equals("Add New Info Field (Max of 5)"))
+            {
+                SelectedInfoFieldEntry.Text = "";
+                return;
+            }
             bool showInfo = false;
             newInfoField += "&&" + showInfo.ToString();
             List<string> fieldsToAdd = new List<string>{ newInfoField };
