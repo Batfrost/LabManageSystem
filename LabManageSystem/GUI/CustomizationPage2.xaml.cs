@@ -5,17 +5,22 @@ namespace SpreadsheetGUI;
 
 public partial class CustomizationPage2 : ContentPage
 {
-    Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+    Settings oldSettings;
+    Spreadsheet oldIDList;
+    Settings changedSettings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
     Spreadsheet sprdsht = new Spreadsheet();
     bool HandlerRunning = false; //Don't want a handler to change one of the Xaml objects and call another handler right away. Only want handlers to run if User did something.
 	public CustomizationPage2()
 	{
-
         InitializeComponent();
+        //Keep track of original settings if they cancel.
+        oldSettings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        oldIDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+
         List<string> fields = new List<string>();
         try
         {
-            fields = s.agreementPageFields.Keys.ToList();
+            fields = changedSettings.agreementPageFields.Keys.ToList();
             fields.Add("Add New Info Field (Max of 5)");
             InfoFieldsPicker.ItemsSource = fields;
             InfoFieldsPicker.SelectedIndex = 0;
@@ -30,8 +35,8 @@ public partial class CustomizationPage2 : ContentPage
         SelectedInfoFieldEntry.Text = InfoFieldsPicker.SelectedItem.ToString();
         try
         {
-            InfoFieldOnHomeCheckBox.IsChecked = s.agreementPageFields[InfoFieldsPicker.Items[0]];
-            UserAgreementText.Text = s.agreementPageText;
+            InfoFieldOnHomeCheckBox.IsChecked = changedSettings.agreementPageFields[InfoFieldsPicker.Items[0]];
+            UserAgreementText.Text = changedSettings.agreementPageText;
         }
         catch
         {
@@ -42,6 +47,10 @@ public partial class CustomizationPage2 : ContentPage
 
     async private void CancelButton_Clicked(object sender, EventArgs e)
     {
+        //Revert changes with saved settings and IDList
+        oldIDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
+        oldSettings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+
         await Navigation.PopAsync();
     }
 
@@ -51,9 +60,9 @@ public partial class CustomizationPage2 : ContentPage
         if (response == "Cancel")
             return;
 
-        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        changedSettings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
         await Navigation.PopToRootAsync();
-        App.Current.MainPage = new NavigationPage(new HomePage(s));
+        App.Current.MainPage = new NavigationPage(new HomePage(changedSettings));
 
     }
 
@@ -64,7 +73,7 @@ public partial class CustomizationPage2 : ContentPage
         HandlerRunning = true;
         if (InfoFieldsPicker.SelectedItem.ToString().Equals("Add New Info Field (Max of 5)"))
         {
-            if (s.agreementPageFields.Count > 4)
+            if (changedSettings.agreementPageFields.Count > 4)
             {
                 await DisplayAlert("Error", "Only 5 User-Specified \nInfo Fields Allowed", "Ok");
                 InfoFieldsPicker.SelectedIndex = 0;
@@ -78,7 +87,7 @@ public partial class CustomizationPage2 : ContentPage
             SelectedInfoFieldEntry.Text = InfoFieldsPicker.SelectedItem.ToString();
             try
             {
-                InfoFieldOnHomeCheckBox.IsChecked = s.agreementPageFields[InfoFieldsPicker.Items[InfoFieldsPicker.SelectedIndex]];
+                InfoFieldOnHomeCheckBox.IsChecked = changedSettings.agreementPageFields[InfoFieldsPicker.Items[InfoFieldsPicker.SelectedIndex]];
             }
             catch { InfoFieldOnHomeCheckBox.IsChecked = false; }
         }
@@ -93,7 +102,7 @@ public partial class CustomizationPage2 : ContentPage
         HandlerRunning = true;
         if (InfoFieldsPicker.SelectedItem.ToString().Equals("Add New Info Field (Max of 5)"))
         {
-            if (s.agreementPageFields.Count > 4)
+            if (changedSettings.agreementPageFields.Count > 4)
             {
                 await DisplayAlert("Error", "Only 5 User-Specified \nInfo Fields Allowed", "Ok");
                 InfoFieldsPicker.SelectedIndex = 0;
@@ -108,19 +117,21 @@ public partial class CustomizationPage2 : ContentPage
             bool showInfo = false;
             newInfoField += "&&" + showInfo.ToString();
             List<string> fieldsToAdd = new List<string>{ newInfoField };
-            s.AddNewUserAgreementField(fieldsToAdd, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
-            List<string> fields = s.agreementPageFields.Keys.ToList();
+            changedSettings.AddNewUserAgreementField(fieldsToAdd, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+            List<string> fields = changedSettings.agreementPageFields.Keys.ToList();
             fields.Add("Add New Info Field (Max of 5)");
             InfoFieldsPicker.ItemsSource = fields;
             InfoFieldsPicker.SelectedIndex = InfoFieldsPicker.Items.IndexOf(SelectedInfoFieldEntry.Text);
+            //Update the IDList too
+            sprdsht.EditIDListField(null, null, SelectedInfoFieldEntry.Text);
         }
         else //Editing an existing info field name
         {
-            sprdsht.EditIDListField(InfoFieldsPicker.SelectedItem.ToString(), SelectedInfoFieldEntry.Text);
-            bool temp = s.agreementPageFields[InfoFieldsPicker.SelectedItem.ToString()];
-            s.agreementPageFields.Remove(InfoFieldsPicker.SelectedItem.ToString());
-            s.agreementPageFields.Add(SelectedInfoFieldEntry.Text, temp);
-            List<string> fields = s.agreementPageFields.Keys.ToList();
+            sprdsht.EditIDListField(InfoFieldsPicker.SelectedItem.ToString(), SelectedInfoFieldEntry.Text, null);
+            bool temp = changedSettings.agreementPageFields[InfoFieldsPicker.SelectedItem.ToString()];
+            changedSettings.agreementPageFields.Remove(InfoFieldsPicker.SelectedItem.ToString());
+            changedSettings.agreementPageFields.Add(SelectedInfoFieldEntry.Text, temp);
+            List<string> fields = changedSettings.agreementPageFields.Keys.ToList();
             fields.Add("Add New Info Field (Max of 5)");
             InfoFieldsPicker.ItemsSource = fields;
             InfoFieldsPicker.SelectedIndex = InfoFieldsPicker.Items.IndexOf(SelectedInfoFieldEntry.Text);
@@ -135,7 +146,7 @@ public partial class CustomizationPage2 : ContentPage
         HandlerRunning = true;
         try
         {
-            s.agreementPageFields[InfoFieldsPicker.Items[InfoFieldsPicker.SelectedIndex]] = InfoFieldOnHomeCheckBox.IsChecked;
+            changedSettings.agreementPageFields[InfoFieldsPicker.Items[InfoFieldsPicker.SelectedIndex]] = InfoFieldOnHomeCheckBox.IsChecked;
         }
         catch { }
         
@@ -149,7 +160,7 @@ public partial class CustomizationPage2 : ContentPage
             return;
         HandlerRunning = true;
 
-        s.agreementPageText = UserAgreementText.Text;
+        changedSettings.agreementPageText = UserAgreementText.Text;
         
         HandlerRunning = false;
     }
@@ -161,7 +172,7 @@ public partial class CustomizationPage2 : ContentPage
         HandlerRunning = true;
         try
         {
-            s.agreementPageFields.Remove(SelectedInfoFieldEntry.Text);
+            changedSettings.agreementPageFields.Remove(SelectedInfoFieldEntry.Text);
         }
         catch
         {
@@ -169,14 +180,14 @@ public partial class CustomizationPage2 : ContentPage
             return;
         }
         
-        List<string> fields = s.agreementPageFields.Keys.ToList();
+        List<string> fields = changedSettings.agreementPageFields.Keys.ToList();
         fields.Add("Add New Info Field (Max of 5)");
         InfoFieldsPicker.ItemsSource = fields;
         InfoFieldsPicker.SelectedIndex = 0;
         SelectedInfoFieldEntry.Text = InfoFieldsPicker.SelectedItem.ToString();
         try
         {
-            InfoFieldOnHomeCheckBox.IsChecked = s.agreementPageFields[InfoFieldsPicker.Items[0]];
+            InfoFieldOnHomeCheckBox.IsChecked = changedSettings.agreementPageFields[InfoFieldsPicker.Items[0]];
         } 
         catch
         {

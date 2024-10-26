@@ -382,7 +382,7 @@ namespace SS
         /// will enter the time the user logged in and then save the file. Will return the name of the user.
         /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
-        public abstract string LoginUser(string ID, string logFilePath);
+        public abstract string LoginUser(string ID, string logFilePath, List<string> hiddenInfoFields);
 
         /// <summary>
         /// Will attempt to save the spreadsheet filled with student ID information to the program to try to prevent the issue of 
@@ -416,7 +416,7 @@ namespace SS
         /// <summary>
         /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
         /// </summary>
-        public abstract void EditIDListField(String old, String newName);
+        public abstract void EditIDListField(String old, String newName, String newField);
     }
 }
 

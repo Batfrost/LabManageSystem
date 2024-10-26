@@ -17,9 +17,9 @@ public partial class HomePage : ContentPage
 		
 		this.Settings = sett;
 		Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
-		List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
+		List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
         SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
-        SprdSht.GetCurrentlyLoggedIn(SpecialFieldsList);
+        SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
         currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
         try
 		{
@@ -54,7 +54,9 @@ public partial class HomePage : ContentPage
 		{
 			try
 			{
-                userName = SprdSht.LoginUser(UIDEntry.Text);
+                Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
+                List<String> SpecialHiddenFields = (List<String>)agreementPageInfo["SpecialHiddenFields"];
+                userName = SprdSht.LoginUser(UIDEntry.Text, SpecialHiddenFields);
             }
 			catch
 			{

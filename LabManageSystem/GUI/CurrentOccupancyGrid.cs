@@ -53,8 +53,8 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
     public CurrentOccupancyGrid()
     {
         Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
-        List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
-        COL_COUNT = 4 + SpecialFieldsList.Count; //ID, First Name, Last Name, time logged in, plus special visible fields User wants.
+        List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
+        COL_COUNT = 4 + SpecialVisibleFields.Count; //ID, First Name, Last Name, time logged in, plus special visible fields User wants.
         graphicsView.Drawable = this;
         graphicsView.HeightRequest = (rowCount) * DATA_ROW_HEIGHT;
         graphicsView.WidthRequest = (COL_COUNT) * dataColWidth;

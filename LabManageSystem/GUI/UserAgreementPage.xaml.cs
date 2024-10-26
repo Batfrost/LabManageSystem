@@ -10,9 +10,12 @@ public partial class UserAgreementPage : ContentPage
 
         InitializeComponent();
         Dictionary<String, Object> agreementPageInfo = S.GetAgreementPageInfo();
-        List<String> SpecialFieldsList = (List<String>)agreementPageInfo["SpecialFieldsList"];
-		UAText.Text = (string)agreementPageInfo["UAText"];
-		for (int i = 0; i < SpecialFieldsList.Count; i++)
+        List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
+        List<String> SpecialHiddenFields = (List<String>)agreementPageInfo["SpecialHiddenFields"];
+        List<String> InfoFields = SpecialVisibleFields;
+        InfoFields.AddRange(SpecialHiddenFields);
+        UAText.Text = (string)agreementPageInfo["UAText"];
+		for (int i = 0; i < InfoFields.Count; i++)
 		{
 			switch(i)
 			{
@@ -21,35 +24,35 @@ public partial class UserAgreementPage : ContentPage
 					Field1E.IsEnabled = true;
                     Field1L.IsVisible = true;
                     Field1E.IsVisible = true;
-                    Field1L.Text = SpecialFieldsList[i];
+                    Field1L.Text = InfoFields[i];
                     break;
 				case 1:
                     Field2L.IsEnabled = true;
                     Field2E.IsEnabled = true;
                     Field2L.IsVisible = true;
                     Field2E.IsVisible = true;
-                    Field2L.Text = SpecialFieldsList[i];
+                    Field2L.Text = InfoFields[i];
                     break;
 				case 2:
                     Field3L.IsEnabled = true;
                     Field3E.IsEnabled = true;
                     Field3L.IsVisible = true;
                     Field3E.IsVisible = true;
-                    Field3L.Text = SpecialFieldsList[i];
+                    Field3L.Text = InfoFields[i];
                     break;
 				case 3:
                     Field4L.IsEnabled = true;
                     Field4L.IsVisible = true;
                     Field4E.IsVisible = true;
                     Field4E.IsEnabled = true;
-                    Field4L.Text = SpecialFieldsList[i];
+                    Field4L.Text = InfoFields[i];
                     break;
 				case 4:
                     Field5L.IsEnabled = true;
                     Field5E.IsEnabled = true;
                     Field5L.IsVisible = true;
                     Field5E.IsVisible = true;
-                    Field5L.Text = SpecialFieldsList[i];
+                    Field5L.Text = InfoFields[i];
                     break;
 			}
 			
@@ -74,9 +77,7 @@ public partial class UserAgreementPage : ContentPage
 		bool notEverythingFilled = false;
         if (IDEntry.Text == "" || NameEntry.Text == "")
             notEverythingFilled = true;
-        List<string> userInfo = new List<string>();
-        userInfo.Add(IDEntry.Text);
-        userInfo.Add(NameEntry.Text);
+        List<string> userInfo = new List<string> { IDEntry.Text, NameEntry.Text };
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -91,25 +92,25 @@ public partial class UserAgreementPage : ContentPage
                 case 1:
                     if (Field2E.IsEnabled)
                         if (Field2E.Text != "")
-                            userInfo.Add(Field1E.Text);
+                            userInfo.Add(Field2E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 2:
                     if (Field3E.IsEnabled)
                         if (Field3E.Text != "")
-                            userInfo.Add(Field1E.Text);
+                            userInfo.Add(Field3E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 3:
                     if (Field4E.IsEnabled)
                         if (Field4E.Text != "")
-                            userInfo.Add(Field1E.Text);
+                            userInfo.Add(Field4E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 4:
                     if (Field5E.IsEnabled)
                         if (Field5E.Text != "")
-                            userInfo.Add(Field1E.Text);
+                            userInfo.Add(Field5E.Text);
                         else notEverythingFilled = true;
                     break;
             }

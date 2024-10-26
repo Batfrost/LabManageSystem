@@ -108,6 +108,7 @@ namespace Sett
             Dictionary<String, Object> UAPInfo = new Dictionary<String, Object>();
             
             List<String> specialVisibleFields = new List<String>();
+            List<String> specialHiddenFields = new List<String>();
             foreach (KeyValuePair<String, bool> field in agreementPageFields) 
             {
                 if (field.Value)
@@ -116,9 +117,16 @@ namespace Sett
                         specialVisibleFields.Add(field.Key);
                     else specialVisibleFields.Add(field.Key + ": ");
                 }
+                else
+                {
+                    if (field.Key.Contains(":"))
+                        specialHiddenFields.Add(field.Key);
+                    else specialHiddenFields.Add(field.Key + ": ");
+                }
             }
             UAPInfo.Add("UAText", agreementPageText);
-            UAPInfo.Add("SpecialFieldsList", specialVisibleFields);
+            UAPInfo.Add("SpecialVisibleFields", specialVisibleFields);
+            UAPInfo.Add("SpecialHiddenFields", specialHiddenFields);
             return UAPInfo;
         }
 

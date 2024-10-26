@@ -649,7 +649,7 @@ namespace SS
         /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
         /// <returns>The name of the user logging in, or NOT FOUND if user still needs to sign user agreement</returns>
-        public override string LoginUser(string ID, string logFilePath)
+        public override string LoginUser(string ID, string logFilePath, List<string> hiddenInfoFields)
         {
             
             //The log might not exist yet in this folder, so a new log will be created based off of the date
@@ -776,7 +776,7 @@ namespace SS
                 char cLetter = cName.First();
                 cNum = int.Parse(cName.Substring(1));
 
-                while (cLetter != 'F') //Go from A to E, since that's all the currentlyLoggedIn spreadsheet holds.
+                while (CurrentlyLoggedIn!.cellValues.ContainsKey(cName)) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
                 {
                     CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
                     cLetter = (char)(cLetter + 1);
@@ -806,7 +806,11 @@ namespace SS
                 for (int i = 2; i < userInfo.Count; i++)
                 {
                     string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i])).Key;
+                    
                     IDLogColHeader = IDList!.cellValues[IDLogColHeader.First() + "1"].ToString()!;
+
+                    if (hiddenInfoFields.Contains(IDLogColHeader.Trim().Trim(':') + ": "))
+                        continue;
                     while (true) //Checking for what column in CurrentlyLoggedIn corresponds to a column with the same info field header inside the User Log, and then can figure out what part of userInfo to put in CurrLogged'scells.
                     {
                         CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter + 1);
@@ -818,13 +822,14 @@ namespace SS
                             {
                                 //If equal, then this userInfo[i] field will be placed on currentlyLoggedIn here
                                 CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), userInfo[i]);
+                                break;
                             }
                         }
                         else break; //Reached end of Currently LoggedIn
                     }
                 }
 
-                CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter - 1);
+                CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter + 1);
                 CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), DateTime.Now.ToShortTimeString());
             }
 
@@ -922,10 +927,32 @@ namespace SS
         /// <summary>
         /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
         /// </summary>
-        public override void EditIDListField(String old, String newName)
+        public override void EditIDListField(String old, String newName, String newField)
         {
             if (IDList is null) 
                 IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+            if (newField is not null) //Instead of changing an existing IDList field, a new Field is getting added
+            {
+                //The Time Signed: column will be moved on the ID list over, and this new field column will be input.
+                string cellName = IDList.cellValues.First(entryLog => entryLog.Value.Equals("Time Signed:")).Key;
+                char cL = cellName.First();
+                int cNum = int.Parse(cellName.Substring(1));
+
+                //First, the Time Signed Col will be moved over:
+                while(IDList.cellValues.ContainsKey(cL + cNum.ToString()))
+                {
+                    string temp = IDList.cellValues[cL + cNum.ToString()].ToString()!;
+                    IDList.SetContentsOfCell(cL + cNum.ToString(), ""); //Delete old location
+                    IDList.SetContentsOfCell((char)(cL + 1) + cNum.ToString(), temp);
+                    //Increment row
+                    cNum++;
+                }
+
+                //Next, place new Info Field in
+                IDList.SetContentsOfCell(cellName, newField);
+
+
+            }
             if (!IDList!.cellValues.ContainsValue(old)) //Somehow the field they are trying to change isn't detected inside the ID list.
                 return;
             char cellLetter = 'C';
@@ -961,28 +988,43 @@ namespace SS
                     break;
                 for (int i = 0; i <  VisibleFieldsList.Count; i++)
                 {
-                    string val = (string)IDList!.cellValues[cellLetter + "1"];
-                    val = val.Trim();
-                    val = val.Trim(':');
-                    string field = VisibleFieldsList[i].ToString();
-                    field = field.Trim();
-                    field = field.Trim(':');
-                    if (IDList!.cells.ContainsKey(cellLetter + "1") && field.Equals(val))
+                    try
                     {
-                        CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
-                        CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", VisibleFieldsList[i]);
-                        if (i == VisibleFieldsList.Count - 1)
+                        
+                        if (IDList!.cells.ContainsKey(cellLetter + "1"))
                         {
-                            endReached = true; break;
+                            string val = (string)IDList!.cellValues[cellLetter + "1"];
+                            val = val.Trim();
+                            val = val.Trim(':');
+                            string field = VisibleFieldsList[i].ToString();
+                            field = field.Trim();
+                            field = field.Trim(':');
+                            if (val.Equals("Time Signed") || field.Equals(val)) //If they match or there is still a visible field to be shown, but the val from the IDList is Time Signed, software will insert info field and move Time signed to next slot.
+                            {
+                                CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
+                                CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", VisibleFieldsList[i]);
+                                if (i == VisibleFieldsList.Count - 1)
+                                {
+                                    endReached = true; break;
+                                }
+                            }
+                            
                         }
-                    } 
-                    else if (!IDList!.cells.ContainsKey(cellLetter + "1"))
+                        else
+                        {
+                            endReached = true;
+                            break;
+                        }
+
+                        cellLetter = (char)(cellLetter + 1);
+                    }
+                    catch //In case an exception occurs here (maybe due to User changing Info Fields often or something similar) prevent crashing and just end loop.
                     {
-                        endReached = true;
-                        break;
+                        //Instead, a compromise can occur here where if a user doesn't have specific fields causing the crash, this spot can be empty.
+                        CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
+                        endReached = true; break;
                     }
                     
-                    cellLetter = (char)(cellLetter + 1);
                 }
             }
             CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
