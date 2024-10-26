@@ -8,7 +8,7 @@ public partial class ManagerPasswordPage : ContentPage
 	public ManagerPasswordPage()
 	{
         InitializeComponent();
-        s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         string secQuestText = s.securityQuestion.Item1;
         SecurityQuestionLabel.Text = secQuestText;
     }
@@ -36,7 +36,7 @@ public partial class ManagerPasswordPage : ContentPage
         }
 
         s.password = NewPasswordEntry.Text;
-        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         await Navigation.PopToRootAsync();
         App.Current.MainPage = new NavigationPage(new HomePage(s));
     }

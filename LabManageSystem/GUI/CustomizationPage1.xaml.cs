@@ -25,7 +25,7 @@ public partial class CustomizationPage1 : ContentPage
             return;
         }
         
-        Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         if (s.TestPassword(NewPasswordEntry.Text))
         {
             await DisplayAlert("Error", "Old Password is Wrong.", "Ok");
@@ -33,7 +33,7 @@ public partial class CustomizationPage1 : ContentPage
         }
 
         s.password = NewPasswordEntry.Text;
-        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         await Navigation.PopToRootAsync();
         App.Current.MainPage = new NavigationPage(new HomePage(s));
 

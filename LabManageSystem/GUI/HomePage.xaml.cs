@@ -20,15 +20,13 @@ public partial class HomePage : ContentPage
 		List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
         SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
         SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
-        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
         try
 		{
 			if (!SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList()))
 				DisplayAlert("User ID Spreadsheet Error", "There was an error checking the student List file, \n please make sure the file is closed and try again.", "Ok");
 		} catch (Exception ex){ DisplayAlert("Error", "Problem loading the file with all Users ID's. Error: \n" + ex.Message, "OK."); }
 	}
-
-
 
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
@@ -47,7 +45,7 @@ public partial class HomePage : ContentPage
 	void LoginUser(object sender, EventArgs e)
 	{
 		SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
-        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+        currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
 
         string userName = "";
 		if (UIDEntry.Text.Length == 8)

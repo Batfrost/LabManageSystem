@@ -31,7 +31,7 @@ public partial class ManagerPage : ContentPage
     {
         var psi = new ProcessStartInfo();
         psi.FileName = @"c:\windows\explorer.exe";
-        psi.Arguments = @"C:\ProgramData\Log Files";
+        psi.Arguments = @"C:\ProgramData\TWLogging";
         Process.Start(psi);
     }
 

@@ -19,6 +19,7 @@ using WinRT;
 using Windows.ApplicationModel.Email;
 using Windows.Devices.Printers;
 using Microsoft.UI.Xaml;
+using Windows.Media.AppBroadcasting;
 
 namespace SS
 {
@@ -649,12 +650,9 @@ namespace SS
         /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
         /// <returns>The name of the user logging in, or NOT FOUND if user still needs to sign user agreement</returns>
-        public override string LoginUser(string ID, string logFilePath, List<string> hiddenInfoFields)
+        public override string LoginUser(string ID, List<string> hiddenInfoFields)
         {
-            
-            //The log might not exist yet in this folder, so a new log will be created based off of the date
-            if (!logFilePath.Contains(DateTime.Today.ToString().Split(" ").First().Replace("/", "-")))
-                logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+            string logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
             
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
@@ -775,13 +773,19 @@ namespace SS
                 cName = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
                 char cLetter = cName.First();
                 cNum = int.Parse(cName.Substring(1));
+                //The last cell to delete will be the Time Logged In Cell, which should always exist.
+                string endCell = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
+                char endCol = endCell.First();
 
-                while (CurrentlyLoggedIn!.cellValues.ContainsKey(cName)) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
+                while (cLetter != endCol) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
                 {
                     CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
                     cLetter = (char)(cLetter + 1);
                     cName = cLetter + cNum.ToString();
                 }
+
+                //Then also delete that last col's field too.
+                CurrentlyLoggedIn!.SetContentsOfCell(endCol + cNum.ToString(), "");
             }
             else
             {
@@ -802,38 +806,28 @@ namespace SS
                 CurrentlyLoggedIn!.SetContentsOfCell("C" + cNum, userInfo[1]);
 
                 //With custom info fields, the column headers of the currently logged in sheet matter, so we can tell what to display here or not.
-                char CurrLoggedInCellLetter = 'C';
                 for (int i = 2; i < userInfo.Count; i++)
                 {
                     string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i])).Key;
-                    
                     IDLogColHeader = IDList!.cellValues[IDLogColHeader.First() + "1"].ToString()!;
-
                     if (hiddenInfoFields.Contains(IDLogColHeader.Trim().Trim(':') + ": "))
                         continue;
-                    while (true) //Checking for what column in CurrentlyLoggedIn corresponds to a column with the same info field header inside the User Log, and then can figure out what part of userInfo to put in CurrLogged'scells.
-                    {
-                        CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter + 1);
-                        if (CurrentlyLoggedIn!.cellValues.ContainsKey(CurrLoggedInCellLetter + "1"))
-                        {
-                            string field = CurrentlyLoggedIn!.cellValues[CurrLoggedInCellLetter + "1"].ToString()!.Trim().Trim(':');
-                            //First figure out if this cell header this current column has in currentlyLoggedIn is equal to the column getting tracked in IDList
-                            if (IDLogColHeader.Equals(field))
-                            {
-                                //If equal, then this userInfo[i] field will be placed on currentlyLoggedIn here
-                                CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), userInfo[i]);
-                                break;
-                            }
-                        }
-                        else break; //Reached end of Currently LoggedIn
-                    }
-                }
 
-                CurrLoggedInCellLetter = (char)(CurrLoggedInCellLetter + 1);
-                CurrentlyLoggedIn!.SetContentsOfCell(CurrLoggedInCellLetter + cNum.ToString(), DateTime.Now.ToShortTimeString());
+                    //Check to see if Currently Logged In will show this info field, if so then we can just place the field found into Currently Logged in.
+                    try
+                    {
+                        //Since CurrentlyLoggedIn will have the col headers include a ': ', confirm that the IDLogColHeader is same format
+                        IDLogColHeader = IDLogColHeader.Trim().Trim(':') + ": "; //Trim it in case it already has ': ', and then add it (since sometimes it won't)
+                        string field = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(IDLogColHeader)).Key;
+                        CurrentlyLoggedIn!.SetContentsOfCell(field.First() + cNum.ToString(), userInfo[i]); //With just Field.First() we know which column to place this.
+                    }
+                    catch { } //If that field does not exist inside CurrentlyLoggedIn, then it's either hidden, or something got missed, but just continue
+                }
+                string timeField = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
+                CurrentlyLoggedIn!.SetContentsOfCell(timeField.First() + cNum.ToString(), DateTime.Now.ToShortTimeString());
             }
 
-            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
 
             if (SomeoneIsLoggingOut) 
                 return userInfo[0] + " " + userInfo[1] + " Logged out: ";
@@ -890,7 +884,7 @@ namespace SS
         {
             try
             {
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
             } 
             catch (SpreadsheetReadWriteException e)
             {
@@ -913,7 +907,7 @@ namespace SS
                     cellLetter = (char)(cellLetter + 1);
                     IDList.SetContentsOfCell(cellLetter + "1", "Time Signed:");
 
-                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
+                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
                     return true;
                 }
                 //The file exists, but other errors are still happening, this most likely means it is open by another process.
@@ -929,8 +923,8 @@ namespace SS
         /// </summary>
         public override void EditIDListField(String old, String newName, String newField)
         {
-            if (IDList is null) 
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+            IDList ??= new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+
             if (newField is not null) //Instead of changing an existing IDList field, a new Field is getting added
             {
                 //The Time Signed: column will be moved on the ID list over, and this new field column will be input.
@@ -951,7 +945,7 @@ namespace SS
                 //Next, place new Info Field in
                 IDList.SetContentsOfCell(cellName, newField);
 
-
+                IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
             }
             if (!IDList!.cellValues.ContainsValue(old)) //Somehow the field they are trying to change isn't detected inside the ID list.
                 return;
@@ -964,7 +958,7 @@ namespace SS
                 }
                 cellLetter = (char)(cellLetter + 1);
             }
-            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
+            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
         }
 
         /// <summary>
@@ -1029,7 +1023,7 @@ namespace SS
             }
             CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
             CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", "Time Logged In:");
-            CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\currentlyLoggedIn.csv");
+            CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
             return CurrentlyLoggedIn;
         }
 
@@ -1039,7 +1033,7 @@ namespace SS
         public override void AddUsersInformation(List<string> userInfo)
         {
             if (IDList is null) //If someone is logging in, settings are already established, and the ID list should have been created
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv", s => true, s => s.ToUpper(), "lab");
+                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
 
             //First item in userInfo will be ID. The first char is a '0' and will become a u for their 'u'IDs
             string ID = "u" + userInfo[0].Substring(1);
@@ -1062,17 +1056,19 @@ namespace SS
             //User will be added now. A col will be ID, B col will be the name of the user, Then next cols will hold user specified fields, Last col will be time of signature.
             IDList.SetContentsOfCell("A" + cellNum, ID);
             IDList.SetContentsOfCell("B" + cellNum, userInfo[1]);
-            char cellLetter = 'B';
             for (int i = 2; i < userInfo.Count; i++)
             {
-                cellLetter = (char)(cellLetter + 1);
-                IDList.SetContentsOfCell(cellLetter + cellNum.ToString(), userInfo[i]);
+                //Check info given compared to the column headers of the userID file to place information where it should be.
+                string fieldHeader = userInfo[i].Split("&&")[0].Trim().Trim(':');
+                string fieldInfo = userInfo[i].Split("&&")[1];
+                string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(fieldHeader)).Key;
+                IDList!.SetContentsOfCell(IDLogColHeader.First() + cellNum.ToString(), fieldInfo);
             }
-            cellLetter = (char)(cellLetter + 1);
-            IDList.SetContentsOfCell(cellLetter + cellNum.ToString(), DateTime.Now.ToString());
+            string lastCell = IDList!.cellValues.First(entryLog => entryLog.Value.Equals("Time Signed:")).Key; //Enter the time that the User Signed
+            IDList.SetContentsOfCell(lastCell.First() + cellNum.ToString(), DateTime.Now.ToString());
 
             //Save the file
-            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\studentList.csv");
+            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
         }
 
         /// <summary>
@@ -1146,7 +1142,7 @@ namespace SS
                         dateGettingChecked = new DateTime(year, month, day);   
                         if (mode == 5) { counts[(int)dateGettingChecked.DayOfWeek]++; } //Will want the total number of mondays, tuesdays, etc, even if no one logged in on those days for computing averages. Mode for all weekdays specifically
                         //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
-                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
+                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + new DateTime(year, month, day).ToString("yyyy-MMMM") + "\\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
                         try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
                         catch { continue; }
                         if (mode == 5) //Mode for all days of week

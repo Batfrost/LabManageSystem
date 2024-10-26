@@ -466,7 +466,7 @@ public partial class SpreadsheetPage : ContentPage
     /// <param name="e"></param>
     public string LoginUser(string ID, List<string> hiddenInfoFields)
     {
-        return spreadsheetGrid.LoginUser(ID, Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv", hiddenInfoFields);
+        return spreadsheetGrid.LoginUser(ID, hiddenInfoFields);
     }
 
     /// <summary>

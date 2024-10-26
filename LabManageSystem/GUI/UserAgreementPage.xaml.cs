@@ -86,31 +86,31 @@ public partial class UserAgreementPage : ContentPage
                 case 0:
 					if (Field1E.IsEnabled)
                         if (Field1E.Text != "")
-                            userInfo.Add(Field1E.Text);
+                            userInfo.Add(Field1L.Text + "&&" + Field1E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 1:
                     if (Field2E.IsEnabled)
                         if (Field2E.Text != "")
-                            userInfo.Add(Field2E.Text);
+                            userInfo.Add(Field2L.Text + "&&" + Field2E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 2:
                     if (Field3E.IsEnabled)
                         if (Field3E.Text != "")
-                            userInfo.Add(Field3E.Text);
+                            userInfo.Add(Field3L.Text + "&&" + Field3E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 3:
                     if (Field4E.IsEnabled)
                         if (Field4E.Text != "")
-                            userInfo.Add(Field4E.Text);
+                            userInfo.Add(Field4L.Text + "&&" + Field4E.Text);
                         else notEverythingFilled = true;
                     break;
                 case 4:
                     if (Field5E.IsEnabled)
                         if (Field5E.Text != "")
-                            userInfo.Add(Field5E.Text);
+                            userInfo.Add(Field5L.Text + "&&" + Field5E.Text);
                         else notEverythingFilled = true;
                     break;
             }

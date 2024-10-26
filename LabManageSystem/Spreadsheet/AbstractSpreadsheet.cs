@@ -382,7 +382,7 @@ namespace SS
         /// will enter the time the user logged in and then save the file. Will return the name of the user.
         /// Updates the CurrentOccupancyGrid on the HomePage to show who is currently logged in.
         /// </summary>
-        public abstract string LoginUser(string ID, string logFilePath, List<string> hiddenInfoFields);
+        public abstract string LoginUser(string ID, List<string> hiddenInfoFields);
 
         /// <summary>
         /// Will attempt to save the spreadsheet filled with student ID information to the program to try to prevent the issue of 

@@ -21,7 +21,7 @@ public class CurrentOccupancyGrid : ScrollView, IDrawable
     private int dataColWidth = 150;
     private const int DATA_ROW_HEIGHT = 35;
     private const int PADDING = 4;
-    private Settings Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\Log Files\settings.config");
+    private Settings Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
 
     private int COL_COUNT = 1;
     private int rowCount = 100;
