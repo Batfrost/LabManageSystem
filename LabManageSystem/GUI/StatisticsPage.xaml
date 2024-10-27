@@ -53,6 +53,13 @@
                 Margin="25"
                 HeightRequest="50"
                 WidthRequest="150"/>
+            <Label/>
+            <Label
+                Text="The numbers that appear for these stats represent the average amount of people that checked in with the app during whichever period was selected. E.g. If 0.25 appears above Monday when all days of the week are selected, this just means that on average, there was one person every four mondays that checked in."
+                LineBreakMode="WordWrap"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                MaximumWidthRequest="400"/>
             <charts:ChartView x:Name="Chart" HeightRequest="300"/>
             <Button 
                 x:Name="CancelButton"

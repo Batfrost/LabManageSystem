@@ -416,7 +416,7 @@ namespace SS
         /// <summary>
         /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
         /// </summary>
-        public abstract void EditIDListField(String old, String newName, String newField);
+        public abstract void EditIDListField(String old, String newName, String newField, String fieldToDelete);
     }
 }
 

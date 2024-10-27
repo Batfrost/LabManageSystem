@@ -3,61 +3,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpreadsheetGUI.ManagerPage"
              Title="ManagerPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Manager View"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        <Label/>
-        <Label/>
-        <Button 
-            Text="Get Traffic Statistics"
-            x:Name="StatsButton"
-            BackgroundColor="Snow"
-            TextColor="Black"
-            BorderColor="Black"
-            HeightRequest="50"
-            WidthRequest="200"
-            Clicked="GoToStatsPage"/>
-        <Label/>
-        <Button 
-    Text="Customize Settings"
-    x:Name="CustomizationButton"
-    BackgroundColor="Snow"
-    TextColor="Black"
-    BorderColor="Black"
-    HeightRequest="50"
-    WidthRequest="200"
-    Clicked="GoToCustomizationPage"/>
-        <Label/>
-        <Button 
-    Text="Spreadsheet Mode"
-    x:Name="SpreadsheetButton"
-    BackgroundColor="Snow"
-    TextColor="Black"
-    BorderColor="Black"
-    HeightRequest="50"
-    WidthRequest="200"
-    Clicked="GoToSpreadsheetPage"/>
-        <Label/>
-        <Button 
-    Text="Show Save Location"
-    x:Name="SaveLocationButton"
-    BackgroundColor="Snow"
-    TextColor="Black"
-    BorderColor="Black"
-    HeightRequest="50"
-    WidthRequest="200"
-    Clicked="OpenSaveLocation"/>
-        <Label/>
-        <Button 
-    Text="Return To Home"
-    x:Name="ReturnButton"
-    BackgroundColor="Snow"
-    TextColor="Black"
-    BorderColor="Black"
-    HeightRequest="50"
-    WidthRequest="200"
-    Clicked="GoToHomePage"/>
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Manager View"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+            <Label/>
+            <Label/>
+            <Button 
+                Text="Lookup/Edit User's Info"
+                x:Name="LookupUserButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="LookupUserButton_Clicked"/>
+            <Label/>
+            <Button 
+                Text="Get Traffic Statistics"
+                x:Name="StatsButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToStatsPage"/>
+            <Label/>
+            <Button 
+                Text="Customize Settings"
+                x:Name="CustomizationButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToCustomizationPage"/>
+            <Label/>
+            <Button 
+                Text="Spreadsheet Mode"
+                x:Name="SpreadsheetButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToSpreadsheetPage"/>
+            <Label/>
+            <Button 
+                Text="Show Save Location"
+                x:Name="SaveLocationButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="OpenSaveLocation"/>
+            <Label/>
+            <Button 
+                Text="Return To Home"
+                x:Name="ReturnButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToHomePage"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

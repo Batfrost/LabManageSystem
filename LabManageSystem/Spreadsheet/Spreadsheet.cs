@@ -834,9 +834,9 @@ namespace SS
             return userInfo[0] + " " + userInfo[1] + " Logged in: ";
         }
 
-        //This private method will search through a specified file that is full of all student ID's 
-        //and if the student is registered into system, will return their first and last name
-        private List<string> GetStudentInfo(string ID)
+        //This method will search through a specified file that is full of all student ID's 
+        //and if the student is registered into system, will return their information.
+        public List<string> GetStudentInfo(string ID)
         {
             List<string> studentInfo = new List<string> { "NOT FOUND", "NOT FOUND" };
 
@@ -921,7 +921,7 @@ namespace SS
         /// <summary>
         /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
         /// </summary>
-        public override void EditIDListField(String old, String newName, String newField)
+        public override void EditIDListField(String old, String newName, String newField, String fieldToDelete)
         {
             IDList ??= new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
 
@@ -946,7 +946,44 @@ namespace SS
                 IDList.SetContentsOfCell(cellName, newField);
 
                 IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+                return;
             }
+
+            if (fieldToDelete is not null) //A field is getting removed.
+            {
+                //Field To Delete col will be erased
+                string cellName = IDList.cellValues.First(entryLog => entryLog.Value.Equals(fieldToDelete)).Key;
+                char cL = cellName.First();
+                int cNum = int.Parse(cellName.Substring(1));
+
+                while (IDList.cellValues.ContainsKey(cL + cNum.ToString()))
+                {
+                    IDList.SetContentsOfCell(cL + cNum.ToString(), ""); //Delete 
+                    //Increment row
+                    cNum++;
+                }
+
+                //Move rows to right over left by one to fill in 
+                cL = (char)(cL + 1);
+                cNum = 1;
+                while (IDList.cellValues.ContainsKey(cL + cNum.ToString()))
+                {
+                    while (IDList.cellValues.ContainsKey(cL + cNum.ToString()))
+                    {
+                        string temp = IDList.cellValues[cL + cNum.ToString()].ToString()!;
+                        IDList.SetContentsOfCell(cL + cNum.ToString(), ""); //Delete old location
+                        IDList.SetContentsOfCell((char)(cL - 1) + cNum.ToString(), temp); 
+                        //Increment row
+                        cNum++;
+                    }
+                    cL = (char)(cL + 1);
+                    cNum = 1;
+                }
+
+                IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+                return;
+            }
+
             if (!IDList!.cellValues.ContainsValue(old)) //Somehow the field they are trying to change isn't detected inside the ID list.
                 return;
             char cellLetter = 'C';

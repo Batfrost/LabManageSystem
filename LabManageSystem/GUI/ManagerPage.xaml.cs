@@ -40,4 +40,9 @@ public partial class ManagerPage : ContentPage
         await Navigation.PopAsync();
         return;
     }
+
+    private async void LookupUserButton_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new LookupUserPage());
+    }
 }

@@ -96,6 +96,9 @@
 	  <MauiXaml Update="HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="LookupUserPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="ManagerPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

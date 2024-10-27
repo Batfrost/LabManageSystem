@@ -124,11 +124,11 @@ public partial class CustomizationPage2 : ContentPage
             InfoFieldsPicker.ItemsSource = fields;
             InfoFieldsPicker.SelectedIndex = InfoFieldsPicker.Items.IndexOf(SelectedInfoFieldEntry.Text);
             //Update the IDList too
-            sprdsht.EditIDListField(null, null, SelectedInfoFieldEntry.Text);
+            sprdsht.EditIDListField(null, null, SelectedInfoFieldEntry.Text, null);
         }
         else //Editing an existing info field name
         {
-            sprdsht.EditIDListField(InfoFieldsPicker.SelectedItem.ToString(), SelectedInfoFieldEntry.Text, null);
+            sprdsht.EditIDListField(InfoFieldsPicker.SelectedItem.ToString(), SelectedInfoFieldEntry.Text, null, null);
             bool temp = changedSettings.agreementPageFields[InfoFieldsPicker.SelectedItem.ToString()];
             changedSettings.agreementPageFields.Remove(InfoFieldsPicker.SelectedItem.ToString());
             changedSettings.agreementPageFields.Add(SelectedInfoFieldEntry.Text, temp);
@@ -174,6 +174,7 @@ public partial class CustomizationPage2 : ContentPage
         try
         {
             changedSettings.agreementPageFields.Remove(SelectedInfoFieldEntry.Text);
+            sprdsht.EditIDListField(null, null, null, InfoFieldsPicker.SelectedItem.ToString());
         }
         catch
         {
