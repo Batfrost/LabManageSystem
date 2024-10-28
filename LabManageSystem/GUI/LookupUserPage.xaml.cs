@@ -146,7 +146,7 @@ public partial class LookupUserPage : ContentPage
         char cellLetter = 'A';
         string cellNum = IDCell[1..];
         //Delete this user's info, so we can add the newly edited info for them
-        for (int i = 0; i < FieldCount + 1; i++)
+        for (int i = 0; i < FieldCount + 3; i++)
         {
             userList.SetContentsOfCell(IDCell, "");
             cellLetter = (char)(cellLetter + 1);

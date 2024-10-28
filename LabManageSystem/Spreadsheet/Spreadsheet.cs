@@ -770,22 +770,29 @@ namespace SS
             //Update CurrentlyLoggedIn depending on if this attempt was a log in or a log out.
             if (SomeoneIsLoggingOut)
             {
-                cName = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
-                char cLetter = cName.First();
-                cNum = int.Parse(cName.Substring(1));
-                //The last cell to delete will be the Time Logged In Cell, which should always exist.
-                string endCell = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
-                char endCol = endCell.First();
-
-                while (cLetter != endCol) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
+                try
                 {
-                    CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
-                    cLetter = (char)(cLetter + 1);
-                    cName = cLetter + cNum.ToString();
-                }
+                    cName = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                    char cLetter = cName.First();
+                    cNum = int.Parse(cName.Substring(1));
+                    //The last cell to delete will be the Time Logged In Cell, which should always exist.
+                    string endCell = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
+                    char endCol = endCell.First();
 
-                //Then also delete that last col's field too.
-                CurrentlyLoggedIn!.SetContentsOfCell(endCol + cNum.ToString(), "");
+                    while (cLetter != endCol) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
+                    {
+                        CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
+                        cLetter = (char)(cLetter + 1);
+                        cName = cLetter + cNum.ToString();
+                    }
+
+                    //Then also delete that last col's field too.
+                    CurrentlyLoggedIn!.SetContentsOfCell(endCol + cNum.ToString(), "");
+                }
+                catch
+                {
+                    //User was logged in but CurrentlyLoggedIn got reset somewhere earlier, so just log them out without deleting anything - since the info is already gone on the currentlyLoggedIn anyways
+                }
             }
             else
             {
@@ -808,7 +815,7 @@ namespace SS
                 //With custom info fields, the column headers of the currently logged in sheet matter, so we can tell what to display here or not.
                 for (int i = 2; i < userInfo.Count; i++)
                 {
-                    string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i])).Key;
+                    string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i]) && IDList!.cellValues["A" + entryLog.Key[1..]].Equals(ID)).Key;
                     IDLogColHeader = IDList!.cellValues[IDLogColHeader.First() + "1"].ToString()!;
                     if (hiddenInfoFields.Contains(IDLogColHeader.Trim().Trim(':') + ": "))
                         continue;
@@ -853,7 +860,15 @@ namespace SS
                 } else
                 {
                     studentInfo[0] = temp[0];
-                    studentInfo[1] = temp[1];
+                    try
+                    {
+                        studentInfo[1] = temp[1];
+                    }
+                    catch
+                    {
+                        //If this error occurs, then User only input a first name, so just leave the last name part blank
+                        studentInfo[1] = "";
+                    }
                 }
 
                 //Get remaining fields (besides for time signed)

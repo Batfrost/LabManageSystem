@@ -9,15 +9,15 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		
 		<!-- Display name -->
-		<ApplicationTitle>SpreadsheetGUI</ApplicationTitle>
+		<ApplicationTitle>TWLogging</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.spreadsheetgrid</ApplicationId>
 		<ApplicationIdGuid>F4F42848-9040-41A1-BF68-3183E0E99EF5</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>2.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(Configuration)' == 'Release'">
 		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
@@ -26,20 +26,21 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
 		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
 	  <MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
 	  <MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|x64'">
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|x64'">
 	</PropertyGroup>
 	<PropertyGroup>
 		<MsPdbCmfExeFullpath>..\tools\MsPdbCmf.exe</MsPdbCmfExeFullpath>
-		<PackageCertificateThumbprint>4CE15B21560ECDDD168B94B6B3E4B2B27B5C9098</PackageCertificateThumbprint>
+		<PackageCertificateThumbprint>810A41615FD4E9EB4D1C4D4E2878D386E26A8861</PackageCertificateThumbprint>
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<PackageCertificateKeyFile>GUI_TemporaryKey.pfx</PackageCertificateKeyFile>
 	</PropertyGroup>
 	
 	

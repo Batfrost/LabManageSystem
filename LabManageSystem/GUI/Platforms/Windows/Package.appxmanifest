@@ -5,7 +5,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="LabManageSystemPackage" Publisher="CN=FoolishTree" Version="1.3.0.0" />
+  <Identity Name="TWLoggingPackage" Publisher="CN=FoolishTree" Version="2.0.0.0" />
 
   <Properties>
     <DisplayName>$placeholder$</DisplayName>
@@ -25,8 +25,8 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="LabManageSystem"
-        Description="App designed for use in the 0333A Lab at the MEK building at the University of Utah."
+        DisplayName="TWLogging"
+        Description="App designed for use within an organization or area that lets visitors/users check in and out, and gathers statistics based on this logging information."
         Square150x150Logo="$placeholder$.png"
         Square44x44Logo="$placeholder$.png"
         BackgroundColor="transparent">

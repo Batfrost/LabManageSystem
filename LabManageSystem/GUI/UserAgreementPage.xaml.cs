@@ -78,6 +78,7 @@ public partial class UserAgreementPage : ContentPage
         if (IDEntry.Text == "" || NameEntry.Text == "")
             notEverythingFilled = true;
         List<string> userInfo = new List<string> { IDEntry.Text, NameEntry.Text };
+        List<string> isUniqueCheck = new List<string>();
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -86,31 +87,46 @@ public partial class UserAgreementPage : ContentPage
                 case 0:
 					if (Field1E.IsEnabled)
                         if (Field1E.Text != "")
+                        {
+                            isUniqueCheck.Add(Field1E.Text);
                             userInfo.Add(Field1L.Text + "&&" + Field1E.Text);
+                        }
                         else notEverythingFilled = true;
                     break;
                 case 1:
                     if (Field2E.IsEnabled)
                         if (Field2E.Text != "")
+                        {
+                            isUniqueCheck.Add(Field2E.Text);
                             userInfo.Add(Field2L.Text + "&&" + Field2E.Text);
+                        }
                         else notEverythingFilled = true;
                     break;
                 case 2:
                     if (Field3E.IsEnabled)
                         if (Field3E.Text != "")
+                        {
+                            isUniqueCheck.Add(Field3E.Text);
                             userInfo.Add(Field3L.Text + "&&" + Field3E.Text);
+                        }
                         else notEverythingFilled = true;
                     break;
                 case 3:
                     if (Field4E.IsEnabled)
                         if (Field4E.Text != "")
+                        {
+                            isUniqueCheck.Add(Field4E.Text);
                             userInfo.Add(Field4L.Text + "&&" + Field4E.Text);
+                        }
                         else notEverythingFilled = true;
                     break;
                 case 4:
                     if (Field5E.IsEnabled)
                         if (Field5E.Text != "")
+                        {
+                            isUniqueCheck.Add(Field5E.Text);
                             userInfo.Add(Field5L.Text + "&&" + Field5E.Text);
+                        }
                         else notEverythingFilled = true;
                     break;
             }
@@ -123,6 +139,12 @@ public partial class UserAgreementPage : ContentPage
 			await DisplayAlert("Error", "Make sure all boxes are filled out.", "Ok");
 			return;
 		}
+
+        if (isUniqueCheck.Distinct().Count() != isUniqueCheck.Count) //Unfortunately, no repeat info fields can be placed.
+        {
+            await DisplayAlert("Error", "Each field needs to be unique, sorry.\nMake sure none are the same.", "Ok");
+            return;
+        }
 
 		try
 		{
