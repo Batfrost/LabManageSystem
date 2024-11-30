@@ -20,6 +20,7 @@ using Windows.ApplicationModel.Email;
 using Windows.Devices.Printers;
 using Microsoft.UI.Xaml;
 using Windows.Media.AppBroadcasting;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SS
 {
@@ -1077,6 +1078,62 @@ namespace SS
             CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", "Time Logged In:");
             CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
             return CurrentlyLoggedIn;
+        }
+
+        /// <summary>
+        /// User will be automatically logged out after 2 hours, as in their username and info will no longer be shown on the currently logged in sheet.
+        /// </summary>
+        public override void LogoutUserFromCurrentlyLoggedInSheet(string ID)
+        {
+            //Getting file
+            string logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+            Spreadsheet userLog = new();
+
+            //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
+            try
+            {
+                userLog = new Spreadsheet(logFilePath, s => true, s => s.ToUpper(), "lab");
+            }
+            catch
+            {
+                userLog.Save(logFilePath);
+            }
+
+            //The first char is a '0' and will become a u for their 'u'IDs
+            ID = "u" + ID.Substring(1);
+
+            //First check if the user already logged out manually, and if so just return.
+            if (!userLog.cellValues.ContainsValue(ID))
+                return;
+
+            //User will be logged out automatically
+            try
+            {
+                string cName = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                char cLetter = cName.First();
+                int cNum = int.Parse(cName.Substring(1));
+                //The last cell to delete will be the Time Logged In Cell, which should always exist.
+                string endCell = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
+                char endCol = endCell.First();
+
+                while (cLetter != endCol) //Empty the fields on the CurrentlyLoggedIn Sheet for this user.
+                {
+                    CurrentlyLoggedIn!.SetContentsOfCell(cName, "");
+                    cLetter = (char)(cLetter + 1);
+                    cName = cLetter + cNum.ToString();
+                }
+
+                //Then also delete that last col's field too.
+                CurrentlyLoggedIn!.SetContentsOfCell(endCol + cNum.ToString(), "");
+            }
+            catch
+            {
+                //User was logged in but CurrentlyLoggedIn got reset somewhere earlier, so just log them out without deleting anything - since the info is already gone on the currentlyLoggedIn anyways
+            }
+
+            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+
+
         }
 
         /// <summary>

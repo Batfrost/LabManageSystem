@@ -417,6 +417,11 @@ namespace SS
         /// When user customizes a specific into field in the ID list, this method can be called to edit the field.
         /// </summary>
         public abstract void EditIDListField(String old, String newName, String newField, String fieldToDelete);
+
+        /// <summary>
+        /// User will be automatically logged out after 2 hours, as in their username and info will no longer be shown on the currently logged in sheet.
+        /// </summary>
+        public abstract void LogoutUserFromCurrentlyLoggedInSheet(string ID);
     }
 }
 

@@ -483,4 +483,9 @@ public partial class SpreadsheetPage : ContentPage
     {
         return spreadsheetGrid.GetCurrentlyLoggedIn(SpecialFieldsList);
     }
+
+    public void LogoutUserFromCurrentlyLoggedInSheet(string ID)
+    {
+        spreadsheetGrid.LogoutUserFromCurrentlyLoggedInSheet(ID);
+    }
 }

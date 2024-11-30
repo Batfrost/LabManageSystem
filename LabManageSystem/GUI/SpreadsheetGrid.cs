@@ -650,4 +650,9 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     {
         return sheet.GetCurrentlyLoggedInSpreadsheet(VisibleFieldsList);
     }
+
+    public void LogoutUserFromCurrentlyLoggedInSheet(string ID)
+    {
+        sheet.LogoutUserFromCurrentlyLoggedInSheet(ID);
+    }
 }
