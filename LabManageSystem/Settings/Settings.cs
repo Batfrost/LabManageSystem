@@ -16,6 +16,8 @@ namespace Sett
         [JsonProperty]
         public Dictionary<String, bool> agreementPageFields;
         Settings settings;
+        [JsonProperty]
+        public String saveFileLocation = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\TWLogging\\";
         
 
 

@@ -8,12 +8,13 @@ public partial class LookupUserPage : ContentPage
     List<String> InfoFields = new List<String>();
     String IDCell = "";
     int FieldCount = 0;
+    Settings S;
 	public LookupUserPage()
 	{
         InitializeComponent();
         try
         {
-            Settings S = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
+            S = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
             Dictionary<String, Object> agreementPageInfo = S.GetAgreementPageInfo();
             List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
             List<String> SpecialHiddenFields = (List<String>)agreementPageInfo["SpecialHiddenFields"];
@@ -77,7 +78,7 @@ public partial class LookupUserPage : ContentPage
         List<string> userInfo = sprd.GetStudentInfo(ID);
         if (userInfo[0] == "NOT FOUND") //If they typed in the name instead, we'll try to search for the name inside the userList
         {
-            Spreadsheet userList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+            Spreadsheet userList = new Spreadsheet(S.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
             foreach (string cell in userList.GetNamesOfAllNonemptyCells())
             {
                 if (LookupEntry.Text.Trim().ToLower().Equals(userList.GetCellContents(cell).ToString().Trim().ToLower()))
@@ -129,7 +130,7 @@ public partial class LookupUserPage : ContentPage
 
     private async void SubmitButton_Clicked(object sender, EventArgs e)
     {
-        Spreadsheet userList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+        Spreadsheet userList = new Spreadsheet(S.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
         string potentialID = "u" + LookupEntry.Text[1..];
         if (IDCell == "") //If this var isn't empty, then the user looked up using the users Name, not their ID, so the software knows which var or entry contains the cell Name for the start of the user's information.
         {
@@ -152,7 +153,7 @@ public partial class LookupUserPage : ContentPage
             cellLetter = (char)(cellLetter + 1);
             IDCell = cellLetter + cellNum;
         }
-        userList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+        userList.Save(S.saveFileLocation + "userList.csv");
 
         SpreadsheetGrid grid = new SpreadsheetGrid();
         bool notEverythingFilled = false;

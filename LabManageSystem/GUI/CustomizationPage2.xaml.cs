@@ -8,15 +8,17 @@ public partial class CustomizationPage2 : ContentPage
     Settings oldSettings;
     Spreadsheet oldIDList;
     Settings changedSettings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
-    Spreadsheet changedIDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+    Spreadsheet changedIDList;
     Spreadsheet sprdsht = new Spreadsheet();
     bool HandlerRunning = false; //Don't want a handler to change one of the Xaml objects and call another handler right away. Only want handlers to run if User did something.
 	public CustomizationPage2()
 	{
         InitializeComponent();
+        changedIDList = new Spreadsheet(changedSettings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
+
         //Keep track of original settings if they cancel.
         oldSettings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
-        oldIDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+        oldIDList = new Spreadsheet(changedSettings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
 
         List<string> fields = new List<string>();
         try
@@ -49,7 +51,7 @@ public partial class CustomizationPage2 : ContentPage
     async private void CancelButton_Clicked(object sender, EventArgs e)
     {
         //Revert changes with saved settings and IDList
-        oldIDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+        oldIDList.Save(changedSettings.saveFileLocation + "userList.csv");
         oldSettings.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
 
         await Navigation.PopAsync();

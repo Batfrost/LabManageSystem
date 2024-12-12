@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormulaEvaluator", "FormulaEvaluator\FormulaEvaluator.csproj", "{1422C424-D329-4269-9009-F19E7B27EB8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spreadsheet", "Spreadsheet\Spreadsheet.csproj", "{9FAE9BD3-2DF8-4D03-9AD3-A0B45E0B06BB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1AA7EDF-1F0A-4877-B798-EA2FD47B17D3} = {A1AA7EDF-1F0A-4877-B798-EA2FD47B17D3}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI", "GUI\GUI.csproj", "{B44EE6DE-0AAF-4E51-AAF5-94F1E264AC18}"
 EndProject

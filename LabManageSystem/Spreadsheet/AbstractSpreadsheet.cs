@@ -422,6 +422,11 @@ namespace SS
         /// User will be automatically logged out after 2 hours, as in their username and info will no longer be shown on the currently logged in sheet.
         /// </summary>
         public abstract void LogoutUserFromCurrentlyLoggedInSheet(string ID);
+
+        /// <summary>
+        /// Will load the settings object from the given filepath so that the spreadsheet object has access to settings fields.
+        /// </summary>
+        public abstract void LoadSettings();
     }
 }
 

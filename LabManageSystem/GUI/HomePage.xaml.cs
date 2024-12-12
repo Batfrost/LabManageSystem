@@ -19,11 +19,12 @@ public partial class HomePage : ContentPage
 			SprdSht = new SpreadsheetPage();
 
 			Settings = sett;
+			SprdSht.LoadSettings();
 			Dictionary<String, Object> agreementPageInfo = Settings.GetAgreementPageInfo();
 			List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
 			SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
-			currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 			try
 			{
 				if (!SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList()))
@@ -53,7 +54,7 @@ public partial class HomePage : ContentPage
 		lock (lockObject)
 		{
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
-			currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 
 			string userName = "";
 			if (UIDEntry.Text.Length == 8)
@@ -98,7 +99,7 @@ public partial class HomePage : ContentPage
 			timer.Stop();
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
 			SprdSht.LogoutUserFromCurrentlyLoggedInSheet(ID);
-			currentlyLoggedIn.Load(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 		}
     }
 

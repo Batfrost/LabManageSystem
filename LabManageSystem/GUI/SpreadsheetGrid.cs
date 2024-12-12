@@ -655,4 +655,9 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     {
         sheet.LogoutUserFromCurrentlyLoggedInSheet(ID);
     }
+
+    public void LoadSettings()
+    {
+        sheet.LoadSettings();
+    }
 }

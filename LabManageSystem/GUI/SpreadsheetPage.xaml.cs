@@ -488,4 +488,9 @@ public partial class SpreadsheetPage : ContentPage
     {
         spreadsheetGrid.LogoutUserFromCurrentlyLoggedInSheet(ID);
     }
+
+    public void LoadSettings()
+    {
+        spreadsheetGrid.LoadSettings();
+    }
 }

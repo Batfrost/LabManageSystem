@@ -21,6 +21,7 @@ using Windows.Devices.Printers;
 using Microsoft.UI.Xaml;
 using Windows.Media.AppBroadcasting;
 using Microsoft.UI.Xaml.Controls;
+using Sett;
 
 namespace SS
 {
@@ -40,6 +41,7 @@ namespace SS
         private bool change;
         private Spreadsheet? IDList;
         public Spreadsheet? CurrentlyLoggedIn;
+        public Settings Settings = new Settings();
         
 
         /// <summary>
@@ -653,7 +655,7 @@ namespace SS
         /// <returns>The name of the user logging in, or NOT FOUND if user still needs to sign user agreement</returns>
         public override string LoginUser(string ID, List<string> hiddenInfoFields)
         {
-            string logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+            string logFilePath = Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
             
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
@@ -834,8 +836,8 @@ namespace SS
                 string timeField = CurrentlyLoggedIn!.cellValues.First(entryLog => entryLog.Value.Equals("Time Logged In:")).Key;
                 CurrentlyLoggedIn!.SetContentsOfCell(timeField.First() + cNum.ToString(), DateTime.Now.ToShortTimeString());
             }
-
-            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+            
+            CurrentlyLoggedIn!.Save(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 
             if (SomeoneIsLoggingOut) 
                 return userInfo[0] + " " + userInfo[1] + " Logged out: ";
@@ -900,7 +902,7 @@ namespace SS
         {
             try
             {
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+                IDList = new Spreadsheet(Settings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
             } 
             catch (SpreadsheetReadWriteException e)
             {
@@ -923,7 +925,7 @@ namespace SS
                     cellLetter = (char)(cellLetter + 1);
                     IDList.SetContentsOfCell(cellLetter + "1", "Time Signed:");
 
-                    IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+                    IDList.Save(Settings.saveFileLocation + "userList.csv");
                     return true;
                 }
                 //The file exists, but other errors are still happening, this most likely means it is open by another process.
@@ -939,7 +941,7 @@ namespace SS
         /// </summary>
         public override void EditIDListField(String old, String newName, String newField, String fieldToDelete)
         {
-            IDList ??= new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+            IDList ??= new Spreadsheet(Settings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
 
             if (newField is not null) //Instead of changing an existing IDList field, a new Field is getting added
             {
@@ -961,7 +963,7 @@ namespace SS
                 //Next, place new Info Field in
                 IDList.SetContentsOfCell(cellName, newField);
 
-                IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+                IDList.Save(Settings.saveFileLocation + "userList.csv");
                 return;
             }
 
@@ -996,7 +998,7 @@ namespace SS
                     cNum = 1;
                 }
 
-                IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+                IDList.Save(Settings.saveFileLocation + "userList.csv");
                 return;
             }
 
@@ -1011,7 +1013,7 @@ namespace SS
                 }
                 cellLetter = (char)(cellLetter + 1);
             }
-            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+            IDList.Save(Settings.saveFileLocation + "userList.csv");
         }
 
         /// <summary>
@@ -1076,7 +1078,7 @@ namespace SS
             }
             CurrLogInCellLetter = (char)(CurrLogInCellLetter + 1);
             CurrentlyLoggedIn.SetContentsOfCell(CurrLogInCellLetter + "1", "Time Logged In:");
-            CurrentlyLoggedIn.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+            CurrentlyLoggedIn.Save(Settings.saveFileLocation + "currentlyLoggedIn.csv");
             return CurrentlyLoggedIn;
         }
 
@@ -1086,7 +1088,7 @@ namespace SS
         public override void LogoutUserFromCurrentlyLoggedInSheet(string ID)
         {
             //Getting file
-            string logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+            string logFilePath = Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy -MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
 
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
@@ -1131,7 +1133,7 @@ namespace SS
                 //User was logged in but CurrentlyLoggedIn got reset somewhere earlier, so just log them out without deleting anything - since the info is already gone on the currentlyLoggedIn anyways
             }
 
-            CurrentlyLoggedIn!.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\currentlyLoggedIn.csv");
+            CurrentlyLoggedIn!.Save(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 
 
         }
@@ -1142,7 +1144,7 @@ namespace SS
         public override void AddUsersInformation(List<string> userInfo)
         {
             if (IDList is null) //If someone is logging in, settings are already established, and the ID list should have been created
-                IDList = new Spreadsheet(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv", s => true, s => s.ToUpper(), "lab");
+                IDList = new Spreadsheet(Settings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
 
             //First item in userInfo will be ID. The first char is a '0' and will become a u for their 'u'IDs
             string ID = "u" + userInfo[0].Substring(1);
@@ -1177,7 +1179,15 @@ namespace SS
             IDList.SetContentsOfCell(lastCell.First() + cellNum.ToString(), DateTime.Now.ToString());
 
             //Save the file
-            IDList.Save(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\userList.csv");
+            IDList.Save(Settings.saveFileLocation + "userList.csv");
+        }
+
+        /// <summary>
+        /// Will load the settings object from the given filepath so that the spreadsheet object has access to settings fields.
+        /// </summary>
+        public override void LoadSettings()
+        {
+            Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         }
 
         /// <summary>
@@ -1251,7 +1261,7 @@ namespace SS
                         dateGettingChecked = new DateTime(year, month, day);   
                         if (mode == 5) { counts[(int)dateGettingChecked.DayOfWeek]++; } //Will want the total number of mondays, tuesdays, etc, even if no one logged in on those days for computing averages. Mode for all weekdays specifically
                         //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
-                        currLogToCheck = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\Logs\" + new DateTime(year, month, day).ToString("yyyy-MMMM") + "\\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
+                        currLogToCheck = Settings.saveFileLocation + "Logs\\" + new DateTime(year, month, day).ToString("yyyy -MMMM") + "\\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
                         try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
                         catch { continue; }
                         if (mode == 5) //Mode for all days of week
