@@ -22,6 +22,16 @@
                 Clicked="LookupUserButton_Clicked"/>
             <Label/>
             <Button 
+                Text="Attendance Tracker Page"
+                x:Name="AttendancePageButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="GoToAttendancePage"/>
+            <Label/>
+            <Button 
                 Text="Get Traffic Statistics"
                 x:Name="StatsButton"
                 BackgroundColor="Snow"

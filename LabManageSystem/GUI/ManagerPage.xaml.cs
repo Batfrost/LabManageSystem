@@ -47,4 +47,9 @@ public partial class ManagerPage : ContentPage
     {
         await Navigation.PushAsync(new LookupUserPage());
     }
+
+    private async void GoToAttendancePage(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AttendancePage());
+    }
 }
