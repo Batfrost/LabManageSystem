@@ -657,6 +657,7 @@ namespace SS
         {
             string logFilePath = Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
+            LoadSettings();
             
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
             try

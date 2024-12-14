@@ -49,6 +49,7 @@ namespace Sett
             agreementPageText = settings.agreementPageText;
             agreementPageFields = settings.agreementPageFields;
             securityQuestion = settings.securityQuestion;
+            saveFileLocation = settings.saveFileLocation;
             SaveSettingsFile(filePath);
             System.IO.File.Encrypt(filePath);
         }

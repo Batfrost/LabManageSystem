@@ -31,6 +31,15 @@
             WidthRequest="215"
             Clicked="EditUAPButton_Clicked"/>
         <Label/>
+        <Button 
+            Text="Change Save Location Folder"
+            x:Name="SaveLocationButton"
+            BackgroundColor="Snow"
+            TextColor="Black"
+            BorderColor="Black"
+            HeightRequest="50"
+            WidthRequest="215"
+            Clicked="ChangeSaveFolder"/>
 
         <Label/>
         <Label/>

@@ -1,3 +1,4 @@
+using Sett;
 using System.Diagnostics;
 
 namespace SpreadsheetGUI;
@@ -29,9 +30,10 @@ public partial class ManagerPage : ContentPage
 
     void OpenSaveLocation(object sender, EventArgs e)
     {
+        Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         var psi = new ProcessStartInfo();
         psi.FileName = @"c:\windows\explorer.exe";
-        psi.Arguments = @"C:\ProgramData\TWLogging";
+        psi.Arguments = s.saveFileLocation;
         Process.Start(psi);
     }
 
