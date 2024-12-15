@@ -10,7 +10,6 @@ namespace Sett
         public String password;
         [JsonProperty]
         public (String, String) securityQuestion;
-
         [JsonProperty]
         public String agreementPageText;
         [JsonProperty]
@@ -18,6 +17,8 @@ namespace Sett
         Settings settings;
         [JsonProperty]
         public String saveFileLocation = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\TWLogging\\";
+        [JsonProperty]
+        public List<String> AttendanceTrackers = new List<String>();
         
 
 
@@ -50,6 +51,7 @@ namespace Sett
             agreementPageFields = settings.agreementPageFields;
             securityQuestion = settings.securityQuestion;
             saveFileLocation = settings.saveFileLocation;
+            AttendanceTrackers = settings.AttendanceTrackers;
             SaveSettingsFile(filePath);
             System.IO.File.Encrypt(filePath);
         }
