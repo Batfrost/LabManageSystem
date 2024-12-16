@@ -5,11 +5,14 @@
              Title="Add Attendance Tracker Page">
     <ScrollView>
         <VerticalStackLayout>
+            <Label/>
             <Label 
                 Text="This page will let you add a Tracker that will keep track of when students have checked in on certain specified days. If a student has checked in without missing more than the allowed absence count, then a 'Yes' will show when you view the Attendance Tracker for this tracker later, else a 'No' will show."
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"
-                LineBreakMode="WordWrap"/>
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
             <Label/>
             <Label
                 Text="Please enter a name for this class/module/etc:"
@@ -18,14 +21,56 @@
             <Entry
                 x:Name="TrackerName"
                 HorizontalOptions="Center"
-                VerticalOptions="Center"/>
+                VerticalOptions="Center"
+                MaximumWidthRequest="70"/>
             <Label/>
 
             <Label
                 Text="What days of the week do you want this tracker to track attendance for?"
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"
-                LineBreakMode="WordWrap"/>
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
+            <HorizontalStackLayout
+                HorizontalOptions="Center">
+                <VerticalStackLayout>
+                    <Label
+                        Text="Monday"
+                        Padding="10"/>
+                    <CheckBox
+                        x:Name="MondayBox"
+                        />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label
+                        Text="Tuesday"
+                        Padding="10"/>
+                    <CheckBox
+                        x:Name="TuesdayBox"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label
+                        Text="Wednesday"
+                        Padding="10"/>
+                    <CheckBox
+                        x:Name="WednesdayBox"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label
+                        Text="Thursday"
+                        Padding="10"/>
+                    <CheckBox
+                        x:Name="ThursdayBox"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label
+                        Text="Friday"
+                        Padding="10"/>
+                    <CheckBox
+                        x:Name="FridayBox"/>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
             <Label/>
             <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
                 <Label Text="From: " Padding="25"/>
@@ -34,45 +79,13 @@
                 <DatePicker x:Name="ToDate"/>
             </HorizontalStackLayout>
             <Label/>
-            <HorizontalStackLayout>
-                <VerticalStackLayout>
-                    <Label
-                        Text="Monday"/>
-                    <CheckBox
-                        x:Name="MondayBox"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label
-                        Text="Tuesday"/>
-                    <CheckBox
-                        x:Name="TuesdayBox"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label
-                        Text="Wednesday"/>
-                    <CheckBox
-                        x:Name="WednesdayBox"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label
-                        Text="Thursday"/>
-                    <CheckBox
-                        x:Name="ThursdayBox"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label
-                        Text="Friday"/>
-                    <CheckBox
-                        x:Name="FridayBox"/>
-                </VerticalStackLayout>
-            </HorizontalStackLayout>
-            <Label/>
 
             <Label
                 Text="Please input the UIDs for the class/students you want this tracker to track attendance for: (As long as each ID has the normal 8 digits, you can paste all numbers in here, spaces or no spaces inbetween each number is fine, the software will divide it up.)"
                 LineBreakMode="WordWrap"
                 VerticalOptions="Center" 
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"
+                MaximumWidthRequest="750"/>
             <Label/>
             <Editor 
                 x:Name="StudentList"

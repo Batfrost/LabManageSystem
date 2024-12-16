@@ -18,7 +18,7 @@
                 TextColor="Black"
                 BorderColor="Black"
                 HeightRequest="50"
-                WidthRequest="200"
+                WidthRequest="250"
                 Clicked="AddAttendanceClicked"/>
             <Label/>
             <Button 
@@ -28,7 +28,7 @@
                 TextColor="Black"
                 BorderColor="Black"
                 HeightRequest="50"
-                WidthRequest="200"
+                WidthRequest="250"
                 Clicked="ViewAttendanceTrackerButton_Clicked"/>
             <Label/>
             <Button 

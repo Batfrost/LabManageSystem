@@ -2,6 +2,7 @@ using SS;
 
 namespace SpreadsheetGUI;
 
+
 public partial class AddAttendanceTrackerPage : ContentPage
 {
 	public AddAttendanceTrackerPage()
@@ -33,11 +34,6 @@ public partial class AddAttendanceTrackerPage : ContentPage
             return;
         }
 
-        if (AbsenceCount.Text == "")
-        {
-            await DisplayAlert("Error", "Fill out Number of Absences Allowed", "Ok");
-            return;
-        }
         String students = StudentList.Text.Trim(' ');
         if (students.Length % 8 != 0)
         {
