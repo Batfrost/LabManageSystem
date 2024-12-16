@@ -94,16 +94,6 @@
                 WidthRequest="700"
                 HorizontalOptions="Center"/>
             <Label/>
-            <Label
-                Text="Last thing, how many absences do you want to allow?"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"/>
-            <Entry
-                x:Name="AbsenceCount"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                Text="0"/>
-            <Label/>
             <Button 
                 Text="Confirm"
                 x:Name="AddAttendanceTrackerButton"
