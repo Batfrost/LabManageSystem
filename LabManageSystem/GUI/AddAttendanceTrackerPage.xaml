@@ -89,7 +89,7 @@
             <Label/>
             <Editor 
                 x:Name="StudentList"
-                Placeholder="E.g: 0111111102222222 or u1111111 u2222222; either will work."
+                Placeholder="E.g: 0111111102222222 or u1111111 u2222222; either will work, new lines are fine too."
                 HeightRequest="200"
                 WidthRequest="700"
                 HorizontalOptions="Center"/>
