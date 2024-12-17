@@ -112,6 +112,8 @@ public partial class AddAttendanceTrackerPage : ContentPage
             TrackerSheet.SetContentsOfCell("A" + (i+2).ToString(), "u" + theClass[i][1..]);
         }
         Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
+        s.AttendanceTrackers.Add(TrackerName.Text);
+        s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         TrackerSheet.Save(s.saveFileLocation + "AttendanceTrackers\\" + TrackerName.Text + ".csv");
         await DisplayAlert("Finished", "Attendance Tracker Finished! You can now view it.", "Ok");
         await Navigation.PopAsync();

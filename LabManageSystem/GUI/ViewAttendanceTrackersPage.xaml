@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:SS="clr-namespace:SS"
              x:Class="SpreadsheetGUI.ViewAttendanceTrackersPage"
              Title="View Attendance Trackers Page">
     <ScrollView>
-        <VerticalStackLayout>
-            <Label 
-                Text="Welcome to .NET MAUI!"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center" />
-
-            <Label/>
-            <Button 
-                x:Name="CancelButton"
-                Text="Cancel"
-                Clicked="ReturnToMenu"
-                Margin="25"
-                HeightRequest="50"
-                WidthRequest="150"/>
-        </VerticalStackLayout>
+        <Grid RowDefinitions="40, 40, *">
+            <VerticalStackLayout Padding="3" Grid.Row="0">
+                <HorizontalStackLayout Spacing="20" Padding="5" Grid.Row="1">
+                    <Button 
+                        x:Name="CancelButton"
+                        Text="Menu"
+                        Clicked="ReturnToMenu"
+                        HeightRequest="35"
+                        WidthRequest="70"
+                        Padding="3"/>
+                    <Picker
+                        x:Name="TrackerList"
+                        Title="Choose The Tracker to View:"
+                        HorizontalOptions="CenterAndExpand">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String></x:String>
+                                <x:String></x:String>
+                                <x:String></x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </HorizontalStackLayout>
+                <Entry x:Name ="cellContent" Text="" Placeholder="Enter Value Here" Completed="EnterPressed"></Entry>
+                <Label/>
+                <Label/>
+            </VerticalStackLayout>
+            <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2" />
+        </Grid>
     </ScrollView>
 </ContentPage>
