@@ -1,15 +1,24 @@
+using Sett;
 using SS;
 namespace SpreadsheetGUI;
 
 public partial class ViewAttendanceTrackersPage : ContentPage
 {
-	public ViewAttendanceTrackersPage()
+    Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
+    public ViewAttendanceTrackersPage()
 	{
 		InitializeComponent();
         //register the display selection event to the spreadsheet
         spreadsheetGrid.SelectionChanged += displaySelection;
         //set default seletion to A1 (0,0)
         spreadsheetGrid.SetSelection(0, 0);
+        List<string> trackers = new List<string>();
+        if (s.AttendanceTrackers != null)
+            trackers = s.AttendanceTrackers;
+        TrackerList.ItemsSource = trackers;
+        TrackerList.SelectedIndex = 0;
+        if (TrackerList.Items.Count == 0)
+            TrackerList.ItemsSource.Add("None");
     }
 
     /// <summary>
@@ -22,10 +31,6 @@ public partial class ViewAttendanceTrackersPage : ContentPage
         spreadsheetGrid.GetSelection(out int col, out int row);
         //get the value of the cell
         spreadsheetGrid.GetValue(col, row, out string value);
-        //set the name label text to currently selected cell
-        cellName.Text = ((Char)('A' + col)).ToString() + (row + 1).ToString();
-        //set value to value of currently selected cell
-        cellValue.Text = "Value : " + value.ToString();
         //set the entry to the currentely selected cells content
         spreadsheetGrid.getCellContent(col, row, out string c);
         cellContent.Text = c.ToString();
@@ -52,12 +57,18 @@ public partial class ViewAttendanceTrackersPage : ContentPage
         }
         //get and set value (whether changed or not)
         spreadsheetGrid.GetValue(col, row, out string c);
-        cellValue.Text = "Value : " + c;
     }
 
 
     async public void ReturnToMenu(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
+    }
+
+    private void TrackerList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (TrackerList.SelectedItem.Equals("None"))
+            return;
+        spreadsheetGrid.Load(s.saveFileLocation + "AttendanceTrackers\\" + TrackerList.SelectedItem + ".csv");
     }
 }

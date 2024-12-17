@@ -18,15 +18,8 @@
                     <Picker
                         x:Name="TrackerList"
                         Title="Choose The Tracker to View:"
-                        HorizontalOptions="CenterAndExpand">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String></x:String>
-                                <x:String></x:String>
-                                <x:String></x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
+                        HorizontalOptions="CenterAndExpand"
+                        SelectedIndexChanged="TrackerList_SelectedIndexChanged"/>
                 </HorizontalStackLayout>
                 <Entry x:Name ="cellContent" Text="" Placeholder="Enter Value Here" Completed="EnterPressed"></Entry>
                 <Label/>
