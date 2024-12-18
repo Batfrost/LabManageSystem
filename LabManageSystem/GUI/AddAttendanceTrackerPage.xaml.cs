@@ -115,7 +115,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
         s.AttendanceTrackers.Add(TrackerName.Text);
         s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         TrackerSheet.Save(s.saveFileLocation + "AttendanceTrackers\\" + TrackerName.Text + ".csv");
-        await DisplayAlert("Finished", "Attendance Tracker Finished! You can now view it.", "Ok");
+        await DisplayAlert("Finished", "Attendance Tracker Finished! You can now view it through any \nSpreadsheet software, or on the previous page.\nTo view file location, you can open the file location on the Manager Menu Page.", "Ok");
         await Navigation.PopAsync();
     }
 

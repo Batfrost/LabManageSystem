@@ -15,6 +15,22 @@ public partial class ViewAttendanceTrackersPage : ContentPage
         List<string> trackers = new List<string>();
         if (s.AttendanceTrackers != null)
             trackers = s.AttendanceTrackers;
+        //Double check that all trackers exist and are able to be loaded, if not, remove the tracker that isn't working and continue
+        for (int i = 0; i < trackers.Count; i++)
+        {
+            try
+            {
+                spreadsheetGrid.Load(s.saveFileLocation + "AttendanceTrackers\\" + trackers[i] + ".csv");
+            } 
+            catch
+            {
+                //This Tracker doesn't exist here anymore, (it got deleted or moved), so remove it from settings, save, and continue
+                s.AttendanceTrackers.Remove(trackers[i]);
+                s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
+                
+            }
+        }
+        trackers = s.AttendanceTrackers;
         TrackerList.ItemsSource = trackers;
         TrackerList.SelectedIndex = 0;
         if (TrackerList.Items.Count == 0)
@@ -69,6 +85,14 @@ public partial class ViewAttendanceTrackersPage : ContentPage
     {
         if (TrackerList.SelectedItem.Equals("None"))
             return;
-        spreadsheetGrid.Load(s.saveFileLocation + "AttendanceTrackers\\" + TrackerList.SelectedItem + ".csv");
+        try
+        {
+            spreadsheetGrid.Load(s.saveFileLocation + "AttendanceTrackers\\" + TrackerList.SelectedItem + ".csv");
+        } catch
+        {
+            //If an error occurs here, then the file was moved somewhere else or is deleted, so just remove from settings
+            TrackerList.SelectedItem = "None";
+
+        }
     }
 }
