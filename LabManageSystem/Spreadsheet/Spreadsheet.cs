@@ -681,6 +681,8 @@ namespace SS
             bool SomeoneIsLoggingOut = false;
             string cName = "";
             int cNum = 1;
+            //Mark attendance for this student if they are part of one of the trackers.
+            TrackAttendance(ID);
 
             if (userLog.cellValues.ContainsValue(ID))
             {
@@ -1135,8 +1137,39 @@ namespace SS
             }
 
             CurrentlyLoggedIn!.Save(Settings.saveFileLocation + "currentlyLoggedIn.csv");
+        }
 
-
+        /// <summary>
+        /// Will check to mark the given user's attendance as here using the attendance trackers made.
+        /// </summary>
+        private void TrackAttendance(string ID)
+        {
+            List<string> TrackerList = Settings.AttendanceTrackers;
+            Spreadsheet Tracker = new Spreadsheet();
+            for (int i = 0; i < TrackerList.Count; i++)
+            {
+                try
+                {
+                    Tracker = new Spreadsheet(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv", s => true, s => s.ToUpper(), "lab");
+                    //Check whether this user exisits within the tracker, and if so, find the current day to mark their attendance
+                    if (Tracker.cellValues.ContainsValue(ID))
+                    {
+                        try
+                        {
+                            string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd"))).Key;
+                            string usersRow = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                            Tracker.SetContentsOfCell(todaysColHeader.First() + usersRow[1..], "yes");
+                            Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
+                        }
+                        catch { continue; }
+                    }
+                }
+                catch
+                {
+                    //Tracker couldn't be found, so something happened to delete or move it.
+                    continue;
+                }
+            }
         }
 
         /// <summary>

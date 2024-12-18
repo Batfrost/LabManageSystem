@@ -110,6 +110,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
         for (int i = 0; i < theClass.Count; i++)
         {
             TrackerSheet.SetContentsOfCell("A" + (i+2).ToString(), "u" + theClass[i][1..]);
+            TrackerSheet.SetContentsOfCell("B" + (i + 2).ToString(), "0");
         }
         Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         s.AttendanceTrackers.Add(TrackerName.Text);
