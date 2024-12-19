@@ -25,6 +25,7 @@ public partial class HomePage : ContentPage
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
 			SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
 			SprdSht.AttendanceChecker();
+			ScheduleAttendanceCheck(DateTime.Today.AddHours(15.0));
 			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 			try
 			{
@@ -34,6 +35,13 @@ public partial class HomePage : ContentPage
 			catch (Exception ex) { DisplayAlert("Error", "Problem loading the file with all Users ID's. Error: \n" + ex.Message, "OK."); }
 		}
 	}
+
+	public async void ScheduleAttendanceCheck(DateTime ExecutionTime)
+	{
+		await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
+		SprdSht.AttendanceChecker();
+        ScheduleAttendanceCheck(DateTime.Today.AddHours(15.0));
+    }
 
 	async void GoToManagerMode(object sender, EventArgs e)
 	{
