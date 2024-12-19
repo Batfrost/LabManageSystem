@@ -493,4 +493,9 @@ public partial class SpreadsheetPage : ContentPage
     {
         spreadsheetGrid.LoadSettings();
     }
+
+    public void AttendanceChecker()
+    {
+        spreadsheetGrid.AttendanceChecker();
+    }
 }

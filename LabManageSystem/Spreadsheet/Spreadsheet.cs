@@ -1173,6 +1173,57 @@ namespace SS
         }
 
         /// <summary>
+        /// Whenever the software is booted up, or every day at a certain time, attendance for each attendance 
+        /// tracker will be checked and absences will be marked if users missed a day of attendance. 
+        /// HomePage will be the main controller for calling this method.
+        /// </summary>
+        public override void AttendanceChecker()
+        {
+            List<string> TrackerList = Settings.AttendanceTrackers;
+            Spreadsheet Tracker = new Spreadsheet();
+            for (int i = 0; i < TrackerList.Count; i++)
+            {
+                try
+                {
+                    Tracker = new Spreadsheet(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv", s => true, s => s.ToUpper(), "lab");
+                    //For each user, we want to check whether or not their attendance for each unchecked day till the current day should be marked as absent or not.
+                    char cellLetter = 'C';
+                    int cellNumber = 2;
+                    //Loop over each student that exists
+                    while (Tracker.cells.ContainsKey('A' + cellNumber.ToString()))
+                    {
+                        //With a specific student in mind, loop over each date
+                        while (Tracker.cells.ContainsKey(cellLetter + "1"))
+                        {
+                            //If we have reached the current date, so we don't need to check anything here and can go to next user/student.
+                            string temp = Tracker.cellValues[cellLetter + "1"].ToString()!;
+                            DateTime DateGettingChecked = DateTime.Parse(temp);
+                            if (DateGettingChecked.CompareTo(DateTime.Today) >= 0) { break; }
+                            //If this cell doesn't exist, then we can mark it as 'no' since the date getting checked isn't the current date, user hasn't logged in --> no 'yes', or has been previously checked yet with a pre-existing 'no'.
+                            if (!Tracker.cells.ContainsKey(cellLetter + cellNumber.ToString()))
+                            {
+                                Tracker.SetContentsOfCell(cellLetter + cellNumber.ToString(), "no");
+                                //And we can also update their absence count
+                                string prevAbsenceCount = Tracker.cellValues['B' + cellNumber.ToString()].ToString()!;
+                                int.TryParse(prevAbsenceCount, out int absenceCount);
+                                Tracker.SetContentsOfCell('B' + cellNumber.ToString(), (absenceCount + 1).ToString());
+                            }
+                            cellLetter = (char)(cellLetter + 1);
+                        }
+                        cellLetter = 'C';
+                        cellNumber++;
+                    }
+                    Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
+                }
+                catch
+                {
+                    //Tracker couldn't be found, so something happened to delete or move it.
+                    continue;
+                }
+            }
+        }
+
+        /// <summary>
         /// Will save the user's given info they gave by signing the user agreement into the signed user file.
         /// </summary>
         public override void AddUsersInformation(List<string> userInfo)

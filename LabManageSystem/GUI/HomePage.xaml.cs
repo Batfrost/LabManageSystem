@@ -24,6 +24,7 @@ public partial class HomePage : ContentPage
 			List<String> SpecialVisibleFields = (List<String>)agreementPageInfo["SpecialVisibleFields"];
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
 			SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
+			SprdSht.AttendanceChecker();
 			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 			try
 			{

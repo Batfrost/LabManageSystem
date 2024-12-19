@@ -660,4 +660,9 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     {
         sheet.LoadSettings();
     }
+
+    public void AttendanceChecker()
+    {
+        sheet.AttendanceChecker();
+    }
 }

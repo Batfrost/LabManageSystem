@@ -96,7 +96,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
                     for (int DayOfWeek = 0; DayOfWeek < DaysOfWeekInfo.Count; DayOfWeek++)
                         if ((int)date.DayOfWeek == DaysOfWeekInfo[DayOfWeek])
                         {
-                            TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd"));
+                            TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
                             cellLetter = (char)(cellLetter + 1);
                             break;
                         }

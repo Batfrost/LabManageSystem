@@ -29,9 +29,9 @@
 //    Version 1.9 (Daniel Kopta)      Removed GetSavedVersion
 //                (Fall 2022)
 //
-//    Version 2.0 (Trevor Williams)   Added a new abstract method LoginUser.
+//    Version 2.0 (Trevor Williams)   Added a new abstract method LoginUser, and other methods for logging users into a check in system.
 //                (September 2023)
-//    Version 2.1 (Trevor Williams)   Added a new abstract method GatherStatistics.
+//    Version 2.1 (Trevor Williams)   Added a new abstract method GatherStatistics, and other methods for making the software more customizable and for tracking specific classes or modules and users checking into them.
 //                (September 2024)
 
 using SpreadsheetUtilities;
@@ -427,6 +427,12 @@ namespace SS
         /// Will load the settings object from the given filepath so that the spreadsheet object has access to settings fields.
         /// </summary>
         public abstract void LoadSettings();
+
+        /// <summary>
+        /// Whenever the software is booted up, or every day at a certain time, attendance for each attendance 
+        /// tracker will be checked and absences will be marked if users missed a day of attendance.
+        /// </summary>
+        public abstract void AttendanceChecker();
     }
 }
 
