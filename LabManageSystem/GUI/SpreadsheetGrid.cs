@@ -41,7 +41,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     private const int LABEL_COL_WIDTH = 30;
     private const int LABEL_ROW_HEIGHT = 30;
     private const int PADDING = 4;
-    private const int COL_COUNT = 26;
+    private int colCount = 26;
     private int rowCount = 100;
     private const int FONT_SIZE = 12;
 
@@ -84,7 +84,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         BackgroundColor = Colors.LightGray;
         graphicsView.Drawable = this;
         graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
-        graphicsView.WidthRequest = LABEL_COL_WIDTH + (COL_COUNT + 1) * dataColWidth;
+        graphicsView.WidthRequest = LABEL_COL_WIDTH + (colCount + 1) * dataColWidth;
         graphicsView.BackgroundColor = Colors.LightGrey;
         graphicsView.EndInteraction += OnEndInteraction;
         this.Content = graphicsView;
@@ -211,6 +211,12 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             rowCount += 100;
             graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
         }
+        //Same for when the last col has a value put in:
+        if(a.Col == colCount)
+        {
+            colCount += 26;
+
+        }
             
         
         Invalidate();
@@ -284,7 +290,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     /// <returns>true or false depending on valid address</returns>
     private bool InvalidAddress(int col, int row)
     {
-        return col < 0 || row < 0 || col >= COL_COUNT || row >= rowCount;
+        return col < 0 || row < 0 || col >= colCount || row >= rowCount;
     }
 
     /// <summary>
@@ -320,7 +326,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         int x = (int)(eventX - _scrollX - LABEL_COL_WIDTH) / dataColWidth + _firstColumn;
         int y = (int)(eventY - _scrollY - LABEL_ROW_HEIGHT) / DATA_ROW_HEIGHT + _firstRow;
         //if mouse is clicked on a cell...
-        if (eventX > LABEL_COL_WIDTH && eventY > LABEL_ROW_HEIGHT && (x < COL_COUNT) && (y < rowCount))
+        if (eventX > LABEL_COL_WIDTH && eventY > LABEL_ROW_HEIGHT && (x < colCount) && (y < rowCount))
         {
             //set SelectedCol and SelectedRow to x and y
             _selectedCol = x;
@@ -421,13 +427,13 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         canvas.FillRectangle(
             LABEL_COL_WIDTH,
             LABEL_ROW_HEIGHT,
-            (COL_COUNT - _firstColumn) * dataColWidth,
+            (colCount - _firstColumn) * dataColWidth,
             (rowCount - _firstRow) * DATA_ROW_HEIGHT);
 
         // Draw the column lines
         int bottom = LABEL_ROW_HEIGHT + (rowCount - _firstRow) * DATA_ROW_HEIGHT;
         canvas.DrawLine(0, 0, 0, bottom);
-        for (int x = 0; x <= (COL_COUNT - _firstColumn); x++)
+        for (int x = 0; x <= (colCount - _firstColumn); x++)
         {
             canvas.DrawLine(
                 LABEL_COL_WIDTH + x * dataColWidth, 0,
@@ -435,14 +441,14 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         }
 
         // Draw the column labels
-        for (int x = 0; x < COL_COUNT - _firstColumn; x++)
+        for (int x = 0; x < colCount - _firstColumn; x++)
         {
             DrawColumnLabel(canvas, x,
                 (_selectedCol - _firstColumn == x) ? Font.Default : Font.DefaultBold);
         }
 
         // Draw the row lines
-        int right = LABEL_COL_WIDTH + (COL_COUNT - _firstColumn) * dataColWidth;
+        int right = LABEL_COL_WIDTH + (colCount - _firstColumn) * dataColWidth;
         canvas.DrawLine(0, 0, right, 0);
         for (int y = 0; y <= rowCount - _firstRow; y++)
         {

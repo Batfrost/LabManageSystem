@@ -10,6 +10,7 @@ public partial class HomePage : ContentPage
 	public ManagerPage ManagerPg;
 	private Settings Settings;
 	static private readonly object lockObject = new object();
+	public DateTime ScheduledTime = DateTime.Today.AddHours(1.0);
 
 	public HomePage(Settings sett)
 	{
@@ -25,7 +26,7 @@ public partial class HomePage : ContentPage
 			SprdSht.GetIDList(Settings.agreementPageFields.Keys.ToList());
 			SprdSht.GetCurrentlyLoggedIn(SpecialVisibleFields);
 			SprdSht.AttendanceChecker();
-			ScheduleAttendanceCheck(DateTime.Today.AddHours(15.0));
+			ScheduleAttendanceCheck(ScheduledTime);
 			currentlyLoggedIn.Load(Settings.saveFileLocation + "currentlyLoggedIn.csv");
 			try
 			{
@@ -38,9 +39,16 @@ public partial class HomePage : ContentPage
 
 	public async void ScheduleAttendanceCheck(DateTime ExecutionTime)
 	{
-		await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
-		SprdSht.AttendanceChecker();
-        ScheduleAttendanceCheck(DateTime.Today.AddHours(15.0));
+		if ((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds > 0)
+			await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
+		else
+		{
+			//Its past the scheduled time so wait till tomorrow.
+			ExecutionTime = ExecutionTime.AddDays(1.0);
+			await Task.Delay((int)ExecutionTime.Subtract(DateTime.Now).TotalMilliseconds);
+        }
+        SprdSht.AttendanceChecker();
+        ScheduleAttendanceCheck(ExecutionTime.AddDays(1.0));
     }
 
 	async void GoToManagerMode(object sender, EventArgs e)
