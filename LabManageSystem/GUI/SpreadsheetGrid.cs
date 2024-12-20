@@ -210,12 +210,16 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         {
             rowCount += 100;
             graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
+            graphicsView.WidthRequest = LABEL_COL_WIDTH + (colCount + 1) * dataColWidth;
+            this.Content = graphicsView;
         }
         //Same for when the last col has a value put in:
-        if(a.Col == colCount)
+        if(a.Col == colCount - 1)
         {
-            colCount += 26;
-
+            colCount *= 2;   
+            graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
+            graphicsView.WidthRequest = LABEL_COL_WIDTH + (colCount + 1) * dataColWidth;
+            this.Content = graphicsView;
         }
             
         
@@ -398,7 +402,14 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         /// <returns></returns>
         public string ToGridCell()
         {
-            return ((Char)('A' + Col)).ToString() + (Row + 1).ToString();
+            if (Col < 26)
+                return ((Char)('A' + Col)).ToString() + (Row + 1).ToString();
+            else
+            {
+                int colFirstLetter = (Col / 26) - 1;
+                int colSecLetter = Col % 26;
+                return ((Char)('A' + colFirstLetter)).ToString() + ((Char)('A' + colSecLetter)).ToString() + (Row + 1).ToString();
+            }
         }
     }
 
@@ -523,7 +534,16 @@ public class SpreadsheetGrid : ScrollView, IDrawable
     /// <param name="f"> font</param>
     private void DrawColumnLabel(ICanvas canvas, int x, Font f)
     {
-        String label = ((char)('A' + x + _firstColumn)).ToString();
+        String label;
+        if (x + _firstColumn <= 25)
+            label = ((char)('A' + x + _firstColumn)).ToString();
+        else
+        {
+            int extraDigit = ((x + _firstColumn) / 26) - 1;
+            int rem = ((x + _firstColumn) % 26);
+            label = ((char)('A' + extraDigit)).ToString(); 
+            label += ((char)('A' + rem)).ToString();
+        }
         SizeF size = canvas.GetStringSize(label, f, FONT_SIZE + FONT_SIZE * 1.75f);
         canvas.Font = f;
         canvas.FontSize = FONT_SIZE;
@@ -567,7 +587,15 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             return false;
         }
         //if not in values return blank string and true
-        object x = sheet.GetCellContents(((Char)('A' + col)).ToString() + (row + 1).ToString());
+        object x = "";
+        if (col < 26)
+            x = sheet.GetCellContents(((Char)('A' + col)).ToString() + (row + 1).ToString());
+        else
+        {
+            int colFirstLetter = (col / 26) - 1;
+            int colSecLetter = col % 26;
+            x = sheet.GetCellContents(((Char)('A' + colFirstLetter)).ToString() + ((Char)('A' + colSecLetter)).ToString() + (row + 1).ToString());
+        }
         //otherwise 
         //if formula add = for content else set c = to string form of
         if (x is Formula)

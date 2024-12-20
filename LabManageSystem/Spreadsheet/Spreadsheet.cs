@@ -468,14 +468,19 @@ namespace SS
                     //Move the letter to the other side: A1 -> 1A, A10 -> 10A, and convert to number format.
                     for (int i = 0; i < sortedKeys.Count; i++)
                     {
-                        sortedKeys[i] = new string(sortedKeys[i].Substring(1) + (int)sortedKeys[i].First());
+                        sortedKeys[i] = new string(sortedKeys[i].Substring(1) + ((int)sortedKeys[i].First()-50));
+                        if ((int)sortedKeys[i].First() >= 65)
+                        {
+                            sortedKeys[i] = new string(sortedKeys[i].Substring(1, sortedKeys[i].Length - 3) + ((int)sortedKeys[i].First() - 50 + 32));
+                        }
                         keysAsNums.Add(int.Parse(sortedKeys[i]));
                     }
                     //Sort and then change back, now the keys used below will be grabbed by col-row order.
                     keysAsNums.Sort();
+
                     for (int i = 0; i < sortedKeys.Count; i++)
                     {
-                        char letter = (char)int.Parse(keysAsNums[i].ToString()[^2..]);
+                        char letter = (char)(int.Parse(keysAsNums[i].ToString()[^2..])+50);
                         sortedKeys[i] = new string(letter + keysAsNums[i].ToString()[..^2]);
                     }
 
@@ -484,7 +489,13 @@ namespace SS
                     //already have a ", in it, put in a bonus " next to it to escape the char " in csv format.
                     for (int i = 0; i < cells.Count; i++)
                     {
-                        currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\"");
+                        if (!cells.ContainsKey(sortedKeys[i]))
+                        {
+                            //If here, this means the cell its looking for was a double letter cell, so we need to revert the name change from double to lowercase and figure out the contents
+                            string oldName = "A" + (char)((int)sortedKeys[i].First() - 32) + sortedKeys[i][1..];
+                            currCell = cells[oldName].stringForm.Replace("\"", "\"\"");
+                        }
+                        else currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\"");
                         if (currCell.Contains(',')) 
                             currCell = "\"" + currCell + "\"";
                         //Now that this cell's in the correct format, insert it into the file string
@@ -494,7 +505,11 @@ namespace SS
                         if (i != cells.Count - 1)
                         {
                             numDist = int.Parse(sortedKeys[i + 1].Substring(1)) - int.Parse(sortedKeys[i].Substring(1));
-                            lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
+                            if ((int)sortedKeys[i + 1].First() >= 97 && (int)sortedKeys[i].First() <= 90)
+                            {
+                                lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First() - 6;
+                            }
+                            else lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
                         }
                         //For this first row/the row the current cell is on, insert "," numDist-1 times
                         for (int v = 0; v < lettDist - 1; v++)

@@ -37,7 +37,14 @@ public partial class SpreadsheetPage : ContentPage
         //get the value of the cell
         spreadsheetGrid.GetValue(col, row, out string value);
         //set the name label text to currently selected cell
-        cellName.Text = ((Char)('A' + col)).ToString() + (row + 1).ToString();
+        if (col < 26)
+            cellName.Text = ((Char)('A' + col)).ToString() + (row + 1).ToString();
+        else
+        {
+            int colFirstLetter = (col / 26) - 1;
+            int colSecLetter = col % 26;
+            cellName.Text = ((Char)('A' + colFirstLetter)).ToString() + ((Char)('A' + colSecLetter)).ToString() + (row + 1).ToString();
+        }
         //set value to value of currently selected cell
         cellValue.Text = "Value : " +value.ToString();
         //set the entry to the currentely selected cells content
