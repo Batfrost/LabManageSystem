@@ -484,32 +484,51 @@ namespace SS
                         sortedKeys[i] = new string(letter + keysAsNums[i].ToString()[..^2]);
                     }
 
+                    //Before starting the next task in adding the cells, since the first cell might not be on the first row, new lines will be added until the first cell's row.
+                    int rowNum = int.Parse(sortedKeys[0][1..]);
+                    for (int i = 1; i < rowNum; i++)
+                    {
+                        fileAsCSV += "\n";
+                    }
+
                     //Go through all cells and add their contents as strings to fileAsCSV, separated by ','s
                     //If any cells already contain a ",", then surround that cell with "", if a cell's contents 
                     //already have a ", in it, put in a bonus " next to it to escape the char " in csv format.
                     for (int i = 0; i < cells.Count; i++)
                     {
+                        int colDist = 0;
                         if (!cells.ContainsKey(sortedKeys[i]))
                         {
                             //If here, this means the cell its looking for was a double letter cell, so we need to revert the name change from double to lowercase and figure out the contents
-                            string oldName = "A" + (char)((int)sortedKeys[i].First() - 32) + sortedKeys[i][1..];
-                            currCell = cells[oldName].stringForm.Replace("\"", "\"\"");
+                            string cellName = "A" + (char)((int)sortedKeys[i].First() - 32) + sortedKeys[i][1..];
+                            currCell = cells[cellName].stringForm.Replace("\"", "\"\"");
+                            colDist = sortedKeys[i].First() - 96;
                         }
-                        else currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\"");
+                        else { colDist = sortedKeys[i].First() - 64; currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\""); }
+
+                        //Now to add the ','s from the start of this row to the cell in col distance, first the letter part of the name will be turned into a number, like B = 2, and AA = 26 + 1 -> 27, etc.
+                        char letter = 'A';
+                        for (int j = 1; j < colDist; j++)
+                        {
+                            fileAsCSV += ",";
+                            letter = (char)(letter + j);
+                        }
+                        
                         if (currCell.Contains(',')) 
                             currCell = "\"" + currCell + "\"";
                         //Now that this cell's in the correct format, insert it into the file string
-                        fileAsCSV += currCell + ",";
+                        fileAsCSV += currCell;
                         
                         //Check if there is another cell, and if so get the distance between this cell and the next.
                         if (i != cells.Count - 1)
                         {
                             numDist = int.Parse(sortedKeys[i + 1].Substring(1)) - int.Parse(sortedKeys[i].Substring(1));
-                            if ((int)sortedKeys[i + 1].First() >= 97 && (int)sortedKeys[i].First() <= 90)
-                            {
-                                lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First() - 6;
-                            }
-                            else lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
+                            //if (int.Parse(sortedKeys[i + 1][1..]) == int.Parse(sortedKeys[i][1..]))
+                                //if ((int)sortedKeys[i + 1].First() >= 97 && (int)sortedKeys[i].First() <= 90)
+                                {
+                               //     lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First() - 6;
+                                }
+                               // else lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
                         }
                         //For this first row/the row the current cell is on, insert "," numDist-1 times
                         for (int v = 0; v < lettDist - 1; v++)
