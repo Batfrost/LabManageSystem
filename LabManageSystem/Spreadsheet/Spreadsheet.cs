@@ -168,8 +168,13 @@ namespace SS
                             //Then add the cell to the spreadsheet
                             this.SetContentsOfCell(cellName, cell);
 
-                            //For rows, the letter will increment. A -> B ->..., and the number will stay the same.
-                            cellNameLetter++;
+                            //For rows, the letter will increment. A -> B ->..., and the number will stay the same. Also, if the letter reaches to Z, increments to AA -> AB -> ...
+                            if (cellNameLetter <= 'Z')
+                                cellNameLetter++;
+                            else
+                            {
+                                cellNameLetter //Gonna stop here for now, since i'm feeling sluggish and have a headache and lightheaded a little, but I'm thinking of adding a bool to check for double letter names, and using that, etc.
+                            }
                         }
                         //Reset the letter back to A, and increment to the next row.
                         cellNameLetter = 'A'; 
@@ -523,12 +528,6 @@ namespace SS
                         if (i != cells.Count - 1)
                         {
                             numDist = int.Parse(sortedKeys[i + 1].Substring(1)) - int.Parse(sortedKeys[i].Substring(1));
-                            //if (int.Parse(sortedKeys[i + 1][1..]) == int.Parse(sortedKeys[i][1..]))
-                                //if ((int)sortedKeys[i + 1].First() >= 97 && (int)sortedKeys[i].First() <= 90)
-                                {
-                               //     lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First() - 6;
-                                }
-                               // else lettDist = sortedKeys[i + 1].First() - sortedKeys[i].First();
                         }
                         //For this first row/the row the current cell is on, insert "," numDist-1 times
                         for (int v = 0; v < lettDist - 1; v++)
