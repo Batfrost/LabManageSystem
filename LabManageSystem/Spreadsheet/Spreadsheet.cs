@@ -169,12 +169,8 @@ namespace SS
                             this.SetContentsOfCell(cellName, cell);
 
                             //For rows, the letter will increment. A -> B ->..., and the number will stay the same. Also, if the letter reaches to Z, increments to AA -> AB -> ...
-                            if (cellNameLetter <= 'Z')
-                                cellNameLetter++;
-                            else
-                            {
-                                cellNameLetter //Gonna stop here for now, since i'm feeling sluggish and have a headache and lightheaded a little, but I'm thinking of adding a bool to check for double letter names, and using that, etc.
-                            }
+                            cellNameLetter++;
+                            
                         }
                         //Reset the letter back to A, and increment to the next row.
                         cellNameLetter = 'A'; 
@@ -490,10 +486,19 @@ namespace SS
                     }
 
                     //Before starting the next task in adding the cells, since the first cell might not be on the first row, new lines will be added until the first cell's row.
-                    int rowNum = int.Parse(sortedKeys[0][1..]);
-                    for (int i = 1; i < rowNum; i++)
+                    int startRow = int.Parse(sortedKeys[0][1..]);
+                    for (int i = 1; i < startRow; i++)
                     {
                         fileAsCSV += "\n";
+                    }
+                    //Same thing for columns.
+                    int startCol = 0;
+                    if (!cells.ContainsKey(sortedKeys[0]))
+                        startCol = sortedKeys[0].First() - 70;
+                    else startCol = sortedKeys[0].First() - 64;
+                    for (int i = 1; i < startCol; i++)
+                    {
+                        fileAsCSV += ",";
                     }
 
                     //Go through all cells and add their contents as strings to fileAsCSV, separated by ','s
@@ -501,48 +506,50 @@ namespace SS
                     //already have a ", in it, put in a bonus " next to it to escape the char " in csv format.
                     for (int i = 0; i < cells.Count; i++)
                     {
-                        int colDist = 0;
                         if (!cells.ContainsKey(sortedKeys[i]))
                         {
                             //If here, this means the cell its looking for was a double letter cell, so we need to revert the name change from double to lowercase and figure out the contents
                             string cellName = "A" + (char)((int)sortedKeys[i].First() - 32) + sortedKeys[i][1..];
                             currCell = cells[cellName].stringForm.Replace("\"", "\"\"");
-                            colDist = sortedKeys[i].First() - 96;
+                            lettDist = sortedKeys[i].First() - 96;
                         }
-                        else { colDist = sortedKeys[i].First() - 64; currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\""); }
+                        else { lettDist = sortedKeys[i].First() - 64; currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\""); }
 
-                        //Now to add the ','s from the start of this row to the cell in col distance, first the letter part of the name will be turned into a number, like B = 2, and AA = 26 + 1 -> 27, etc.
-                        char letter = 'A';
-                        for (int j = 1; j < colDist; j++)
-                        {
-                            fileAsCSV += ",";
-                            letter = (char)(letter + j);
-                        }
-                        
                         if (currCell.Contains(',')) 
                             currCell = "\"" + currCell + "\"";
                         //Now that this cell's in the correct format, insert it into the file string
                         fileAsCSV += currCell;
-                        
+
                         //Check if there is another cell, and if so get the distance between this cell and the next.
                         if (i != cells.Count - 1)
                         {
                             numDist = int.Parse(sortedKeys[i + 1].Substring(1)) - int.Parse(sortedKeys[i].Substring(1));
+                            //For colDist, since some cell Names might have double letters, a little more checking will be done, plus need to check if they are on the same row or not.
+                            if (numDist == 0) //On same row, so get dist between letters
+                                if (!cells.ContainsKey(sortedKeys[i + 1]))
+                                {
+                                    lettDist = sortedKeys[i + 1].First() - 96 - lettDist;
+                                }
+                                else lettDist = sortedKeys[i + 1].First() - 64 - lettDist;
+                            else //Different rows, so just get dist from start to the next letter.
+                            {
+                                if (!cells.ContainsKey(sortedKeys[i + 1]))
+                                {
+                                    lettDist = sortedKeys[i + 1].First() - 97;
+                                }
+                                else lettDist = sortedKeys[i + 1].First() - 65;
+                            }
                         }
-                        //For this first row/the row the current cell is on, insert "," numDist-1 times
-                        for (int v = 0; v < lettDist - 1; v++)
-                            fileAsCSV += ",";
-                        
+                        else lettDist = 0;
+
                         //For the empty cells inbetween this cell and the next cell in the list, insert just ","
                         for (int j = 0; j < numDist; j++)
-                        {
-                            for (int v = 0; v < lettDist - 1; v++)
-                            {
-                                fileAsCSV += ",";
-                            }
                             //New row, new line
                             fileAsCSV += "\n";
-                        }
+                            
+                        for (int v = 0; v < lettDist; v++)
+                            fileAsCSV += ",";
+                        
                         lettDist = 0;
                         numDist = 0;
                            
