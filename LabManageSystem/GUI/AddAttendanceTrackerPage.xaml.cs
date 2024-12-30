@@ -71,12 +71,13 @@ public partial class AddAttendanceTrackerPage : ContentPage
         TrackerSheet.SetContentsOfCell("B1", "Absences");
 
         //First figure out the dates to be added to the Sheet based on days of week and the from and to dates.
-        char cellLetter = 'C';
+        string cellLetter = "C";
         DateTime fromDate = FromDate.Date;
         DateTime toDate = ToDate.Date;
         int year = fromDate.Year;
         int month = fromDate.Month;
         int day = fromDate.Day;
+        bool doubleLettersReached = false;
         for (; year <= toDate.Year; year++)
         {
             int tillMonth = 12;
@@ -96,8 +97,26 @@ public partial class AddAttendanceTrackerPage : ContentPage
                     for (int DayOfWeek = 0; DayOfWeek < DaysOfWeekInfo.Count; DayOfWeek++)
                         if ((int)date.DayOfWeek == DaysOfWeekInfo[DayOfWeek])
                         {
-                            TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
-                            cellLetter = (char)(cellLetter + 1);
+                            try
+                            {
+                                TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
+                            } 
+                            catch
+                            {
+                                await DisplayAlert("Error", "Too many Dates Selected. Spreadsheet only\n has capacity for 52 total days, sorry. Planned for \nsemesters which are ~15 weeks with usually 2-3 days class per week.", "Ok");
+                                return;
+                            }
+                            if (cellLetter.First() <= 'Z' && !doubleLettersReached)
+                                if (cellLetter.First() == 'Z')
+                                {
+                                    cellLetter = "AA";
+                                    doubleLettersReached = true;
+                                }
+                                else cellLetter = ((char)(cellLetter[0] + 1)).ToString();
+                            else
+                            {
+                                cellLetter = "A" + ((char)(cellLetter[1] + 1)).ToString();
+                            }
                             break;
                         }
                 }

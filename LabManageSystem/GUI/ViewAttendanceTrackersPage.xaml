@@ -4,28 +4,26 @@
              xmlns:SS="clr-namespace:SS"
              x:Class="SpreadsheetGUI.ViewAttendanceTrackersPage"
              Title="View Attendance Trackers Page">
-    <ScrollView>
-        <Grid RowDefinitions="40, 40, *">
-            <VerticalStackLayout Padding="3" Grid.Row="0">
-                <HorizontalStackLayout Spacing="20" Padding="5" Grid.Row="1">
-                    <Button 
-                        x:Name="CancelButton"
-                        Text="Menu"
-                        Clicked="ReturnToMenu"
-                        HeightRequest="35"
-                        WidthRequest="70"
-                        Padding="3"/>
-                    <Picker
-                        x:Name="TrackerList"
-                        Title="Choose The Tracker to View:"
-                        HorizontalOptions="CenterAndExpand"
-                        SelectedIndexChanged="TrackerList_SelectedIndexChanged"/>
-                </HorizontalStackLayout>
-                <Entry x:Name ="cellContent" Text="" Placeholder="Enter Value Here" Completed="EnterPressed"></Entry>
-                <Label/>
-                <Label/>
-            </VerticalStackLayout>
-            <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2" />
-        </Grid>
-    </ScrollView>
+    <Grid RowDefinitions="40, 40, *">
+        <VerticalStackLayout Padding="3" Grid.Row="0">
+            <HorizontalStackLayout Spacing="20" Padding="5" Grid.Row="1">
+                <Button 
+                    x:Name="CancelButton"
+                    Text="Menu"
+                    Clicked="ReturnToMenu"
+                    HeightRequest="35"
+                    WidthRequest="70"
+                    Padding="3"/>
+                <Picker
+                    x:Name="TrackerList"
+                    Title="Choose The Tracker to View:"
+                    HorizontalOptions="CenterAndExpand"
+                    SelectedIndexChanged="TrackerList_SelectedIndexChanged"/>
+            </HorizontalStackLayout>
+            <Entry x:Name ="cellContent" Text="" Placeholder="Enter Value Here" Completed="EnterPressed"></Entry>
+            <Label/>
+            <Label/>
+        </VerticalStackLayout>
+        <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2" />
+    </Grid>
 </ContentPage>
