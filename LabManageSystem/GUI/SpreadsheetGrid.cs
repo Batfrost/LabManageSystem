@@ -214,7 +214,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             this.Content = graphicsView;
         }
         //Same for when the last col has a value put in:
-        if(a.Col == colCount - 1)
+        if(a.Col == colCount - 1 && colCount != 52)
         {
             colCount *= 2;   
             graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
@@ -492,6 +492,8 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             //If the longest data is longer than 15 characters, then just put a limit at 110 for the boxes size.
             if (longestValLength > 15)
                 dataColWidth = 110;
+            else if (longestValLength <= 10)
+                dataColWidth = 80;
             else { dataColWidth = (int)(7.27 * longestValLength); }
         } else { dataColWidth = 80; }
             
@@ -639,9 +641,26 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         //Now for each cell in the loaded backing sheet software, add to GUI.
         foreach(string cell in sheet.GetNamesOfAllNonemptyCells())
         {
-            //Convert cellName to rows and cols
-            int col = cell.First() - 'A';
-            int row = int.Parse(cell.Substring(1)) - 1;
+            //Convert cellName to rows and cols, for cols, double check whether the cell col is a double Letter col or not, to see if cols need to increase to fit or not.
+            int col = 0;
+            int row = 0;
+            if (cell[1] >= 65) //The second character is also another alphabet character in ascii --> double letter Cell Name
+            {
+                col = 26 + cell[1] - 'A';
+                if (col > colCount)
+                {
+                    colCount *= 2;
+                    graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (rowCount + 1) * DATA_ROW_HEIGHT;
+                    graphicsView.WidthRequest = LABEL_COL_WIDTH + (colCount + 1) * dataColWidth;
+                    this.Content = graphicsView;
+                }
+                row = int.Parse(cell[2..]) - 1;
+            }
+            else
+            {
+                col = cell.First() - 'A';
+                row = int.Parse(cell[1..]) - 1;
+            }
 
             //Add cells, if formulas then add "=" before content.
             object x = sheet.GetCellContents(cell);

@@ -111,7 +111,7 @@ namespace SS
                     sprdsht = new Spreadsheet();
                     StreamReader csvReader = new StreamReader(filePath);
                     //These vars will cycle through the cell's names
-                    char cellNameLetter = 'A';
+                    string cellNameLetter = "A";
                     int cellNameNum = 1;
                     string cellName = cellNameLetter + "" + cellNameNum;
                     string line;
@@ -119,6 +119,8 @@ namespace SS
                     bool commaSectionDone = true;
                     string temp = "";
                     string cell;
+                    bool doubleLettersReached = false;
+
                     while (!csvReader.EndOfStream)
                     {
                         line = csvReader.ReadLine()!;
@@ -138,7 +140,8 @@ namespace SS
                                 temp = cell.Replace("\"", "");
                                 commaSectionDone = false;
                                 continue;
-                            } else if (commaExists)
+                            }
+                            else if (commaExists)
                             {
                                 //First the " will be deleted - if there are multiple ", only the first will be removed.
                                 if (cell.Contains("\""))
@@ -149,7 +152,7 @@ namespace SS
                                 }
 
                                 //Now temp will gain the ',' the cell was missing, and get the next part.
-                                temp +=  "," + cell;
+                                temp += "," + cell;
 
                                 //If there is still a " in this cell part, that means there is more parts, continue to next iteration
                                 if (commaSectionDone)
@@ -157,10 +160,9 @@ namespace SS
                                     //This is the last part of the comma's separated cells that got split up 
                                     commaExists = false;
                                     cell = temp;
-                                } 
+                                }
                                 else
                                     continue;
-                                
                             }
                             //Put back the quotes that were originally supposed to be in the cell
                             cell = cell.Replace(")~", "\"");
@@ -169,18 +171,28 @@ namespace SS
                             this.SetContentsOfCell(cellName, cell);
 
                             //For rows, the letter will increment. A -> B ->..., and the number will stay the same. Also, if the letter reaches to Z, increments to AA -> AB -> ...
-                            cellNameLetter++;
-                            
+                            if (cellNameLetter.First() <= 'Z' && !doubleLettersReached)
+                            {
+                                if (cellNameLetter.First() == 'Z')
+                                {
+                                    cellNameLetter = "AA";
+                                    doubleLettersReached = true;
+                                }
+                                else cellNameLetter = ((char)(char.Parse(cellNameLetter) + 1)).ToString();
+                            }
+                            else //Using the bool to check for if we've reached the double letter named cells yet, we can then set the cellLetter to be AA and start to increment from there.
+                                cellNameLetter = "A" + ((char)(cellNameLetter.Last() + 1)).ToString();
                         }
                         //Reset the letter back to A, and increment to the next row.
-                        cellNameLetter = 'A'; 
+                        cellNameLetter = "A";
+                        doubleLettersReached = false;
                         cellNameNum++;
                         numberOfRows++;
-                        
+
                     }
                     //Make sure to close the file after we have read all the data from it.
                     csvReader.Close();
-                    
+
                 }
             }
             //IOException will catch FileNotFoundExceptions, DirectoryNotFoundExceptions, etc.
@@ -196,7 +208,7 @@ namespace SS
             {
                 throw new SpreadsheetReadWriteException("The given filepath is not a correct file path.");
             }
-            
+
             //We have saved, so set Changed to false
             Changed = false;
 
@@ -511,7 +523,7 @@ namespace SS
                             //If here, this means the cell its looking for was a double letter cell, so we need to revert the name change from double to lowercase and figure out the contents
                             string cellName = "A" + (char)((int)sortedKeys[i].First() - 32) + sortedKeys[i][1..];
                             currCell = cells[cellName].stringForm.Replace("\"", "\"\"");
-                            lettDist = sortedKeys[i].First() - 96;
+                            lettDist = sortedKeys[i].First() - 70;
                         }
                         else { lettDist = sortedKeys[i].First() - 64; currCell = cells[sortedKeys[i]].stringForm.Replace("\"", "\"\""); }
 
@@ -528,14 +540,14 @@ namespace SS
                             if (numDist == 0) //On same row, so get dist between letters
                                 if (!cells.ContainsKey(sortedKeys[i + 1]))
                                 {
-                                    lettDist = sortedKeys[i + 1].First() - 96 - lettDist;
+                                    lettDist = sortedKeys[i + 1].First() - 70 - lettDist;
                                 }
                                 else lettDist = sortedKeys[i + 1].First() - 64 - lettDist;
                             else //Different rows, so just get dist from start to the next letter.
                             {
                                 if (!cells.ContainsKey(sortedKeys[i + 1]))
                                 {
-                                    lettDist = sortedKeys[i + 1].First() - 97;
+                                    lettDist = sortedKeys[i + 1].First() - 71;
                                 }
                                 else lettDist = sortedKeys[i + 1].First() - 65;
                             }
