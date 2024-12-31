@@ -33,8 +33,8 @@ public partial class ViewAttendanceTrackersPage : ContentPage
         trackers = s.AttendanceTrackers;
         TrackerList.ItemsSource = trackers;
         TrackerList.SelectedIndex = 0;
-        if (TrackerList.Items.Count == 0)
-            TrackerList.ItemsSource.Add("None");
+        if (s.AttendanceTrackers == null || s.AttendanceTrackers.Count == 0)
+            TrackerList.ItemsSource = new List<string>() { "None" };
     }
 
     /// <summary>

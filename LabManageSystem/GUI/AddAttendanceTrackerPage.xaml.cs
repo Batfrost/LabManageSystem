@@ -78,6 +78,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
         int month = fromDate.Month;
         int day = fromDate.Day;
         bool doubleLettersReached = false;
+        int weekNum = 0;
         for (; year <= toDate.Year; year++)
         {
             int tillMonth = 12;
@@ -94,12 +95,25 @@ public partial class AddAttendanceTrackerPage : ContentPage
                 for (; day <= tillDay; day++)
                 {
                     DateTime date = new DateTime(year, month, day);
+                    if (date.DayOfWeek == DayOfWeek.Sunday)
+                        weekNum++;
+                    
                     for (int DayOfWeek = 0; DayOfWeek < DaysOfWeekInfo.Count; DayOfWeek++)
                         if ((int)date.DayOfWeek == DaysOfWeekInfo[DayOfWeek])
                         {
                             try
                             {
-                                TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
+                                if (BiweeklyCheckBox.IsChecked)
+                                {
+                                    if (weekNum % 2 == 0)
+                                        TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                    
+                                }
+                                else TrackerSheet.SetContentsOfCell(cellLetter + "1", date.ToString("MM/dd/yyyy"));
                             } 
                             catch
                             {

@@ -79,6 +79,18 @@
                 <DatePicker x:Name="ToDate"/>
             </HorizontalStackLayout>
             <Label/>
+            <Label 
+                Text="Would you like this to be Biweekly? (Every other week, from the starting week.) If so, checkmark the box."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <CheckBox
+                x:Name="BiweeklyCheckBox"
+                IsChecked="False"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"/>
+            <Label/>
 
             <Label
                 Text="Please input the UIDs for the class/students you want this tracker to track attendance for: (As long as each ID has the normal 8 digits, you can paste all numbers in here, spaces or no spaces inbetween each number is fine, the software will divide it up.)"

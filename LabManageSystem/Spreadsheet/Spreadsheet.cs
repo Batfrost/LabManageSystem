@@ -498,19 +498,22 @@ namespace SS
                     }
 
                     //Before starting the next task in adding the cells, since the first cell might not be on the first row, new lines will be added until the first cell's row.
-                    int startRow = int.Parse(sortedKeys[0][1..]);
-                    for (int i = 1; i < startRow; i++)
+                    if (cells.Count > 0)
                     {
-                        fileAsCSV += "\n";
-                    }
-                    //Same thing for columns.
-                    int startCol = 0;
-                    if (!cells.ContainsKey(sortedKeys[0]))
-                        startCol = sortedKeys[0].First() - 70;
-                    else startCol = sortedKeys[0].First() - 64;
-                    for (int i = 1; i < startCol; i++)
-                    {
-                        fileAsCSV += ",";
+                        int startRow = int.Parse(sortedKeys[0][1..]);
+                        for (int i = 1; i < startRow; i++)
+                        {
+                            fileAsCSV += "\n";
+                        }
+                        //Same thing for columns.
+                        int startCol = 0;
+                        if (!cells.ContainsKey(sortedKeys[0]))
+                            startCol = sortedKeys[0].First() - 70;
+                        else startCol = sortedKeys[0].First() - 64;
+                        for (int i = 1; i < startCol; i++)
+                        {
+                            fileAsCSV += ",";
+                        }
                     }
 
                     //Go through all cells and add their contents as strings to fileAsCSV, separated by ','s
@@ -1208,7 +1211,7 @@ namespace SS
                     {
                         try
                         {
-                            string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd"))).Key;
+                            string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd/yyyy"))).Key;
                             string usersRow = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
                             Tracker.SetContentsOfCell(todaysColHeader.First() + usersRow[1..], "yes");
                             Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
