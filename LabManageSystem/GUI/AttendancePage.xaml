@@ -6,10 +6,11 @@
     <ScrollView>
         <VerticalStackLayout>
             <Label 
-                Text="Here you can view and add/remove Attendance Trackers for Classes/Modules/etc."
+                Text="Here you can view and add/remove Attendance Trackers for Classes/Modules/etc. NOTE: Things such as class closure or holidays are not fully accounted for, so some interpretation is required."
                 VerticalOptions="Center" 
                 HorizontalOptions="Center" 
-                LineBreakMode="WordWrap"/>
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
             <Label/>
             <Button 
                 Text="Add New Attendance Tracker"
