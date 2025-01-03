@@ -1,7 +1,5 @@
-using Microcharts.Maui;
 using SS;
 using Microcharts;
-using Microsoft.Maui;
 
 namespace SpreadsheetGUI;
 

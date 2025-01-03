@@ -32,14 +32,15 @@
                 Clicked="GoToAttendancePage"/>
             <Label/>
             <Button 
-                Text="Get Traffic Statistics"
+                Text="Statistics (Currently Unavailable)"
                 x:Name="StatsButton"
                 BackgroundColor="Snow"
                 TextColor="Black"
                 BorderColor="Black"
                 HeightRequest="50"
-                WidthRequest="200"
-                Clicked="GoToStatsPage"/>
+                WidthRequest="250"
+                Clicked="GoToStatsPage"
+                IsEnabled="False"/>
             <Label/>
             <Button 
                 Text="Customize Settings"
