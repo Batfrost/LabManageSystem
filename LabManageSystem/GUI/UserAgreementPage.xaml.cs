@@ -146,6 +146,12 @@ public partial class UserAgreementPage : ContentPage
             return;
         }
 
+        if (!NameEntry.Text.Contains(' '))
+        {
+            await DisplayAlert("Error", "Please enter both a first AND last name\nor 'N/A' with a first or last name.", "Ok");
+            return;
+        }
+
 		try
 		{
             grid.AddUsersInformation(userInfo);

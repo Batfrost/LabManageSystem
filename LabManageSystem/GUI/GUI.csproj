@@ -42,6 +42,7 @@
 		<PackageCertificateThumbprint>810A41615FD4E9EB4D1C4D4E2878D386E26A8861</PackageCertificateThumbprint>
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 		<PackageCertificateKeyFile>GUI_TemporaryKey.pfx</PackageCertificateKeyFile>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 	
 	

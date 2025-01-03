@@ -19,7 +19,8 @@
 
             <Label Text="UID: "/>
             <Entry x:Name="IDEntry"
-                Placeholder="E.g. u1234567 or 01234567"/>
+                Placeholder="E.g. u1234567 or 01234567"
+                   MaxLength="8"/>
             <Label/>
             <Label Text="Name: "/>
             <Entry x:Name="NameEntry"
@@ -32,7 +33,8 @@
             <Entry 
                 x:Name="Field1E"
                 IsEnabled="False"
-                IsVisible="False"/>
+                IsVisible="False"
+                MaxLength="23"/>
             <Label/>
             <Label 
                 x:Name="Field2L"
@@ -41,7 +43,8 @@
             <Entry 
                 x:Name="Field2E"
                 IsEnabled="False"
-                IsVisible="False"/>
+                IsVisible="False"
+                MaxLength="23"/>
             <Label/>
             <Label 
                 x:Name="Field3L"
@@ -50,7 +53,8 @@
             <Entry 
                 x:Name="Field3E"
                 IsEnabled="False"
-                IsVisible="False"/>
+                IsVisible="False"
+                MaxLength="23"/>
             <Label/>
             <Label 
                 x:Name="Field4L"
@@ -59,7 +63,8 @@
             <Entry 
                 x:Name="Field4E"
                 IsEnabled="False"
-                IsVisible="False"/>
+                IsVisible="False"
+                MaxLength="23"/>
             <Label/>
             <Label 
                 x:Name="Field5L"
@@ -68,7 +73,8 @@
             <Entry 
                 x:Name="Field5E"
                 IsEnabled="False"
-                IsVisible="False"/>
+                IsVisible="False"
+                MaxLength="23"/>
             <Label/>
             <HorizontalStackLayout
                 HorizontalOptions="CenterAndExpand">
