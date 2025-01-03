@@ -8,6 +8,11 @@
         <VerticalStackLayout>
             <Label/>
             <Label
+                Text="NOTE: These Statistics are not the most perfect indicator for what the actual average and totals for people who come in are. Sometimes people may not log into the software, and these statistics assume that people who do not log out are only logged in and stay around 2 hours which is the general average found in previous semesters. So, just know that these statistics require some interpretation."
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
+            <Label
                 Text="Get stats for duration: " HorizontalOptions="Center"/>
             <Label/>
             <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
