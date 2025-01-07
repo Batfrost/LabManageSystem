@@ -876,7 +876,7 @@ namespace SS
                 //With custom info fields, the column headers of the currently logged in sheet matter, so we can tell what to display here or not.
                 for (int i = 2; i < userInfo.Count; i++)
                 {
-                    string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.Equals(userInfo[i]) && IDList!.cellValues["A" + entryLog.Key[1..]].Equals(ID)).Key;
+                    string IDLogColHeader = IDList!.cellValues.First(entryLog => entryLog.Value.ToString()!.Equals(userInfo[i].ToString()) && IDList!.cellValues["A" + entryLog.Key[1..]].Equals(ID)).Key;
                     IDLogColHeader = IDList!.cellValues[IDLogColHeader.First() + "1"].ToString()!;
                     if (hiddenInfoFields.Contains(IDLogColHeader.Trim().Trim(':') + ": "))
                         continue;
