@@ -760,7 +760,7 @@ namespace SS
                         foundEmptyCell = true;
                         break;
                     }
-                    if (DateTime.TryParse((string)userLog.cellValues[cellLetter + cellNum.ToString()], out DateTime res))
+                    if (DateTime.TryParse(userLog.cellValues[cellLetter + cellNum.ToString()].ToString(), out DateTime res))
                         logCount++;
                 }
 
@@ -1146,7 +1146,7 @@ namespace SS
         public override void LogoutUserFromCurrentlyLoggedInSheet(string ID)
         {
             //Getting file
-            string logFilePath = Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy -MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
+            string logFilePath = Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DateTime.Today.ToString().Split(" ").First().Replace("/", "-") + ".csv";
             Spreadsheet userLog = new();
 
             //First the file will attempt to open, and if it fails, then that means a new file needs to be created for this date.
@@ -1434,7 +1434,7 @@ namespace SS
                         dateGettingChecked = new DateTime(year, month, day);   
                         if (mode == 5) { counts[(int)dateGettingChecked.DayOfWeek]++; } //Will want the total number of mondays, tuesdays, etc, even if no one logged in on those days for computing averages. Mode for all weekdays specifically
                         //Attempt to load the log from the current dayToCheck, continue if it doesn't exist.
-                        currLogToCheck = Settings.saveFileLocation + "Logs\\" + new DateTime(year, month, day).ToString("yyyy -MMMM") + "\\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
+                        currLogToCheck = Settings.saveFileLocation + "Logs\\" + new DateTime(year, month, day).ToString("yyyy-MMMM") + "\\log" + dateGettingChecked.Date.ToString().Split(" ").First().Replace('/', '-') + ".csv";
                         try { dayToCheck = new Spreadsheet(currLogToCheck, s => true, s => s.ToUpper(), "lab"); }
                         catch { continue; }
                         if (mode == 5) //Mode for all days of week
