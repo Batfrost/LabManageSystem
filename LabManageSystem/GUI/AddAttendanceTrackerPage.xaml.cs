@@ -9,10 +9,26 @@ namespace SpreadsheetGUI;
 
 public partial class AddAttendanceTrackerPage : ContentPage
 {
-	public AddAttendanceTrackerPage()
+    Settings Settings = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
+
+    public AddAttendanceTrackerPage()
 	{
         InitializeComponent();
-	}
+        List<string> fields = new List<string>();
+        try
+        {
+            fields = Settings.agreementPageFields.Keys.ToList();
+            fields.Add("None");
+            InfoFieldsPicker.ItemsSource = fields;
+            InfoFieldsPicker.SelectedIndex = 0;
+        }
+        catch
+        {
+            fields.Add("None");
+            InfoFieldsPicker.ItemsSource = fields;
+            InfoFieldsPicker.SelectedIndex = 0;
+        }
+    }
 
     async public void Confirm_Clicked(object sender, EventArgs e)
     {
@@ -32,17 +48,15 @@ public partial class AddAttendanceTrackerPage : ContentPage
             return;
         }
 
-        if (StudentList.Text == "")
+        if (SpecificFieldEntry.Text == "")
         {
-            await DisplayAlert("Error", "At Least Student Needs to be Included.", "Ok");
+            await DisplayAlert("Error", "Please Fill out all fields.", "Ok");
             return;
         }
 
-        System.String students = StudentList.Text.Replace("\r", string.Empty).Replace(" ", "");
-        students = students.Trim(' ').Trim('\n');
-        if ((students.Length) % 8 != 0)
+        if (InfoFieldsPicker.SelectedItem.ToString().Equals("None"))
         {
-            await DisplayAlert("Error", "Combined Count of UID's chars aren't divisible by 8,\nSome of the IDs may be wrong.", "Ok");
+            await DisplayAlert("Error", "Select an Info Field, new ones\ncan be made on the manager page's\n 'Customize Settings'.", "Ok");
             return;
         }
 
@@ -58,16 +72,10 @@ public partial class AddAttendanceTrackerPage : ContentPage
             DaysOfWeekInfo.Add(4);
         if (FridayBox.IsChecked)
             DaysOfWeekInfo.Add(5);
-
-        //Next we'll go through the student list and separate each ID into a student.
-        List<string> theClass = new List<string>();
-        for (int i = 0; i < students.Length; i+=8)
-        {
-            theClass.Add(students.Substring(i, 8));
-        }
+        
         Spreadsheet TrackerSheet = new Spreadsheet();
         //On the TrackerSheet, the First Row will contain the name of this class/module, Number of current absences per student, all the dates within the chosen days of the week between the specified To and From date.
-        TrackerSheet.SetContentsOfCell("A1", TrackerName.Text);
+        TrackerSheet.SetContentsOfCell("A1", SpecificFieldEntry.Text);
         TrackerSheet.SetContentsOfCell("B1", "Absences");
 
         //First figure out the dates to be added to the Sheet based on days of week and the from and to dates.
@@ -138,13 +146,38 @@ public partial class AddAttendanceTrackerPage : ContentPage
             }
             month = 1;
         }
-
-        //Now to add the students/class to the A column
-        for (int i = 0; i < theClass.Count; i++)
+        string infoTag = SpecificFieldEntry.Text.Replace(" ", "").ToLower();
+        //Go through the user list and add all students there that are specified with the specific info field tag
+        try
         {
-            TrackerSheet.SetContentsOfCell("A" + (i+2).ToString(), "u" + theClass[i][1..]);
-            TrackerSheet.SetContentsOfCell("B" + (i + 2).ToString(), "0");
+            Spreadsheet userList = new Spreadsheet(Settings.saveFileLocation + "userList.csv", s => true, s => s.ToUpper(), "lab");
+            //First find which column header matches the Selected Info Field.
+            string infoCol = userList.cellValues.First(entryLog => entryLog.Value.Equals(InfoFieldsPicker.SelectedItem.ToString())).Key;
+            //Check if double letter col
+            if (infoCol[1] >= 65)
+            {
+                infoCol = infoCol[..2];
+            }
+            else infoCol = infoCol.First().ToString();
+            int cellNum = 2;
+            int trackerRow = 2;
+            while (true)
+            {
+                if (!userList.cellValues.ContainsKey(infoCol + cellNum.ToString()))
+                    break;
+                string userFieldInfo = userList.cellValues[infoCol + cellNum.ToString()].ToString().Replace(" ", "").ToLower();
+                if (userFieldInfo.Equals(infoTag))
+                {
+                    TrackerSheet.SetContentsOfCell('A' + trackerRow.ToString(), userList.cellValues['A' + cellNum.ToString()].ToString());
+                    TrackerSheet.SetContentsOfCell('B' + trackerRow.ToString(), "0");
+                    trackerRow++;
+                }
+                cellNum++;
+            }
         }
+        //Just don't add any students here if there is an error accessing the userList.
+        catch { }
+
         Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         s.AttendanceTrackers.Add(TrackerName.Text);
         s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
