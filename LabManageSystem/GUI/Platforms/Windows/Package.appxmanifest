@@ -5,7 +5,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="TWLoggingPackage" Publisher="CN=FoolishTree" Version="2.3.4.0" />
+  <Identity Name="TWLoggingPackage" Publisher="CN=FoolishTree" Version="2.3.5.0" />
 
   <Properties>
     <DisplayName>$placeholder$</DisplayName>

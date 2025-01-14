@@ -93,34 +93,18 @@
             <Label/>
 
             <Label
-                Text="Which info field do you want to attach to this tracker? E.g. If Class/Advisor was an info field, then you can specify what the field should be set to for this to connect, such as the class: ME EN 4010."
+                Text="Please input the UIDs for the class/students you want this tracker to track attendance for: (As long as each ID has the normal 8 digits, you can paste all numbers in here, spaces or no spaces inbetween each number is fine, the software will divide it up.)"
                 LineBreakMode="WordWrap"
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"
                 MaximumWidthRequest="750"/>
             <Label/>
-            <Picker
-                x:Name="InfoFieldsPicker"
-                Title="Current Specified Information Fields: "
-                HorizontalOptions="CenterAndExpand"/>
-            <Label/>
-            <Label
-                Text="Please specify what the info field needs to be seen as for the attendance tracker to note. Again, this simply means that if the info field was 'Class', then this part would be the class name or number, e.g. 'ME 2420',etc. Capitalization won't matter too much."
-                LineBreakMode="WordWrap"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"
-                MaximumWidthRequest="750"/>
-            <Entry
-                x:Name="SpecificFieldEntry"
-                MaxLength="15"
-                MaximumWidthRequest="50"/>
-            <Label/>
-            <Label
-                Text="NOTE: Until students or users sign in for the first time and register with the software, they will not be registered with the tracker and therefore won't show up when viewing later."
-                LineBreakMode="WordWrap"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"
-                MaximumWidthRequest="750"/>
+            <Editor 
+                x:Name="StudentList"
+                Placeholder="E.g: 0111111102222222 or u1111111 u2222222; either will work, new lines are fine too."
+                HeightRequest="200"
+                WidthRequest="700"
+                HorizontalOptions="Center"/>
             <Label/>
             <Button 
                 Text="Confirm"
