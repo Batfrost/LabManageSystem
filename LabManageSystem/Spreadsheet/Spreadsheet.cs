@@ -1529,6 +1529,23 @@ namespace SS
                 counts[i]++;
             
         }
+
+        /// <summary>
+        /// Method specifically for the special BugReport sheet that will attempt to log any crashing that occurs.
+        /// </summary>
+        /// <param name="ex"></param>
+        public void UpdateBugReport(Exception ex)
+        {
+            //First just find the next empty row to input the date and the error message.
+            string row = "1";
+            while (cellValues.ContainsKey("A" + row))
+            {
+                row = (int.Parse(row) + 1).ToString();
+            }
+            SetContentsOfCell("A" + row, DateTime.Now.ToString());
+            SetContentsOfCell("B" + row, ex.Message);
+            Save(Settings.saveFileLocation + "BugReport.csv");
+        }
     }
 
     /// <summary>
