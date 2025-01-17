@@ -30,7 +30,6 @@ public partial class ViewAttendanceTrackersPage : ContentPage
                 
             }
         }
-        trackers = s.AttendanceTrackers;
         TrackerList.ItemsSource = trackers;
         TrackerList.SelectedIndex = 0;
         if (s.AttendanceTrackers == null || s.AttendanceTrackers.Count == 0)

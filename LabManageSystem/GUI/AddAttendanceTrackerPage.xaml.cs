@@ -149,7 +149,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
         }
 
         //If the from date was set to before the current date this tracker is getting made on, then update the tracker to current day.
-        if (fromDate < DateTime.Today)
+        if (fromDate <= DateTime.Today)
         {
             DateTime DayToCheck;
             cellLetter = "C";
@@ -167,10 +167,14 @@ public partial class AddAttendanceTrackerPage : ContentPage
                             TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "yes");
                         else 
                         { 
-                            TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "no");
-                            string prevAbsenceCount = TrackerSheet.cellValues['B' + studentRow].ToString()!;
-                            int.TryParse(prevAbsenceCount, out int absenceCount);
-                            TrackerSheet.SetContentsOfCell('B' + studentRow, (absenceCount + 1).ToString());
+                            if (fromDate != DateTime.Today)
+                            {
+                                TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "no");
+                                string prevAbsenceCount = TrackerSheet.cellValues['B' + studentRow].ToString()!;
+                                int absenceCount = int.Parse(prevAbsenceCount);
+                                TrackerSheet.SetContentsOfCell('B' + studentRow, (absenceCount + 1).ToString());
+                            }
+                            
                         }
                     }
                 }

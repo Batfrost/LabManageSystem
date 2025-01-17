@@ -21,4 +21,9 @@ public partial class AttendancePage : ContentPage
     {
         await Navigation.PushAsync(new ViewAttendanceTrackersPage());
     }
+
+    private async void EditAttendanceClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new EditAttendanceTrackerPage());
+    }
 }

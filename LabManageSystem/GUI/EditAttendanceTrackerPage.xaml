@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpreadsheetGUI.EditAttendanceTrackerPage"
+             Title="EditAttendanceTrackerPage">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Here you are able to Edit a pre-existing Tracker."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" 
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
+            <HorizontalStackLayout Spacing="20" Padding="5" Grid.Row="1" HorizontalOptions="Center">
+                <Button 
+                    x:Name="CancelButton"
+                    Text="Menu"
+                    Clicked="ReturnToMenu"
+                    HeightRequest="35"
+                    WidthRequest="70"
+                    Padding="3"/>
+                <Picker
+                    x:Name="TrackerList"
+                    Title="Choose The Tracker to Edit:"
+                    HorizontalOptions="CenterAndExpand"
+                    SelectedIndexChanged="TrackerList_SelectedIndexChanged"/>
+            </HorizontalStackLayout>
+            <Label/>
+            <Label
+                Text="When adding a brand new person to the tracker, be noted that this person will/might be considered to have been absent since they wouldn't have logged yet for the tracker, if the tracker has already been active for some days."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" 
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
+            <Entry
+                x:Name="AddToTrackerEntry"
+                MaxLength="8"
+                Placeholder="Insert new ID for adding."
+                MaximumWidthRequest="200"/>
+            <Label/>
+            <Button 
+                Text="Add New Participant"
+                x:Name="AddToTrackerButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="AddToTrackerButton_Clicked"/>
+            <Label/>
+            <Label
+                Text="Or you can remove a participant from the tracker: Type the ID of the removee, and press enter, to confirm they exist in the tracker already."
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" 
+                LineBreakMode="WordWrap"
+                MaximumWidthRequest="750"/>
+            <Label/>
+            <Entry
+                x:Name="RemoveFromTrackerEntry"
+                MaxLength="8"
+                Placeholder="Insert ID for removing."
+                MaximumWidthRequest="200"
+                Completed="RemoveFromTrackerEntry_Completed"/>
+            <Label/>
+            <Label
+                Text=""
+                x:Name="IDSearchLabel"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+            <Label/>
+            <Button 
+                Text="Remove That Participant"
+                x:Name="RemoveFromTrackerButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="200"
+                Clicked="RemoveFromTrackerButton_Clicked"/>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

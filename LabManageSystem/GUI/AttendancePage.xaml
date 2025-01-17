@@ -23,6 +23,16 @@
                 Clicked="AddAttendanceClicked"/>
             <Label/>
             <Button 
+                Text="Edit An Attendance Tracker"
+                x:Name="EditAttendanceTrackerButton"
+                BackgroundColor="Snow"
+                TextColor="Black"
+                BorderColor="Black"
+                HeightRequest="50"
+                WidthRequest="250"
+                Clicked="EditAttendanceClicked"/>
+            <Label/>
+            <Button 
                 Text="View An Attendance Tracker"
                 x:Name="ViewAttendanceTrackerButton"
                 BackgroundColor="Snow"
