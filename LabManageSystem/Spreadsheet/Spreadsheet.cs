@@ -1206,50 +1206,21 @@ namespace SS
                 try
                 {
                     Tracker = new Spreadsheet(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv", s => true, s => s.ToUpper(), "lab");
-                    //Check whether this user should be within the attendance tracker based on what info field the tracker is connected to, and if the user's field matches the specific field within the tracker
-                    string trackersFieldTag = Tracker.cellValues["A1"].ToString()!.Replace(" ", "").ToLower();
-                    List<string> userInfo = GetStudentInfo(ID);
-                    bool shouldBeInTracker = false;
-                    for (int j = 2; j < userInfo.Count; j++)
+                    //Check if this user is part of this attendance tracker
+                    if (Tracker.cellValues.ContainsValue(ID))
                     {
-                        string info = userInfo[j].Replace(" ", "").ToLower();
-                        if (info.Equals(trackersFieldTag))
+                        try
                         {
-                            shouldBeInTracker = true;
-                            break;
+                            string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd/yyyy"))).Key;
+                            string usersRow = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
+                            Tracker.SetContentsOfCell(todaysColHeader.First() + usersRow[1..], "yes");
+                            Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
                         }
+                        catch { continue; }
                     }
-                    if (shouldBeInTracker)
+                    else
                     {
-                        if (Tracker.cellValues.ContainsValue(ID))
-                        {
-                            try
-                            {
-                                string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd/yyyy"))).Key;
-                                string usersRow = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(ID)).Key;
-                                Tracker.SetContentsOfCell(todaysColHeader.First() + usersRow[1..], "yes");
-                                Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
-                            }
-                            catch { continue; }
-                        }
-                        else
-                        {
-                            //If the should be in the attendance tracker, but aren't, then we'll simply add a new row for this student.
-                            int row = 2;
-                            while (Tracker.cellValues.ContainsKey("A" + row.ToString()))
-                            {
-                                row++;
-                            }
-                            Tracker.SetContentsOfCell("A" + row.ToString(), ID);
-                            Tracker.SetContentsOfCell("B" + row.ToString(), "0");
-                            try
-                            {
-                                string todaysColHeader = Tracker.cellValues.First(entryLog => entryLog.Value.Equals(DateTime.Now.ToString("MM/dd/yyyy"))).Key;
-                                Tracker.SetContentsOfCell(todaysColHeader.First() + row.ToString(), "yes");
-                                Tracker.Save(Settings.saveFileLocation + "AttendanceTrackers\\" + TrackerList[i] + ".csv");
-                            }
-                            catch { continue; }
-                        }
+                        //If they aren't in the Tracker, then we can just check the next tracker, no need to do anything here
                     }
                 }
                 catch
