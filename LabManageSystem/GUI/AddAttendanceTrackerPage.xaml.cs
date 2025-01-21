@@ -167,7 +167,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
                             TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "yes");
                         else 
                         { 
-                            if (fromDate != DateTime.Today)
+                            if (DayToCheck < DateTime.Today)
                             {
                                 TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "no");
                                 string prevAbsenceCount = TrackerSheet.cellValues['B' + studentRow].ToString()!;
@@ -180,7 +180,16 @@ public partial class AddAttendanceTrackerPage : ContentPage
                 }
                 catch
                 {
-
+                    //If tracker was not found, that most likely means nobody logged in on this day or something similar.
+                    //So we will just mark this as Holiday? since nobody logged in.
+                    if (DayToCheck < DateTime.Today)
+                    {
+                        foreach (string student in theClass)
+                        {
+                            string studentRow = TrackerSheet.cellValues.First(entryLog => entryLog.Value.Equals(student)).Key[1..];
+                            TrackerSheet.SetContentsOfCell(cellLetter + studentRow, "holiday?");
+                        }
+                    }
                 }
                 
                 cellLetter = ((char)(cellLetter[0] + 1)).ToString();
@@ -189,6 +198,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
 
         Settings s = new Settings(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         s.AttendanceTrackers.Add(TrackerName.Text);
+        s.AttendanceTrackers = s.AttendanceTrackers.Distinct().ToList();
         s.SaveSettingsFile(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\TWLogging\settings.config");
         TrackerSheet.Save(s.saveFileLocation + "AttendanceTrackers\\" + TrackerName.Text + ".csv");
         await DisplayAlert("Finished", "Attendance Tracker Finished! You can now view it through any \nSpreadsheet software, or on the previous page.\nTo view file location, you can open the file location on the Manager Menu Page.", "Ok");

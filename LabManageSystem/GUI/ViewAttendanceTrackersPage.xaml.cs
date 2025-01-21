@@ -77,7 +77,14 @@ public partial class ViewAttendanceTrackersPage : ContentPage
 
     async public void ReturnToMenu(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        try
+        {
+            await Navigation.PopAsync();
+        }
+        catch
+        {
+
+        }
     }
 
     private void TrackerList_SelectedIndexChanged(object sender, EventArgs e)
