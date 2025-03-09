@@ -108,7 +108,7 @@ public partial class HomePage : ContentPage
 
 						System.Timers.Timer timer = new System.Timers.Timer();
 						timer.Elapsed += new System.Timers.ElapsedEventHandler((sender, e) => AutomaticallyLogOutUser(sender, e, ID));
-						timer.Interval = 7200000;
+						timer.Interval = 3600000;
 						timer.Enabled = true;
 					}
 					catch

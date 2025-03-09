@@ -1141,7 +1141,7 @@ namespace SS
         }
 
         /// <summary>
-        /// User will be automatically logged out after 2 hours, as in their username and info will no longer be shown on the currently logged in sheet.
+        /// User will be automatically logged out after 1 hour, as in their username and info will no longer be shown on the currently logged in sheet.
         /// </summary>
         public override void LogoutUserFromCurrentlyLoggedInSheet(string ID)
         {

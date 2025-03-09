@@ -159,7 +159,7 @@ public partial class AddAttendanceTrackerPage : ContentPage
                 //Attempt to open up the log for the day getting checked, and see whether the current student getting checked or not logged in then
                 try
                 {
-                    Spreadsheet SheetToCheck = new Spreadsheet(Settings.saveFileLocation + "Logs\\" + DateTime.Now.ToString("yyyy-MMMM") + "\\log" + DayToCheck.ToString().Split(" ").First().Replace("/", "-") + ".csv", s => true, s => s.ToUpper(), "lab");
+                    Spreadsheet SheetToCheck = new Spreadsheet(Settings.saveFileLocation + "Logs\\" + DayToCheck.ToString("yyyy-MMMM") + "\\log" + DayToCheck.ToString().Split(" ").First().Replace("/", "-") + ".csv", s => true, s => s.ToUpper(), "lab");
                     foreach (string student in theClass)
                     {
                         string studentRow = TrackerSheet.cellValues.First(entryLog => entryLog.Value.Equals(student)).Key[1..];
